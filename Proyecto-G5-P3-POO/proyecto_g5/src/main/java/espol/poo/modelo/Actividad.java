@@ -53,6 +53,15 @@ public class Actividad {
     public TipoActividad getTipoActividad(){
         return tipoActividad;
     }
+
+    public boolean estaVencida(String fechaVencimiento, String fechaActual){
+        if (fechaVencimiento == fechaActual){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     public Actividad(String nombre, TipoPrioridad prioridad, String fechaVencimiento, 
     int avance, String id, int tiempoEstimado, String fechaActual) {
         this.nombre = nombre;
