@@ -47,7 +47,7 @@ public class Actividad {
     public String getDescripcion(){
         return descripcion;
     }
-    public void registrarAvance(int avance){
+    public void set(int avance){
         this.avance = avance;
     }
     public TipoActividad getTipoActividad(){
