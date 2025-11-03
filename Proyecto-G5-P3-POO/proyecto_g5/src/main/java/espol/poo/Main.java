@@ -1,7 +1,10 @@
 package espol.poo;
 
+import espol.poo.controlador.ControladorActividades;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        ControladorActividades controladorActividades = new ControladorActividades();
+        controladorActividades.gestionarActividades();
     }
 }

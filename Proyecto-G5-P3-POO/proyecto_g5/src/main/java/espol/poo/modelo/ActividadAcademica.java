@@ -16,15 +16,9 @@ public class ActividadAcademica extends Actividad{
         return asignatura;
     }
     public ActividadAcademica(String nombre, TipoPrioridad prioridad, String fechaVencimiento, 
-    int avance, String id, int tiempoEstimado, String fechaActual, String asignatura, TipoActividadAcademica actividadAcademica){
-    super(nombre, prioridad, fechaVencimiento, avance, id, tiempoEstimado, fechaActual);
+    int avance, int id, int tiempoEstimado, String fechaActual, String asignatura, TipoActividadAcademica actividadAcademica, String descrpcion){
+    super(nombre, prioridad, fechaVencimiento, avance, id, tiempoEstimado, fechaActual, descrpcion);
         this.asignatura = asignatura;
-    }
-    public ActividadAcademica(String nombre, TipoPrioridad prioridad, String fechaVencimiento, String asignatura){
-    super(nombre, prioridad, fechaVencimiento);
-        this.asignatura = asignatura;
-    }
-    public ActividadAcademica(){
-    super();
+        this.actividadAcademica = actividadAcademica;
     }
 }

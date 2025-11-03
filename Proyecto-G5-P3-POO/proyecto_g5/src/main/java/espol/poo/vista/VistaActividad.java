@@ -1,5 +1,392 @@
 package espol.poo.vista;
+import java.util.Scanner;
+import java.util.InputMismatchException;
 
+import espol.poo.modelo.Actividad.TipoPrioridad;
+import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
+import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
 public class VistaActividad {
 
+    Scanner sc = new Scanner(System.in);
+    public boolean verificarRango(int valoringresado,int valorminimo, int valormaximo){
+        if ((valorminimo <= valoringresado) && (valormaximo >= valoringresado)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public boolean pedirConfirmacion(String mensaje) {
+    System.out.print(mensaje + " (S/N): ");
+    String respuesta = sc.nextLine().trim().toUpperCase();
+    return respuesta.equals("S");
+}
+    public boolean pedirConfirmacionEliminar(String nombreActividad) {
+    System.out.println("Usted seleccionó la actividad: '" + nombreActividad + "'.");
+    return pedirConfirmacion("¿Está seguro que desea ELIMINAR PERMANENTEMENTE esta actividad?");
+}
+    public void mostrarMensaje(String mensaje) {
+    System.out.println(mensaje);
+    System.out.println("Presione [ENTER] para continuar...");
+    sc.nextLine();
+}
+    public int pedirOpcionGestion() {
+        System.out.println("1. Visualizar actividades");
+        System.out.println("2. Crear actividad");
+        System.out.println("3. Registrar avance de actividad");
+        System.out.println("4. Eliminar actividad");
+        System.out.println("5. Volver al menú");
+        int opcion = 0; 
+        do {
+            System.out.print("Ingrese la opción: ");
+            try {
+                opcion = sc.nextInt();
+                
+                if (verificarRango(opcion, 1,5) == false) {
+                    System.out.println("Error: Ingrese una opción posible");
+                    opcion = 0;
+                }
+            
+            } catch (InputMismatchException e) {System.out.println("Error: Debe ingresar solo números.");
+                opcion = 0; 
+            } finally {
+
+                sc.nextLine(); 
+            }
+        
+        } while (opcion == 0);
+        
+        return opcion;
+    }
+
+    public int pedirtipoactividad(){
+        int opcion = 0; 
+        do {
+            System.out.println("Seleccione la categoría de la actividad: ");
+            System.out.println("1. Académica (Tarea, Examen, Proyecto)");
+            System.out.println("2. Personal (Citas, Ejercicio, Hobbies)");
+            try {
+                opcion = sc.nextInt();
+                
+                if (verificarRango(opcion, 1, 5) == false){
+                    System.out.println("Error: La opción debe ser un número entre 1 y 5.");
+                    opcion = 0;
+                }
+            
+            } catch (InputMismatchException e) {System.out.println("Error: Debe ingresar solo números.");
+                opcion = 0; 
+            } finally {
+
+                sc.nextLine(); 
+            }
+        
+        } while (opcion == 0);
+        
+        return opcion;
+    }
+    public int pedirIdActividad(int tamanoLista) {
+        if (tamanoLista == 0) {
+            System.out.println("No hay actividades para seleccionar.");
+            return 0; 
+        }
+
+        int id = 0;
+
+        do {
+            System.out.print("Ingrese el ID de la actividad (1 - " + tamanoLista + "): ");
+            
+            try {
+                id = sc.nextInt();
+                if (verificarRango(id, 1, tamanoLista) == false) {
+                    System.out.println("Error: El ID no es válido. Debe ser un número entre 1 y " + tamanoLista + ".");
+                    id = 0;
+                }
+            
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar solo números.");
+                id = 0; 
+            
+            } finally {
+                sc.nextLine(); 
+            }
+
+        } while (id == 0);
+        
+        return id;
+    }
+    public int pediravance() {
+        int avance = 0; 
+        do {
+            System.out.print("Ingrese el porcentaje de avance (0% - 100%): ");
+            try {
+                avance = sc.nextInt();
+                
+                if (verificarRango(avance, 0, 100) == false) {
+                    System.out.println("Error: El porcentaje de avance debe estar en el rango (0% - 100%)");
+                    avance = 0;
+                }
+            
+            } catch (InputMismatchException e) {System.out.println("Error: Debe ingresar solo números.");
+                avance = 0; 
+            } finally {
+
+                sc.nextLine(); 
+            }
+        
+        } while (avance == 0);
+        
+        return avance;
+    }
+    public void mostrarError(){
+        System.out.println("Opción no válida, inténtelo de nuevo");
+    }
+    public String pedirTextoNoVacio(String mensaje) {
+    String texto = ""; // Inicializa como vacío para que el bucle comience
+    
+    do {
+        System.out.print(mensaje + " ");
+        
+        // 1. Lee la línea completa y usa .trim()
+        // .trim() quita los espacios en blanco del inicio y del final.
+        texto = sc.nextLine().trim(); 
+        
+        // 2. Comprueba si, después de quitar espacios, la cadena está vacía
+        if (texto.isEmpty()) {
+            System.out.println("Error: El campo no puede estar vacío. Intente de nuevo.");
+        }
+        
+    } while (texto.isEmpty()); // 3. Repite si el texto sigue vacío
+    
+    return texto;
+}
+    public int pedirNumeroPositivo(String mensaje) {
+    int numero = 0; // Se inicializa en 0 (inválido)
+    
+    do {
+        System.out.print(mensaje + " ");
+        try {
+            numero = sc.nextInt();
+            
+            // Valida que el número sea estrictamente positivo
+            if (numero <= 0) {
+                System.out.println("Error: El número debe ser positivo (mayor que 0).");
+                numero = 0; // Marca como inválido para repetir
+            }
+        
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Debe ingresar solo números.");
+            numero = 0; // Marca como inválido
+        
+        } finally {
+            sc.nextLine(); // Limpia el buffer
+        }
+    
+    } while (numero == 0); // Repite mientras sea inválido (0)
+    
+    return numero;
+}
+    public TipoPrioridad pedirPrioridad() {
+    System.out.println("Seleccione la Prioridad:");
+
+    // 1. Imprime las opciones del enum dinámicamente
+    int i = 1;
+    for (TipoPrioridad p : TipoPrioridad.values()) {
+        System.out.println(i + ". " + p.toString());
+        i++;
+    }
+    
+    // 2. Prepara la validación
+    int maxOpcion = TipoPrioridad.values().length;
+    int opcion = 0;
+    
+    do {
+        System.out.print("Ingrese opción (1-" + maxOpcion + "): ");
+        try {
+            opcion = sc.nextInt();
+            
+            // 3. Valida el rango
+            if (opcion < 1 || opcion > maxOpcion) {
+                System.out.println("Error: Opción fuera de rango.");
+                opcion = 0; // Marca como inválido para repetir
+            }
+        
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Debe ingresar solo números.");
+            opcion = 0; // Marca como inválido
+        
+        } finally {
+            sc.nextLine(); // Limpia el buffer
+        }
+    
+    } while (opcion == 0);
+    
+    // 4. Devuelve el valor del enum (opcion-1 para el índice)
+    return TipoPrioridad.values()[opcion - 1];
+}
+    public TipoActividadAcademica pedirTipoActividadAcademica() {
+        System.out.println("Ha seleccionado: ACADÉMICA.");
+        System.out.println("Seleccione el tipo específico:");
+
+        // 1. Imprime las opciones del enum dinámicamente
+        int i = 1;
+        for (TipoActividadAcademica tipo : TipoActividadAcademica.values()) {
+            System.out.println(i + ". " + tipo.toString());
+            i++;
+        }
+        
+        // 2. Prepara la validación
+        int maxOpcion = TipoActividadAcademica.values().length;
+        int opcion = 0;
+        
+        do {
+            System.out.print("Ingrese opción (1-" + maxOpcion + "): ");
+            try {
+                opcion = sc.nextInt();
+                
+                // 3. Valida el rango (1 hasta el número de opciones)
+                if (opcion < 1 || opcion > maxOpcion) {
+                    System.out.println("Error: Opción fuera de rango.");
+                    opcion = 0; // Marca como inválido para repetir
+                }
+            
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar solo números.");
+                opcion = 0; // Marca como inválido
+            
+            } finally {
+                sc.nextLine(); // Limpia el buffer
+            }
+        
+        } while (opcion == 0);
+        
+        // 4. Devuelve el valor del enum (opcion-1 para el índice)
+        return TipoActividadAcademica.values()[opcion - 1];
+    }
+    public TipoActividadPersonal pedirTipoActividadPersonal() {
+        System.out.println("Ha seleccionado: PERSONAL.");
+        System.out.println("Seleccione el tipo específico:");
+
+        // 1. Imprime las opciones del enum dinámicamente
+        int i = 1;
+        for (TipoActividadPersonal tipo : TipoActividadPersonal.values()) {
+            System.out.println(i + ". " + tipo.toString());
+            i++;
+        }
+        
+        // 2. Prepara la validación
+        int maxOpcion = TipoActividadPersonal.values().length;
+        int opcion = 0;
+        
+        do {
+            System.out.print("Ingrese opción (1-" + maxOpcion + "): ");
+            try {
+                opcion = sc.nextInt();
+                
+                // 3. Valida el rango (1 hasta el número de opciones)
+                if (opcion < 1 || opcion > maxOpcion) {
+                    System.out.println("Error: Opción fuera de rango.");
+                    opcion = 0; // Marca como inválido para repetir
+                }
+            
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Debe ingresar solo números.");
+                opcion = 0; // Marca como inválido
+            
+            } finally {
+                sc.nextLine(); // Limpia el buffer
+            }
+        
+        } while (opcion == 0);
+        
+        // 4. Devuelve el valor del enum (opcion-1 para el índice)
+        return TipoActividadPersonal.values()[opcion - 1];
+    }
+    public int getMaxDiasEnMes(int mes, int anio) {
+    switch (mes) {
+        // Meses con 30 días
+        case 4:  // Abril
+        case 6:  // Junio
+        case 9:  // Septiembre
+        case 11: // Noviembre
+            return 30;
+
+        // Caso especial: Febrero
+        case 2:
+            // Esta es la regla del año bisiesto:
+            // Divisible por 4, pero no por 100, A MENOS que también sea divisible por 400.
+            if ((anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0)) {
+                return 29; // Es año bisiesto
+            } else {
+                return 28; // No es año bisiesto
+            }
+
+        // El resto de los meses (1, 3, 5, 7, 8, 10, 12)
+        default:
+            return 31;
+    }
+}
+
+    public String pedirfechaVencimiento() {
+        int anio = 0; 
+        do {
+            System.out.print("Ingrese el año: ");
+            try {
+                anio = sc.nextInt();
+                
+                if (verificarRango(anio, 2025, 2100) == false) {
+                    System.out.println("Error: El año debe estar entre (2025 - 2100)");
+                    anio = 0;
+                }
+            
+            } catch (InputMismatchException e) {System.out.println("Error: Debe ingresar solo números.");
+                anio = 0; 
+            } finally {
+
+                sc.nextLine(); 
+            }
+        
+        } while (anio == 0);
+
+        int mes = 0; 
+        do {
+            System.out.print("Ingrese el mes: ");
+            try {
+                mes = sc.nextInt();
+                
+                if (verificarRango(mes, 1, 12) == false) {
+                    System.out.println("Error: El mes debe estar entre (1 - 12)");
+                    mes = 0;
+                }
+            
+            } catch (InputMismatchException e) {System.out.println("Error: Debe ingresar solo números.");
+                mes = 0; 
+            } finally {
+
+                sc.nextLine(); 
+            }
+        
+        } while (mes == 0);
+
+        int dia = 0; 
+        do {
+            System.out.print("Ingrese el dia: ");
+            try {
+                dia = sc.nextInt();
+                
+                if (verificarRango(dia, 1, getMaxDiasEnMes(mes, anio)) == false) {
+                    System.out.println("Error: Dia no válido");
+                    dia = 0;
+                }
+            
+            } catch (InputMismatchException e) {System.out.println("Error: Debe ingresar solo números.");
+                dia = 0; 
+            } finally {
+
+                sc.nextLine(); 
+            }
+        
+        } while (dia == 0);
+        
+        return String.valueOf(dia)+"/"+String.valueOf(mes)+"/"+String.valueOf(anio);
+    }
 }

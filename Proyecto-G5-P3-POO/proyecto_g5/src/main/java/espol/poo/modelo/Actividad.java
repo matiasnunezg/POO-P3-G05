@@ -7,7 +7,7 @@ public class Actividad {
     private TipoActividad tipoActividad;
     private String fechaVencimiento;
     private int avance; 
-    private String id;
+    private int id;
     private int tiempoEstimado;
     private String fechaActual;
     private String descripcion;
@@ -29,13 +29,13 @@ public class Actividad {
     public TipoPrioridad getPrioridad() {
         return prioridad;
     }
-    public String getfechaVencimiento() {
+    public String getFechaVencimiento() {
         return fechaVencimiento;
     }
     public int getAvance() {
         return avance;
     }
-    public String getId() {
+    public int getId() {
         return id;
     }
     public int getTiempoEstimado() {
@@ -47,14 +47,14 @@ public class Actividad {
     public String getDescripcion(){
         return descripcion;
     }
-    public void set(int avance){
+    public void setAvance(int avance){
         this.avance = avance;
     }
     public TipoActividad getTipoActividad(){
         return tipoActividad;
     }
 
-    public boolean estaVencida(String fechaVencimiento, String fechaActual){
+    public boolean estaVencida(){
         if (fechaVencimiento == fechaActual){
             return true;
         }
@@ -63,7 +63,7 @@ public class Actividad {
         }
     }
     public Actividad(String nombre, TipoPrioridad prioridad, String fechaVencimiento, 
-    int avance, String id, int tiempoEstimado, String fechaActual) {
+    int avance, int id, int tiempoEstimado, String fechaActual, String descripcion) {
         this.nombre = nombre;
         this.prioridad = prioridad;
         this.fechaVencimiento = fechaVencimiento;
@@ -71,6 +71,7 @@ public class Actividad {
         this.id = id;
         this.tiempoEstimado = tiempoEstimado;
         this.fechaActual = fechaActual;
+        this.descripcion = descripcion;
     }
     public Actividad(){
     }

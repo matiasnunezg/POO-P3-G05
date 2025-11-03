@@ -15,15 +15,10 @@ public class ActividadPersonal extends Actividad{
         return lugar;
     }
     public ActividadPersonal(String nombre, TipoPrioridad prioridad, String fechaVencimiento, 
-    int avance, String id, int tiempoEstimado, String fechaActual, String lugar, TipoActividadPersonal actividadPersonal){
-    super(nombre, prioridad, fechaVencimiento, avance, id, tiempoEstimado, fechaActual);
+    int avance, int id, int tiempoEstimado, String fechaActual, String lugar, TipoActividadPersonal actividadPersonal, String descripcion){
+    super(nombre, prioridad, fechaVencimiento, avance, id, tiempoEstimado, fechaActual, descripcion);
         this.lugar = lugar;
+        this.actividadPersonal = actividadPersonal;
     }
-    public ActividadPersonal(String nombre, TipoPrioridad prioridad, String fechaVencimiento, String lugar){
-    super(nombre, prioridad, fechaVencimiento);
-        this.lugar = lugar;
-    }
-    public ActividadPersonal(){
-    super();
-    }
+
 }
