@@ -1,10 +1,10 @@
 package espol.poo;
-
-import espol.poo.controlador.ControladorActividades;
+import espol.poo.controlador.ControladorPrincipal;
 
 public class Main {
     public static void main(String[] args) {
-        ControladorActividades controladorActividades = new ControladorActividades();
-        controladorActividades.gestionarActividades();
+        ControladorPrincipal controlador = new ControladorPrincipal();
+        controlador.inicializarApp();
+        controlador.iniciarMenuPrincipal();
     }
 }
