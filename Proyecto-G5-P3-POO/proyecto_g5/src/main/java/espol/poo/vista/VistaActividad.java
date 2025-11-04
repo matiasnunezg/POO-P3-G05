@@ -1,14 +1,121 @@
 package espol.poo.vista;
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 
+import espol.poo.modelo.Actividad;
 import espol.poo.modelo.Actividad.TipoPrioridad;
+import espol.poo.modelo.ActividadAcademica;
 import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
+import espol.poo.modelo.ActividadPersonal;
 import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
 public class VistaActividad {
 
     Scanner sc = new Scanner(System.in);
-    public boolean verificarRango(int valoringresado,int valorminimo, int valormaximo){
+    public void mostrarListaActividades(ArrayList<Actividad> lista) {
+    
+    // 1. Encabezado
+    System.out.println("\n--- LISTADO DE ACTIVIDADES PENDIENTES ---");
+    
+    // 2. Títulos de las Columnas (Usando printf para alinear)
+    // %-3s:  ID, 3 caracteres, alineado a la izquierda
+    // %-10s: TIPO, 10 caracteres, alineado a la izquierda
+    // %-40s: NOMBRE, 40 caracteres, alineado a la izquierda
+    // %-12s: VENCIMIENTO, 12 caracteres, alineado a la izquierda
+    // %-10s: PRIORIDAD, 10 caracteres, alineado a la izquierda
+    // %-8s:  AVANCE, 8 caracteres, alineado a la izquierda
+    System.out.printf("%-3s | %-10s | %-40s | %-12s | %-10s | %-8s%n",
+            "ID", "TIPO", "NOMBRE", "VENCIMIENTO", "PRIORIDAD", "AVANCE");
+    
+    // 3. Línea Separadora (coincidiendo con los anchos)
+    System.out.println("----|------------|------------------------------------------|--------------|------------|-------------");
+
+    // 4. Manejo de Lista Vacía
+    if (lista.isEmpty()) {
+        System.out.println("No hay actividades para mostrar en este filtro.");
+    } 
+    
+    // 5. Bucle para imprimir cada fila
+    else {
+        for (Actividad a : lista) {
+            String tipo = "N/A"; // Valor por defecto
+            
+            // Determina el tipo de actividad
+            if (a instanceof ActividadAcademica) {
+                // Obtiene el enum (TAREA, EXAMEN, etc.) y lo convierte a String
+                tipo = ((ActividadAcademica) a).getActividadAcademica().toString();
+            } else if (a instanceof ActividadPersonal) {
+                // Obtiene el enum (CITA, EJERCICIO, etc.) y lo convierte a String
+                tipo = ((ActividadPersonal) a).getActividadPersonal().toString();
+            }
+            
+            // Imprime la fila con el mismo formato que el encabezado
+            System.out.printf("%-3s | %-10s | %-40s | %-12s | %-10s | %-8s%n",
+                    a.getId(),                 // ID (se convierte a String)
+                    tipo,                      // TIPO
+                    a.getNombre(),             // NOMBRE
+                    a.getFechaVencimiento(),   // VENCIMIENTO
+                    a.getPrioridad(),          // PRIORIDAD (se convierte a String)
+                    a.getAvance() + "%");      // AVANCE (añadimos el '%')
+        }
+    }
+    
+    // 6. Línea Separadora Final
+    System.out.println("------------------------------------------------------------------------------------------------------");
+}
+public void mostrarDetalle(Actividad actividadmostrada) {
+    System.out.println("==============================================================");
+    System.out.println("==============================================================");
+    
+    if (actividadmostrada instanceof ActividadAcademica){
+        ActividadAcademica academica = (ActividadAcademica) actividadmostrada;
+        System.out.println("Detalles de "+academica.getActividadAcademica().toString());
+        System.out.println("==============================================================");
+        System.out.println("==============================================================");
+        System.out.println("Nombre: "+actividadmostrada.getNombre());
+        System.out.println("Tipo: "+academica.getActividadAcademica().toString());
+        System.out.println("Asignatura: "+academica.getAsignatura());
+        System.out.println("Prioridad: "+actividadmostrada.getPrioridad());
+        if (actividadmostrada.getAvance() == 100){
+            System.out.println("Estado: Terminada");
+        } else {
+            System.out.println("Estado: En curso");
+        }
+        System.out.println("Fecha Limite: "+actividadmostrada.getFechaVencimiento());
+        
+        // --- CORRECCIÓN DE COPIAR/PEGAR ---
+        System.out.println("Tiempo Estimado Total: "+actividadmostrada.getTiempoEstimado() + " min.");
+        
+        System.out.println("Avance Actual: "+actividadmostrada.getAvance() + "%");
+    } 
+    else { // No es necesario 'if (actividadmostrada instanceof ActividadPersonal)'
+        ActividadPersonal personal = (ActividadPersonal) actividadmostrada;
+        System.out.println("Detalles de "+personal.getActividadPersonal());
+        System.out.println("==============================================================");
+        System.out.println("==============================================================");
+        System.out.println("Nombre: "+actividadmostrada.getNombre());
+        System.out.println("Tipo: "+personal.getActividadPersonal().toString());
+        System.out.println("Lugar: "+personal.getLugar());
+        System.out.println("Prioridad: "+actividadmostrada.getPrioridad());
+        if (actividadmostrada.getAvance() == 100){
+            System.out.println("Estado: Terminada");
+        } else {
+            System.out.println("Estado: En curso");
+        }
+        System.out.println("Fecha Limite: "+actividadmostrada.getFechaVencimiento());
+        
+        // --- CORRECCIÓN DE COPIAR/PEGAR ---
+        System.out.println("Tiempo Estimado Total: "+actividadmostrada.getTiempoEstimado() + " min.");
+        
+        System.out.println("Avance Actual: "+actividadmostrada.getAvance() + "%");
+    }
+    
+    // --- ¡¡SOLUCIÓN AL BUCLE INFINITO!! ---
+    // Llama a tu método que espera a que el usuario presione [ENTER]
+    mostrarMensaje("Presione [ENTER] para volver a la lista...");
+}
+
+public boolean verificarRango(int valoringresado,int valorminimo, int valormaximo){
         if ((valorminimo <= valoringresado) && (valormaximo >= valoringresado)){
             return true;
         }
@@ -114,6 +221,34 @@ public class VistaActividad {
         
         return id;
     }
+public int pedirNumeroRango(String mensaje, int min, int max) {
+    int numero = 0;
+    do {
+        System.out.print(mensaje + " ");
+        try {
+            numero = sc.nextInt();
+            if (numero < min || numero > max) {
+                System.out.println("Error: El valor debe estar entre " + min + " y " + max + ".");
+                numero = min - 1;
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Debe ingresar solo números.");
+            numero = min - 1;
+        } finally {
+            sc.nextLine();
+        }
+    } while (numero < min || numero > max);
+    return numero;
+}
+    public int pedirFiltroActividades() {
+    System.out.println("\n--- Visualizar Actividades ---");
+    System.out.println("¿Qué actividades desea ver?");
+    System.out.println("1. Todas");
+    System.out.println("2. Solo Académicas");
+    System.out.println("3. Solo Personales");
+    int opcion = pedirNumeroRango("Ingrese la opción: ",1,3);
+    return opcion;
+}
     public int pediravance() {
         int avance = 0; 
         do {
@@ -387,6 +522,6 @@ public class VistaActividad {
         
         } while (dia == 0);
         
-        return String.valueOf(dia)+"/"+String.valueOf(mes)+"/"+String.valueOf(anio);
+        return String.format("%02d/%02d/%d", dia, mes, anio);
     }
 }

@@ -50,11 +50,11 @@ public class ControladorActividades{
         
 
 public void eliminarActividad() {
-    System.out.println("--- 4. Eliminar Actividad ---");
+    vista.mostrarMensaje("--- 4. Eliminar Actividad ---");
     visualizarActividades();
     int id = vista.pedirIdActividad(listaDeActividades.size());
     if (id == 0) {
-        System.out.println("Cancelando...");
+        vista.mostrarMensaje("Cancelando...");
         return; 
     }
     int indice = id - 1; 
@@ -74,117 +74,102 @@ public void eliminarActividad() {
         vista.mostrarMensaje("Eliminación cancelada.");
     }
 }
-    public void visualizarActividades() {
-    System.out.println("-- LISTADO DE ACTIVIDADES PENDIENTES --");
-    System.out.printf("%-3s | %-10s | %-40s | %-12s | %-10s | %-8s%n",
-            "ID", "TIPO", "NOMBRE", "VENCIMIENTO", "PRIORIDAD", "AVANCE");
+public void visualizarActividades() {
     
-    // Ajusté esta línea para que coincida con el formato (40 guiones para NOMBRE)
-    System.out.println("----|------------|----------------------------------------|--------------|------------|----------");
-
-    // Inicia el bucle
-    for (Actividad a : listaDeActividades) {
-        
-        if (a instanceof ActividadAcademica) {
-            ActividadAcademica academica = (ActividadAcademica) a;
-            String tipoAcademico = academica.getActividadAcademica().toString();
-            System.out.printf("%-3s | %-10s | %-40s | %-12s | %-10s | %-8s%n",
-                    String.valueOf(a.getId()), tipoAcademico, a.getNombre(), a.getFechaVencimiento(), a.getPrioridad(), a.getAvance());
-        } 
-        // Es mejor usar 'else if' por si en el futuro añades más tipos
-        else if (a instanceof ActividadPersonal) { 
-            ActividadPersonal personal = (ActividadPersonal) a;
-            String tipoPersonal = personal.getActividadPersonal().toString();
-            System.out.printf("%-3s | %-10s | %-40s | %-12s | %-10s | %-8s%n",
-                    String.valueOf(a.getId()), tipoPersonal, a.getNombre(), a.getFechaVencimiento(), a.getPrioridad(), a.getAvance());
-        }
-        // La línea de guiones y la llave extra se eliminaron de aquí
-        
-    } // <-- Esta llave CIERRA el 'for' loop
+    // 1. LÓGICA: Pedir a la Vista el tipo de filtro
+    int filtro = vista.pedirFiltroActividades();
     
-    // La línea final va AQUÍ, *después* de que termine el bucle
-    System.out.println("------------------------------------------------------------------------------------------------------");
+    // 2. LÓGICA: Preparar la lista que se va a mostrar
+    ArrayList<Actividad> listaFiltrada = new ArrayList<>();
     
-} // <-- Esta llave CIERRA el método 'visualizarActividades'
-    public void detalleActividad(){
-    int id = vista.pedirIdActividad(listaDeActividades.size());
-    System.out.println("==============================================================");
-    System.out.println("==============================================================");
-    Actividad actividadmostrada = listaDeActividades.get(id -1);
-    if (actividadmostrada instanceof ActividadAcademica){
-        ActividadAcademica academica = (ActividadAcademica) actividadmostrada;
-        System.out.println("Detalles de "+academica.getActividadAcademica().toString());
-        System.out.println("==============================================================");
-        System.out.println("==============================================================");
-        System.out.println("Nombre: "+actividadmostrada.getNombre());
-        System.out.println("Tipo: "+academica.getActividadAcademica().toString());
-        System.out.println("Asignatura: "+academica.getAsignatura());
-        System.out.println("Prioridad: "+actividadmostrada.getPrioridad());
-        if (actividadmostrada.getAvance() == 100){
-            System.out.println("Estado: Terminada");
-        }
-        else{
-            System.out.println("Estado: En curso");
-        }
-        System.out.println("Fecha Limite: "+actividadmostrada.getFechaVencimiento());
-        System.out.println("Tiempo Estimado Total: "+actividadmostrada.getFechaVencimiento());
-        System.out.println("Avance Actual: "+actividadmostrada.getAvance());}
-    else{
-        ActividadPersonal personal = (ActividadPersonal) actividadmostrada;
-        System.out.println("Detalles de "+personal.getActividadPersonal());
-        System.out.println("==============================================================");
-        System.out.println("==============================================================");
-        System.out.println("Nombre: "+actividadmostrada.getNombre());
-        System.out.println("Tipo: "+personal.getActividadPersonal().toString());
-        System.out.println("Lugar: "+personal.getLugar());
-        System.out.println("Prioridad: "+actividadmostrada.getPrioridad());
-        if (actividadmostrada.getAvance() == 100){
-            System.out.println("Estado: Terminada");
-        }
-        else{
-            System.out.println("Estado: En curso");
-        }
-        System.out.println("Fecha Limite: "+actividadmostrada.getFechaVencimiento());
-        System.out.println("Tiempo Estimado Total: "+actividadmostrada.getFechaVencimiento());
-        System.out.println("Avance Actual: "+actividadmostrada.getAvance());}
+    switch (filtro) {
+        case 1: // Todas
+            listaFiltrada = new ArrayList<>(this.listaDeActividades);
+            break;
+        case 2: // Solo Académicas
+            for (Actividad a : this.listaDeActividades) {
+                if (a instanceof ActividadAcademica) {
+                    listaFiltrada.add(a);
+                }
+            }
+            break;
+        case 3: // Solo Personales
+            for (Actividad a : this.listaDeActividades) {
+                if (a instanceof ActividadPersonal) {
+                    listaFiltrada.add(a);
+                }
+            }
+            break;
     }
+
+    // 3. ORDENAR A LA VISTA: Imprime la tabla de la lista filtrada
+    vista.mostrarListaActividades(listaFiltrada);
+
+    // 4. PREGUNTAR AL USUARIO: "¿Desea ver detalles?"
+    // (Llamamos a un método de la Vista que pregunta S/N)
+    boolean verDetalles = vista.pedirConfirmacion("¿Desea ver detalles de una actividad?");
+
+    // 5. LÓGICA: Si el usuario dijo SÍ...
+    if (verDetalles) {
+        // 6. ORDENAR A LA VISTA: Pide el ID para detalles o '0' para volver
+        int id = vista.pedirIdActividad(listaFiltrada.size());
+        
+        if (id != 0) {
+            // 7. LÓGICA: Buscar la actividad seleccionada
+            Actividad actividadADetallar = buscarActividadPorId(id, listaFiltrada);
+            
+            // 8. ORDENAR A LA VISTA: Mostrar detalles o un error
+            if (actividadADetallar != null) {
+                vista.mostrarDetalle(actividadADetallar);
+            } else {
+                vista.mostrarError();
+            }
+        }
+        // Si el id es 0, no hace nada y simplemente termina.
+    }
+    
+    // 9. El método termina y vuelve al menú 'gestionarActividades'.
+}
+
+private Actividad buscarActividadPorId(int id, ArrayList<Actividad> lista) {
+    for (Actividad a : lista) {
+        if (a.getId() == id) {
+            return a;
+        }
+    }
+    return null;
+}
     public void registrarAvance() {
-    System.out.println("--- 3. Registrar Avance ---");
+    vista.mostrarMensaje("--- 3. Registrar Avance ---");
     visualizarActividades();
     int id = vista.pedirIdActividad(listaDeActividades.size()); // Asumo que se llama así
     if (id == 0) {
-        System.out.println("Cancelando...");
+        vista.mostrarMensaje("Cancelando...");
         return; 
     }
 
     int avance = 0;
     int validacion = 0;
     while (validacion == 0){
-        int valoringresado = vista.pedirNumeroPositivo("Ingreso el nuevo porcentaje de avance");
+        int valoringresado = vista.pedirNumeroPositivo("Ingrese el nuevo porcentaje de avance");
         if (vista.verificarRango(valoringresado, 0, 100) == false){
-            System.out.println("Número no admisible");}
+            vista.mostrarError();}
         else{
             avance = valoringresado;
             validacion++;
         }
     }
-    // 4. Obtén el objeto (Recuerda restar 1 al ID)
     Actividad actividad = listaDeActividades.get(id - 1);
 
-    // 5. ¡LA SINTAXIS CORRECTA!
-    actividad.setAvance(avance); // Se llama 'setAvance', no 'set'
+    actividad.setAvance(avance); 
     
-    System.out.println("Avance de '" + actividad.getNombre() + "' actualizado a " + avance + "%.");
-    // (Opcional: llamar a vista.mostrarMensaje("Avance actualizado..."))
+    vista.mostrarMensaje("Avance de '" + actividad.getNombre() + "' actualizado a " + avance + "%.");
 }
     public void gestionarActividades() {
-    // Saca la declaración de 'opcion' fuera del bucle
     int opcion; 
     boolean volver = false;
 
     while (!volver) {
-        
-        // Mueve la llamada a la vista AQUÍ, DENTRO del bucle
         opcion = vista.pedirOpcionGestion(); 
 
         switch (opcion) {
@@ -202,12 +187,10 @@ public void eliminarActividad() {
                 break;
             case 5:
                 volver = true;
-                System.out.println("Volviendo al menú principal...");
+                vista.mostrarMensaje("Volviendo al menú principal...");
                 break;
             default:
-                // Asumo que tienes un método así en tu vista
-                // vista.mostrarError("Opción no válida. Intente de nuevo."); 
-                System.out.println("Opción no válida. Intente de nuevo.");
+                vista.mostrarError();
         }
     }
 }
