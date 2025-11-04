@@ -175,8 +175,8 @@ public boolean verificarRango(int valoringresado,int valorminimo, int valormaxim
             try {
                 opcion = sc.nextInt();
                 
-                if (verificarRango(opcion, 1, 5) == false){
-                    System.out.println("Error: La opción debe ser un número entre 1 y 5.");
+                if (verificarRango(opcion, 1, 2) == false){
+                    System.out.println("Error: La opción debe ser un número entre 1 y 2.");
                     opcion = 0;
                 }
             
