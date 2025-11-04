@@ -4,7 +4,6 @@ import espol.poo.modelo.*;
 import espol.poo.modelo.Actividad.TipoPrioridad;
 import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
 import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
-
 import java.util.*;
 
 
@@ -46,7 +45,7 @@ public class ControladorPrincipal {
             45,                            // tiempoEstimado (min)
             "30/11/2025",                  // fechaActual (puedes ajustar)
             "Clínica Central",             // lugar
-            ActividadPersonal.TipoActividadPersonal.Citas, // actividadPersonal
+            TipoActividadPersonal.Citas, // actividadPersonal
             "Revisión general con el doctor" // descripcion
     );
         actividades.add(citaMedica);
@@ -60,7 +59,7 @@ public class ControladorPrincipal {
             60,                                     // tiempoEstimado (horas o min según tu modelo)
             "25/11/2025",                           // fechaActual
             "Programación Orientada a Objetos",     // asignatura
-            ActividadAcademica.TipoActividadAcademica.Proyecto, // actividadAcademica
+            TipoActividadAcademica.Proyecto, // actividadAcademica
             "Implementación de la lógica de POO en Java" // descrpcion
     );
         actividades.add(proyecto);
@@ -74,7 +73,7 @@ public class ControladorPrincipal {
             120,                              // tiempoEstimado
             "03/12/2025",                     // fechaActual
             "Matemática Discreta",            // asignatura
-            ActividadAcademica.TipoActividadAcademica.Tarea, // actividadAcademica
+            TipoActividadAcademica.Tarea, // actividadAcademica
             "Entrega en Aula Virtual"         // descrpcion
     );
         actividades.add(tarea);
@@ -88,7 +87,7 @@ public class ControladorPrincipal {
             120,                              // tiempoEstimado
             "10/12/2025",                     // fechaActual
             "Cálculo Avanzado",               // asignatura
-            ActividadAcademica.TipoActividadAcademica.Examen, // actividadAcademica
+            TipoActividadAcademica.Examen, // actividadAcademica
             "Evaluación parcial de la materia" // descrpcion
     );
         actividades.add(examen);
