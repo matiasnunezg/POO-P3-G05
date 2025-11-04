@@ -1,7 +1,5 @@
 package espol.poo.controlador;
 import java.util.ArrayList;
-import java.util.List;
-
 import espol.poo.modelo.Actividad;
 import espol.poo.modelo.ActividadAcademica;
 import espol.poo.modelo.ActividadPersonal;
@@ -13,29 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class ControladorActividades{
-    private VistaActividad vista = new VistaActividad();
-    private List<Actividad> listaActividades;    
-
-    public ControladorActividades(List<Actividad> actividades) {
-        this.listaActividades = actividades;
-    }
-
-    public void mostrarMenu() {
-        int opcion;
-        do {
-            opcion = vista.pedirOpcionGestion();
-            switch (opcion) {
-                case 1 -> vista.mostrarListaActividades(new java.util.ArrayList<>(listaActividades));
-                case 2 -> System.out.println("Crear actividad aún no implementado."); 
-                case 3 -> System.out.println("Registrar avance aún no implementado."); 
-                case 4 -> System.out.println("Eliminar actividad aún no implementado.");
-                case 5 -> System.out.println("Regresando al menú principal...");
-                default -> vista.mostrarError();
-            }
-        } while (opcion != 5);
-    }
-
-
+    VistaActividad vista= new VistaActividad();
     private ArrayList<Actividad> listaDeActividades = new ArrayList<>();
     private ArrayList<ActividadAcademica> listaDeActividadesAcademicas = new ArrayList<>();
     private ArrayList<ActividadPersonal> listaDeActividadesPersonales = new ArrayList<>();
@@ -44,6 +20,14 @@ public class ControladorActividades{
         LocalDate fechaActual = LocalDate.now();
         return fechaActual.format(formatter);
     }
+
+    public ControladorActividades(ArrayList<Actividad> lActividades, ArrayList<ActividadAcademica>lActividadesAcademicas,ArrayList<ActividadPersonal> lActividadesPersonales){
+        this.listaDeActividades = lActividades;
+        this.listaDeActividadesAcademicas = lActividadesAcademicas;
+        this.listaDeActividadesPersonales = lActividadesPersonales;
+
+    }
+    
     public void crearActividad(){
         int opcion = vista.pedirtipoactividad();
         if (opcion == 1){

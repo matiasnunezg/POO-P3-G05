@@ -11,7 +11,10 @@ public class ControladorPrincipal {
     private VistaPrincipal vistaPrincipal;
 
     // Repositorios globales
-    private List<Actividad> actividades;
+    private ArrayList<Actividad> listaDeActividades = new ArrayList<>();
+    private ArrayList<ActividadAcademica> listaDeActividadesAcademicas = new ArrayList<>();
+    private ArrayList<ActividadPersonal> listaDeActividadesPersonales = new ArrayList<>();
+    
     //private List<RegistroHidratacion> registrosHidratacion;
     //private List<RegistrarHorasDeSueno> registrosSueno; //Falta implementar
     //private List<RegistroDiarioSostenible> registrosSostenibilidad; //Falta implementar
@@ -26,7 +29,8 @@ public class ControladorPrincipal {
 
     public ControladorPrincipal() {
         this.vistaPrincipal = new VistaPrincipal();
-        this.actividades = new ArrayList<>();
+        // Comentado por ahora 
+        //this.actividades = new ArrayList<>(); 
         //this.registrosHidratacion = new ArrayList<>();
         //this.registrosSueno = new ArrayList<>();
         //this.registrosSostenibilidad = new ArrayList<>();
@@ -48,13 +52,14 @@ public class ControladorPrincipal {
             TipoActividadPersonal.Citas, // actividadPersonal
             "Revisión general con el doctor" // descripcion
     );
-        actividades.add(citaMedica);
+        listaDeActividades.add(citaMedica);
+        listaDeActividadesPersonales.add(citaMedica);
 
     ActividadAcademica proyecto = new ActividadAcademica(
             "Sistema Gestión Tiempo (Fase 1)",      // nombre
             TipoPrioridad.Alta,                     // prioridad
             "25/11/2025 23:59",                     // fechaVencimiento
-            10,                                     // avance (%)
+            0,                                     // avance (%)
             2,                                      // id
             60,                                     // tiempoEstimado (horas o min según tu modelo)
             "25/11/2025",                           // fechaActual
@@ -62,7 +67,8 @@ public class ControladorPrincipal {
             TipoActividadAcademica.Proyecto, // actividadAcademica
             "Implementación de la lógica de POO en Java" // descrpcion
     );
-        actividades.add(proyecto);
+        listaDeActividades.add(proyecto);
+        listaDeActividadesAcademicas.add(proyecto);
 
     ActividadAcademica tarea = new ActividadAcademica(
             "Cuestionario Unidad 2",          // nombre
@@ -76,13 +82,14 @@ public class ControladorPrincipal {
             TipoActividadAcademica.Tarea, // actividadAcademica
             "Entrega en Aula Virtual"         // descrpcion
     );
-        actividades.add(tarea);
+        listaDeActividades.add(tarea);
+        listaDeActividadesAcademicas.add(tarea);
 
     ActividadAcademica examen = new ActividadAcademica(
             "Examen Parcial",                 // nombre
             TipoPrioridad.Alta,               // prioridad
             "10/12/2025 09:00",               // fechaVencimiento
-            25,                               // avance
+            0,                               // avance
             4,                                // id
             120,                              // tiempoEstimado
             "10/12/2025",                     // fechaActual
@@ -90,7 +97,9 @@ public class ControladorPrincipal {
             TipoActividadAcademica.Examen, // actividadAcademica
             "Evaluación parcial de la materia" // descrpcion
     );
-        actividades.add(examen);
+        listaDeActividades.add(examen);
+        listaDeActividadesAcademicas.add(examen);
+
     // Registros simulados (si tus clases de registro usan otros parámetros, avísame)
     //registrosHidratacion.add(new RegistroHidratacion("23/11/2025", "09:30", 500));
     //registrosHidratacion.add(new RegistroHidratacion("24/11/2025", "11:00", 300));
@@ -102,12 +111,12 @@ public class ControladorPrincipal {
     //registrosSostenibilidad.add(new RegistroDiarioSostenible("24/11/2025", false, true, true, true));
 
     System.out.println("Datos iniciales cargados correctamente.\n");
-        System.out.println("Datos iniciales cargados correctamente.\n");
     }
 
     // Menú principal
     public void iniciarMenuPrincipal() {
         int opcion;
+        inicializarApp();
         do {
             vistaPrincipal.mostrarMenu();
             opcion = vistaPrincipal.leerOpcion();
@@ -130,9 +139,9 @@ public class ControladorPrincipal {
     // ==========================
     private void abrirGestionActividades() {
         if (controladorActividad == null) {
-            controladorActividad = new ControladorActividades(actividades);
+            controladorActividad = new ControladorActividades(listaDeActividades,listaDeActividadesAcademicas,listaDeActividadesPersonales);
         }
-        controladorActividad.mostrarMenu();
+        controladorActividad.gestionarActividades();
     }
 
     /*

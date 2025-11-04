@@ -4,7 +4,6 @@ import espol.poo.controlador.ControladorPrincipal;
 public class Main {
     public static void main(String[] args) {
         ControladorPrincipal controlador = new ControladorPrincipal();
-        controlador.inicializarApp();
         controlador.iniciarMenuPrincipal();
     }
 }

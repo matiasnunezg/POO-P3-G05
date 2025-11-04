@@ -6,9 +6,9 @@ public class VistaPrincipal {
     private Scanner scanner = new Scanner(System.in);
 
     public void mostrarMenu() {
-        System.out.println("==================================");
+        System.out.println("====================================");
         System.out.println("  SISTEMA DE BIENESTAR ESTUDIANTIL");
-        System.out.println("==================================");
+        System.out.println("====================================");
         System.out.println("1. Gestión de Actividades");
         System.out.println("2. Técnicas de Enfoque");
         System.out.println("3. Control de Hidratación");

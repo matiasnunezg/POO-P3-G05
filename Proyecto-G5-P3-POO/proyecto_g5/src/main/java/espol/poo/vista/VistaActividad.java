@@ -24,11 +24,11 @@ public class VistaActividad {
     // %-12s: VENCIMIENTO, 12 caracteres, alineado a la izquierda
     // %-10s: PRIORIDAD, 10 caracteres, alineado a la izquierda
     // %-8s:  AVANCE, 8 caracteres, alineado a la izquierda
-    System.out.printf("%-3s | %-10s | %-40s | %-12s | %-10s | %-8s%n",
+    System.out.printf("%-3s | %-10s | %-40s | %-16s | %-10s | %-8s%n",
             "ID", "TIPO", "NOMBRE", "VENCIMIENTO", "PRIORIDAD", "AVANCE");
     
     // 3. Línea Separadora (coincidiendo con los anchos)
-    System.out.println("----|------------|------------------------------------------|--------------|------------|-------------");
+    System.out.println("----|------------|------------------------------------------|------------------|------------|-------------");
 
     // 4. Manejo de Lista Vacía
     if (lista.isEmpty()) {
