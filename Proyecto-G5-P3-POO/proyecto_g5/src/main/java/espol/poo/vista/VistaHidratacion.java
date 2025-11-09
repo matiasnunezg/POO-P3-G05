@@ -18,7 +18,7 @@ public class VistaHidratacion {
     // Método principal de inicio
     public void iniciarPrograma() {
         System.out.println("======================================");
-        System.out.println("   BIENVENIDO AL SISTEMA DE HIDRATACIÓN");
+        System.out.println("   BIENVENIDO AL SISTEMA DE HIDRATACION");
         System.out.println("======================================");
 
         // Crear usuario
@@ -48,7 +48,7 @@ public class VistaHidratacion {
     private void mostrarMenu() {
         int opcion;
         do {
-            System.out.println("\n========= MENÚ PRINCIPAL =========");
+            System.out.println("\n========= MENU PRINCIPAL =========");
             System.out.println("1. Registrar nueva ingesta de agua");
             System.out.println("2. Mostrar historial de hoy");
             System.out.println("3. Mostrar resumen diario");
