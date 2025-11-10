@@ -11,10 +11,10 @@ public class RegistrarHorasDeSuenio {
     private double metaRecomendada = 8.0;
     private LocalDate fechaRegistro;
 
-    public RegistrarHorasDeSuenio(LocalTime horaInicio, LocalTime horaFin, LocalDate fechaRegistro) {
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
-        this.fechaRegistro = fechaRegistro;
+    public RegistrarHorasDeSuenio(LocalTime inicio, LocalTime fin) {
+        this.horaInicio = inicio;
+        this.horaFin = fin;
+        this.fechaRegistro = LocalDate.now();
         calcularDuracion();
     }
 
