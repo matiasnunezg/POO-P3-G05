@@ -1,33 +1,96 @@
 package espol.poo.controlador;
 
-import java.util.Scanner;
+import espol.poo.vista.VistaEnfoque;
+import espol.poo.modelo.TecnicasEnfoque; 
+
 
 public class ControladorEnfoque {
-    private Scanner sc;
 
-    public ControladorEnfoque(Scanner sc) {
-        this.sc = sc;
+    private VistaEnfoque vista = new VistaEnfoque();
+    private TecnicasEnfoque modelo; 
+
+    public ControladorEnfoque(TecnicasEnfoque modelo) {
+        this.modelo = modelo;
     }
+    
+    public void gestionarTecnicas() {
+        int opcion; 
+        
+        while (true) {
+            
+            vista.mostrarMenuPrincipal(
+                modelo.getPomodoroTrabajoMinutos(), 
+                modelo.getPomodoroDescansoMinutos(), 
+                modelo.getDeepWorkMinutos()
+            );
+            
+            opcion = vista.obtenerOpcionMenu(); 
 
-
-    public int obtenerOpcionMenu() {
-        int opcion;
-        try {
-            opcion = Integer.parseInt(sc.nextLine());
-        } catch (NumberFormatException e) {
-            opcion = 0;
+            switch (opcion) {
+                case 1:
+                    iniciarPomodoro();
+                    break;
+                case 2:
+                    iniciarDeepWork();
+                    break;
+                case 3:
+                    vista.mostrarVolver();
+                    return; 
+                default:
+                    vista.mostrarOpcionInvalida();
+            }
         }
-        return opcion;
     }
 
+    private void iniciarPomodoro() {
+        vista.mostrarInicioPomodoro();
+        vista.mostrarSeleccionActividad(); 
+        String input = vista.obtenerActividad(); 
+        if (input.equals("0")) return;
+        
+        int ciclosCompletados = 0;
+       
+        int totalCiclos = modelo.getPomodoroCiclosTotal(); 
+        int trabajoMinutos = modelo.getPomodoroTrabajoMinutos(); 
+        int descansoMinutos = modelo.getPomodoroDescansoMinutos(); 
+        
 
-    public String obtenerActividad() {
-        return sc.nextLine();
+        for (int ciclo = 1; ciclo <= totalCiclos; ciclo++) {
+            vista.mostrarPomodoroCiclo(ciclo, totalCiclos, trabajoMinutos);
+            vista.esperarEnter();
+
+            vista.mostrarFinTrabajo();
+            ciclosCompletados = ciclo; 
+
+            if (ciclo < totalCiclos) {
+                vista.mostrarDescanso(descansoMinutos);
+                vista.esperarEnter();
+                vista.mostrarFinDescanso();
+                vista.esperarEnter();
+            }
+        }
+        
+      
+        int avanceGanado = modelo.calcularAvancePomodoro(ciclosCompletados);
+        vista.mostrarPomodoroFinal(avanceGanado);
     }
 
+    private void iniciarDeepWork() {
+        vista.mostrarInicioDeepWork();
+        vista.mostrarSeleccionActividad();
+        String input = vista.obtenerActividad();
+        if (input.equals("0")) return;
+        
+     
+        int deepWorkMinutos = modelo.getDeepWorkMinutos(); 
 
-    public void esperarEnter() {
-        sc.nextLine();
+        vista.mostrarDeepWorkSesion(deepWorkMinutos);
+        vista.esperarEnter(); 
+        
+        vista.mostrarFinTrabajo();
+        
+       
+        int avanceGanado = modelo.calcularAvanceDeepWork();
+        vista.mostrarDeepWorkFinal(avanceGanado);
     }
-
 }
