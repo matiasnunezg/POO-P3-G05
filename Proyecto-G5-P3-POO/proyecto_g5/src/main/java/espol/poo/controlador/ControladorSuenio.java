@@ -70,4 +70,10 @@ public class ControladorSuenio {
         vista.mostrarMensaje("Horas totales: " + String.format("%.1f h", total));
         vista.mostrarMensaje("Promedio diario: " + String.format("%.1f h", promedio));
     }
+
+    public void registrarManual(espol.poo.modelo.RegistrarHorasDeSuenio registro) {
+    if (registro != null) {
+        registros.add(registro);
+    }
+}
 }
