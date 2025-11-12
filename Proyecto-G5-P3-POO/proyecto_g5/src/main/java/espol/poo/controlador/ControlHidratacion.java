@@ -27,7 +27,7 @@ public class ControlHidratacion {
 
     // Alternativa: constructor que solo recibe la vista (meta por defecto)
     public ControlHidratacion(VistaHidratacion vista) {
-        this(vista, 2000.0); // meta por defecto 2000 ml
+        this(vista, 2500.0); // meta por defecto 2500 ml
     }
 
     // Método principal que gestiona el menú y el flujo
