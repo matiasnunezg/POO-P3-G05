@@ -18,10 +18,20 @@ public class ControladorPrincipal {
     private ArrayList<ActividadPersonal> listaDeActividadesPersonales = new ArrayList<>();
     private ArrayList<RegistroHidratacion> registrosHidratacion = new ArrayList<>();
 
+    
+    //private List<RegistroHidratacion> registrosHidratacion;
+    //private List<RegistrarHorasDeSueno> registrosSueno; //Falta implementar
+    //private List<RegistroDiarioSostenible> registrosSostenibilidad; //Falta implementar
 
     // Controladores secundarios
     private ControladorActividades controladorActividad;
     private ControlHidratacion controladorHidratacion;
+
+    // private ControladorHidratacion controladorHidratacion; 
+    // private ControladorSueno controladorSueno;
+    // private ControladorSostenibilidad controladorSostenibilidad; 
+    // private ControladorEnfoque controladorEnfoque; 
+    // private ControladorJuego controladorJuego; 
 
     public ControladorPrincipal() {
         this.vistaPrincipal = new VistaPrincipal();
@@ -96,25 +106,33 @@ public class ControladorPrincipal {
         listaDeActividades.add(examen);
         listaDeActividadesAcademicas.add(examen);
     
-    RegistroHidratacion reg1 = new RegistroHidratacion(
-        2000.0,       // meta diaria
-        500.0,        // cantidad ingerida
-        500.0,        // acumulado
-        java.time.LocalDate.of(2025, 11, 23),
-        java.time.LocalTime.of(9, 30)
+    RegistroHidratacion registro1 = new RegistroHidratacion(
+        2000.0,        // meta diaria (ml)
+        500.0,         // cantidad ingerida
+        500.0,         // acumulado diario
+        java.time.LocalDate.of(2025, 11, 23), // fecha
+        java.time.LocalTime.of(9, 30)         // hora
     );
 
-    RegistroHidratacion reg2 = new RegistroHidratacion(
-        2000.0,       // meta diaria
-        300.0,        // cantidad ingerida
-        800.0,        // acumulado
-        java.time.LocalDate.of(2025, 11, 24),
-        java.time.LocalTime.of(11, 15)
+    RegistroHidratacion registro2 = new RegistroHidratacion(
+        2000.0,        // meta diaria (ml)
+        300.0,         // cantidad ingerida
+        800.0,         // acumulado diario (suma con la anterior)
+        java.time.LocalDate.of(2025, 11, 24), // fecha
+        java.time.LocalTime.of(11, 0)         // hora
     );
 
-    registrosHidratacion.add(reg1);
-    registrosHidratacion.add(reg2);
+    registrosHidratacion.add(registro1);
+    registrosHidratacion.add(registro2);
+    // Registros simulados (si tus clases de registro usan otros parámetros, avísame)
+    //registrosHidratacion.add(new RegistroHidratacion("23/11/2025", "09:30", 500));
+    //registrosHidratacion.add(new RegistroHidratacion("24/11/2025", "11:00", 300));
 
+    //registrosSueno.add(new RegistrarHorasDeSueno("23/11/2025", "23:30", "07:00", 7.5));
+    //registrosSueno.add(new RegistrarHorasDeSueno("24/11/2025", "00:15", "08:00", 7.75));
+
+    //registrosSostenibilidad.add(new RegistroDiarioSostenible("23/11/2025", true, true, false, true));
+    //registrosSostenibilidad.add(new RegistroDiarioSostenible("24/11/2025", false, true, true, true));
 
     System.out.println("Datos iniciales cargados correctamente.\n");
     }
@@ -151,15 +169,47 @@ public class ControladorPrincipal {
     }
 
     private void abrirControlHidratacion() {
-    VistaHidratacion vistaHidratacion = new VistaHidratacion();
-    controladorHidratacion = new ControlHidratacion(vistaHidratacion);
-
-    // Cargar los registros inicializados en memoria
-    controladorHidratacion.getRegistros().addAll(registrosHidratacion);
-
-    controladorHidratacion.gestionarHidratacion();
+        VistaHidratacion vistaHidratacion = new VistaHidratacion();
+        controladorHidratacion = new ControlHidratacion(vistaHidratacion);
+        controladorHidratacion.getRegistros().addAll(registrosHidratacion);
+        controladorHidratacion.gestionarHidratacion();
 }
 
+    /*
+    private void abrirTecnicasEnfoque() {
+        if (controladorEnfoque == null) {
+            controladorEnfoque = new ControladorEnfoque(actividades);
+        }
+        controladorEnfoque.mostrarMenu();
+    }
 
+    private void abrirControlHidratacion() {
+        if (controladorHidratacion == null) {
+            controladorHidratacion = new ControladorHidratacion(registrosHidratacion);
+        }
+        controladorHidratacion.mostrarMenu();
+    }
+
+    private void abrirRegistroSueno() {
+        if (controladorSueno == null) {
+            controladorSueno = new ControladorSueno(registrosSueno);
+        }
+        controladorSueno.mostrarMenu();
+    }
+
+    private void abrirRegistroSostenibilidad() {
+        if (controladorSostenibilidad == null) {
+            controladorSostenibilidad = new ControladorSostenibilidad(registrosSostenibilidad);
+        }
+        controladorSostenibilidad.mostrarMenu();
+    }
+
+    private void abrirJuegoMemoria() {
+        if (controladorJuego == null) {
+            controladorJuego = new ControladorJuego();
+        }
+        controladorJuego.iniciarJuego();
+    }
+    */
 
 }
