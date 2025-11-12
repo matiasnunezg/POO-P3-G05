@@ -35,7 +35,7 @@ public class ControladorActividades{
             String nombre = vista.pedirTextoNoVacio("Ingrese nombre de actividad academica: ");
             TipoPrioridad prioridad = vista.pedirPrioridad();
             String asignatura = vista.pedirTextoNoVacio("Ingrese asignatura de la actividad: ");
-            String fechavencimiento = vista.pedirfechaVencimiento();
+            String fechavencimiento = vista.pedirfechaVencimiento()+" "+vista.pedirHoraVencimiento();
             String fechaActual = getFechaActual();
             String descripcion = vista.pedirTextoNoVacio("Ingrese descripcion de la actividad: ");
             int tiempoestimado = vista.pedirNumeroPositivo("Ingrese el tiempo estimado: ");
@@ -47,7 +47,7 @@ public class ControladorActividades{
             String nombre = vista.pedirTextoNoVacio("Ingrese nombre de actividad personal: ");
             TipoPrioridad prioridad = vista.pedirPrioridad();
             String lugar = vista.pedirTextoNoVacio("Ingrese lugar de la actividad: ");
-            String fechavencimiento = vista.pedirfechaVencimiento();
+            String fechavencimiento = vista.pedirfechaVencimiento()+" "+vista.pedirHoraVencimiento();
             String fechaActual = getFechaActual();
             String descripcion = vista.pedirTextoNoVacio("Ingrese descripcion de la actividad: ");
             int tiempoestimado = vista.pedirNumeroPositivo("Ingrese el tiempo estimado: ");
@@ -84,24 +84,21 @@ public void eliminarActividad() {
 }
 public void visualizarActividades() {
     
-    // 1. LÓGICA: Pedir a la Vista el tipo de filtro
     int filtro = vista.pedirFiltroActividades();
-    
-    // 2. LÓGICA: Preparar la lista que se va a mostrar
     ArrayList<Actividad> listaFiltrada = new ArrayList<>();
     
     switch (filtro) {
-        case 1: // Todas
+        case 1: 
             listaFiltrada = new ArrayList<>(this.listaDeActividades);
             break;
-        case 2: // Solo Académicas
+        case 2: 
             for (Actividad a : this.listaDeActividades) {
                 if (a instanceof ActividadAcademica) {
                     listaFiltrada.add(a);
                 }
             }
             break;
-        case 3: // Solo Personales
+        case 3: 
             for (Actividad a : this.listaDeActividades) {
                 if (a instanceof ActividadPersonal) {
                     listaFiltrada.add(a);
@@ -110,33 +107,29 @@ public void visualizarActividades() {
             break;
     }
 
-    // 3. ORDENAR A LA VISTA: Imprime la tabla de la lista filtrada
     vista.mostrarListaActividades(listaFiltrada);
 
-    // 4. PREGUNTAR AL USUARIO: "¿Desea ver detalles?"
-    // (Llamamos a un método de la Vista que pregunta S/N)
+
     boolean verDetalles = vista.pedirConfirmacion("¿Desea ver detalles de una actividad?");
 
-    // 5. LÓGICA: Si el usuario dijo SÍ...
+
     if (verDetalles) {
-        // 6. ORDENAR A LA VISTA: Pide el ID para detalles o '0' para volver
+
         int id = vista.pedirIdActividad(listaFiltrada.size());
         
         if (id != 0) {
-            // 7. LÓGICA: Buscar la actividad seleccionada
             Actividad actividadADetallar = buscarActividadPorId(id, listaFiltrada);
             
-            // 8. ORDENAR A LA VISTA: Mostrar detalles o un error
             if (actividadADetallar != null) {
                 vista.mostrarDetalle(actividadADetallar);
             } else {
                 vista.mostrarError();
             }
         }
-        // Si el id es 0, no hace nada y simplemente termina.
+    
     }
     
-    // 9. El método termina y vuelve al menú 'gestionarActividades'.
+   
 }
 
 private Actividad buscarActividadPorId(int id, ArrayList<Actividad> lista) {
@@ -202,7 +195,7 @@ private Actividad buscarActividadPorId(int id, ArrayList<Actividad> lista) {
         }
     }
 }
-        
+    
     }
 
 
