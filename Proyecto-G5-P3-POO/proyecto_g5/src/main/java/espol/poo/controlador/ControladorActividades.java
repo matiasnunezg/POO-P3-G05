@@ -35,7 +35,7 @@ public class ControladorActividades{
             String nombre = vista.pedirTextoNoVacio("Ingrese nombre de actividad academica: ");
             TipoPrioridad prioridad = vista.pedirPrioridad();
             String asignatura = vista.pedirTextoNoVacio("Ingrese asignatura de la actividad: ");
-            String fechavencimiento = vista.pedirfechaVencimiento();
+            String fechavencimiento = vista.pedirfechaVencimiento()+" "+vista.pedirHoraVencimiento();
             String fechaActual = getFechaActual();
             String descripcion = vista.pedirTextoNoVacio("Ingrese descripcion de la actividad: ");
             int tiempoestimado = vista.pedirNumeroPositivo("Ingrese el tiempo estimado: ");
@@ -47,7 +47,7 @@ public class ControladorActividades{
             String nombre = vista.pedirTextoNoVacio("Ingrese nombre de actividad personal: ");
             TipoPrioridad prioridad = vista.pedirPrioridad();
             String lugar = vista.pedirTextoNoVacio("Ingrese lugar de la actividad: ");
-            String fechavencimiento = vista.pedirfechaVencimiento();
+            String fechavencimiento = vista.pedirfechaVencimiento()+" "+vista.pedirHoraVencimiento();
             String fechaActual = getFechaActual();
             String descripcion = vista.pedirTextoNoVacio("Ingrese descripcion de la actividad: ");
             int tiempoestimado = vista.pedirNumeroPositivo("Ingrese el tiempo estimado: ");

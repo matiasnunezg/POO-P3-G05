@@ -524,4 +524,11 @@ public int pedirNumeroRango(String mensaje, int min, int max) {
         
         return String.format("%02d/%02d/%d", dia, mes, anio);
     }
+    
+    public String pedirHoraVencimiento() {
+    System.out.println("--- Ingrese la Hora de Vencimiento (Formato 24h) ---");
+    int hora = pedirNumeroRango("Ingrese la Hora (0-23):", 0, 23);
+    int minuto = pedirNumeroRango("Ingrese los Minutos (0-59):", 0, 59);
+    return String.format("%02d:%02d", hora, minuto);
+}
 }
