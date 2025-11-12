@@ -111,7 +111,6 @@ public class VistaHidratacion {
         presioneEnterParaContinuar();
     }
 
-    // ---------- UTILIDADES DE VISTA ----------
 
     public void mostrarMensaje(String msg) {
         System.out.println(msg);

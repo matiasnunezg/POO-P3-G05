@@ -51,12 +51,12 @@ public class VistaActividad {
             
             // Imprime la fila con el mismo formato que el encabezado
             System.out.printf("%-3s | %-10s | %-40s | %-12s | %-10s | %-8s%n",
-                    a.getId(),                 // ID (se convierte a String)
-                    tipo,                      // TIPO
-                    a.getNombre(),             // NOMBRE
-                    a.getFechaVencimiento(),   // VENCIMIENTO
-                    a.getPrioridad(),          // PRIORIDAD (se convierte a String)
-                    a.getAvance() + "%");      // AVANCE (añadimos el '%')
+                    a.getId(),                 
+                    tipo,                     
+                    a.getNombre(),          
+                    a.getFechaVencimiento(),   
+                    a.getPrioridad(),        
+                    a.getAvance() + "%");     
         }
     }
     
@@ -295,7 +295,7 @@ public int pedirNumeroRango(String mensaje, int min, int max) {
     return texto;
 }
     public int pedirNumeroPositivo(String mensaje) {
-    int numero = 0; // Se inicializa en 0 (inválido)
+    int numero = 0; 
     
     do {
         System.out.print(mensaje + " ");
@@ -305,18 +305,18 @@ public int pedirNumeroRango(String mensaje, int min, int max) {
             // Valida que el número sea estrictamente positivo
             if (numero <= 0) {
                 System.out.println("Error: El número debe ser positivo (mayor que 0).");
-                numero = 0; // Marca como inválido para repetir
+                numero = 0; 
             }
         
         } catch (InputMismatchException e) {
             System.out.println("Error: Debe ingresar solo números.");
-            numero = 0; // Marca como inválido
+            numero = 0; 
         
         } finally {
-            sc.nextLine(); // Limpia el buffer
+            sc.nextLine(); 
         }
     
-    } while (numero == 0); // Repite mientras sea inválido (0)
+    } while (numero == 0); 
     
     return numero;
 }

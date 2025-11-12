@@ -6,7 +6,8 @@ import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
 import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
 import java.util.*;
 import espol.poo.vista.VistaHidratacion;
-import espol.poo.controlador.ControlHidratacion;
+import espol.poo.controlador.ControladorJuegoMemoriaEco;
+import espol.poo.vista.VistaJuegoMemoriaEco;
 
 
 public class ControladorPrincipal {
@@ -22,6 +23,7 @@ public class ControladorPrincipal {
     // Controladores secundarios
     private ControladorActividades controladorActividad;
     private ControlHidratacion controladorHidratacion;
+    private ControladorJuegoMemoriaEco controladorJuegoEco;
 
 
     public ControladorPrincipal() {
@@ -129,7 +131,7 @@ public class ControladorPrincipal {
                 case 3 -> abrirControlHidratacion();
                 case 4 -> System.out.println("Registro de sueño: pendiente de implementar.");
                 case 5 -> System.out.println("Sostenibilidad: pendiente de implementar.");
-                case 6 -> System.out.println("Juego de memoria: pendiente de implementar.");
+                case 6 -> abrirJuegoMemoria();
                 case 7 -> System.out.println("Saliendo del sistema...");
                 default -> System.out.println("Opción no válida, intente nuevamente.");
             }
@@ -151,6 +153,12 @@ public class ControladorPrincipal {
         controladorHidratacion = new ControlHidratacion(vistaHidratacion);
         controladorHidratacion.getRegistros().addAll(registrosHidratacion);
         controladorHidratacion.gestionarHidratacion();
+}
+
+    private void abrirJuegoMemoria() {
+        VistaJuegoMemoriaEco vistaJuego = new VistaJuegoMemoriaEco();
+        controladorJuegoEco = new ControladorJuegoMemoriaEco(vistaJuego);
+        controladorJuegoEco.iniciarJuego();
 }
 
 
