@@ -1,124 +1,76 @@
 package espol.poo.controlador;
 
 import espol.poo.modelo.RegistroHidratacion;
-import espol.poo.modelo.Usuario;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import espol.poo.vista.VistaHidratacion;
 
 public class ControlHidratacion {
 
-    // ATRIBUTOS
-    private Usuario usuario;                        
-    private List<RegistroHidratacion> registros;    
-    private double metaDiaria;                      
+    private RegistroHidratacion registro;
+    private VistaHidratacion vista;
 
- 
-    // CONSTRUCTORES
-    // Constructor recomendado: recibe Usuario y meta explícita 
-    public ControlHidratacion(Usuario usuario, double metaDiaria) {
-        this.usuario = usuario;
-        this.metaDiaria = metaDiaria;
-        this.registros = new ArrayList<>();
-        // opcional: crear registro inicial del día
-        this.registros.add(new RegistroHidratacion(metaDiaria));
+    // Constructor: recibe modelo y vista
+    public ControlHidratacion(RegistroHidratacion registro, VistaHidratacion vista) {
+        this.registro = registro;
+        this.vista = vista;
     }
 
-    // Constructor alternativo: solo meta (sin usuario) 
-    public ControlHidratacion(double metaDiaria) {
-        this.usuario = null;
-        this.metaDiaria = metaDiaria;
-        this.registros = new ArrayList<>();
-        this.registros.add(new RegistroHidratacion(metaDiaria));
-    }
+    // Método principal que controla el flujo del programa
+    public void iniciar() {
+        int opcion;
+        do {
+            vista.mostrarMenuPrincipal();
+            opcion = vista.leerOpcion();
 
-    // Constructor alternativo: solo usuario, usa meta por defecto
-    public ControlHidratacion(Usuario usuario) {
-        this(usuario, 2000.0); 
-    }
-
-
-    // MÉTODOS PRINCIPALES
-
-    public void registrarIngesta(double cantidad) {
-        RegistroHidratacion registroHoy = obtenerRegistroDelDia(LocalDate.now());
-        registroHoy.registrarIngesta(cantidad);
-    }
-
-    public void actualizarMetaDiaria(double nuevaMeta) {
-        this.metaDiaria = nuevaMeta;
-        // actualizar meta en el registro del día (si existe)
-        RegistroHidratacion registroHoy = obtenerRegistroDelDia(LocalDate.now());
-        registroHoy.establecerMetaDiaria(nuevaMeta);
-        if (usuario != null) {
-            System.out.println("Meta diaria actualizada a " + nuevaMeta + " ml para " + usuario.getNombre());
-        } else {
-            System.out.println("Meta diaria actualizada a " + nuevaMeta + " ml.");
-        }
-    }
-
-    public double calcularTotalDelDia() {
-        RegistroHidratacion registroHoy = obtenerRegistroDelDia(LocalDate.now());
-        return registroHoy.getAcumuladoDiario();
-    }
-
-    public double obtenerPorcentajeProgreso() {
-        RegistroHidratacion registroHoy = obtenerRegistroDelDia(LocalDate.now());
-        return registroHoy.obtenerProgreso();
-    }
-
-    public void mostrarHistorialDelDia() {
-        RegistroHidratacion registroHoy = obtenerRegistroDelDia(LocalDate.now());
-        registroHoy.obtenerHistorialDelDia();
-    }
-
-    public void mostrarResumen() {
-        RegistroHidratacion registroHoy = obtenerRegistroDelDia(LocalDate.now());
-        double total = registroHoy.getAcumuladoDiario();
-        double progreso = registroHoy.obtenerProgreso();
-
-        System.out.println("\n--- Resumen de hidratación ---");
-        System.out.println("Usuario: " + (usuario != null ? usuario.getNombre() : "Sin usuario"));
-        System.out.println("Fecha: " + registroHoy.getFechaActual());
-        System.out.println("Meta diaria: " + metaDiaria + " ml");
-        System.out.println("Total ingerido hoy: " + total + " ml");
-        System.out.println("Progreso: " + String.format("%.2f", progreso) + "%");
-        System.out.println("-------------------------------\n");
-    }
-
-
-    // MÉTODOS AUXILIARES
-
-    // Devuelve el registro del día dado, o crea uno si no existe 
-    private RegistroHidratacion obtenerRegistroDelDia(LocalDate fecha) {
-        for (RegistroHidratacion r : registros) {
-            if (r.getFechaActual().equals(fecha)) {
-                return r;
+            switch (opcion) {
+                case 1:
+                    registrarIngesta();
+                    break;
+                case 2:
+                    actualizarMeta();
+                    break;
+                case 3:
+                    mostrarProgreso();
+                    break;
+                case 4:
+                    mostrarHistorial();
+                    break;
+                case 5:
+                    vista.mostrarMensaje("Saliendo del programa... ¡Recuerda mantenerte hidratado!");
+                    break;
+                default:
+                    vista.mostrarMensaje("Opción no válida. Intente nuevamente.");
             }
+        } while (opcion != 5);
+    }
+
+    // Registrar nueva ingesta de agua
+    private void registrarIngesta() {
+        double cantidad = vista.solicitarCantidadAgua();
+        if (cantidad > 0) {
+            registro.registrarIngesta(cantidad);
+            vista.mostrarMensaje("Ingesta registrada correctamente.");
+        } else {
+            vista.mostrarMensaje("La cantidad debe ser mayor que 0.");
         }
-        RegistroHidratacion nuevo = new RegistroHidratacion(metaDiaria);
-        registros.add(nuevo);
-        return nuevo;
     }
 
-
-    // GETTERS / SETTERS
-
-
-    public double getMetaDiaria() {
-        return metaDiaria;
+    // Actualizar la meta diaria
+    private void actualizarMeta() {
+        double nuevaMeta = vista.solicitarMetaDiaria();
+        registro.establecerMetaDiaria(nuevaMeta);
+        vista.mostrarMensaje("Meta diaria actualizada a " + nuevaMeta + " ml.");
     }
 
-    public void setMetaDiaria(double metaDiaria) {
-        this.metaDiaria = metaDiaria;
+    // Mostrar el progreso del día
+    private void mostrarProgreso() {
+        double total = registro.calcularAcumulado();
+        double meta = registro.getMetaDiaria();
+        double porcentaje = registro.obtenerProgreso();
+        vista.mostrarProgreso(total, meta, porcentaje);
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public List<RegistroHidratacion> getRegistros() {
-        return registros;
+    // Mostrar historial de ingestas
+    private void mostrarHistorial() {
+        vista.mostrarHistorial(registro.getCantidades(), registro.getHoras());
     }
 }
