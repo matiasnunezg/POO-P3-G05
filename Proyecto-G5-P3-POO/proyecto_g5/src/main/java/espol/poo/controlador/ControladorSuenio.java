@@ -1,29 +1,73 @@
 package espol.poo.controlador;
-import espol.poo.modelo.*;
-import java.time.*;
-import java.util.*;
+
+import espol.poo.modelo.RegistrarHorasDeSuenio;
+import espol.poo.vista.VistaSuenio;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class ControladorSuenio {
-    private  ArrayList<RegistrarHorasDeSuenio> registros = new ArrayList<>();
 
-    public void registrarSuenio(LocalTime inicio, LocalTime fin){
+    private ArrayList<RegistrarHorasDeSuenio> registros = new ArrayList<>();
+    private VistaSuenio vista = new VistaSuenio();
+
+    public void gestionarSuenio() {
+        int opcion;
+
+        do {
+            opcion = vista.mostrarMenu();
+
+            switch (opcion) {
+                case 1 -> registrarHoras();
+                case 2 -> mostrarRegistros();
+                case 3 -> generarReporteSemanal();
+                case 4 -> vista.mostrarMensaje("Saliendo del módulo de sueño...");
+                default -> vista.mostrarMensaje("Opción inválida.");
+            }
+
+        } while (opcion != 4);
+    }
+
+    private void registrarHoras() {
+        vista.mostrarMensaje("\n--- Registrar Horas de Sueño ---");
+
+        LocalTime inicio = vista.pedirHora("Ingrese la hora de acostarse");
+        LocalTime fin = vista.pedirHora("Ingrese la hora de despertarse");
+
         RegistrarHorasDeSuenio registro = new RegistrarHorasDeSuenio(inicio, fin);
         registros.add(registro);
-        System.out.println(registro.mostrarResumen());
+
+        vista.mostrarResumen(registro.generarResumen());
     }
 
-    public void mostrarReporteSemanal() {
-        System.out.println("\n--- REPORTE SEMANAL DE SUEÑO ---");
-        System.out.println("DÍA | HORAS DORMIDAS | GRÁFICO");
-        System.out.println("---------------------------------------");
+    private void mostrarRegistros() {
+        vista.mostrarLista(registros);
+    }
+
+    private void generarReporteSemanal() {
+        vista.mostrarMensaje("\n===== REPORTE SEMANAL =====");
+
+        LocalDate hace7dias = LocalDate.now().minusDays(7);
+
+        double total = 0;
+        int contador = 0;
+
         for (RegistrarHorasDeSuenio r : registros) {
-            int bloques = (int) Math.round(r.getDuracionHoras());
-            String grafico = "▓".repeat(bloques) + "░".repeat(8 - bloques);
-            System.out.printf("%s | %.1fh | %s\n",
-                r.getFechaRegistro().getDayOfWeek().toString().substring(0,3),
-                r.getDuracionHoras(), grafico);
+            if (!r.getFechaRegistro().isBefore(hace7dias)) {
+                total += r.getDuracionHoras();
+                contador++;
+            }
         }
-        System.out.println("---------------------------------------\n");
+
+        if (contador == 0) {
+            vista.mostrarMensaje("No hay registros en la última semana.");
+            return;
+        }
+
+        double promedio = total / contador;
+
+        vista.mostrarMensaje("Horas totales: " + String.format("%.1f h", total));
+        vista.mostrarMensaje("Promedio diario: " + String.format("%.1f h", promedio));
     }
 }
-
