@@ -8,6 +8,10 @@ import java.util.*;
 import espol.poo.vista.VistaHidratacion;
 import espol.poo.controlador.ControladorJuegoMemoriaEco;
 import espol.poo.vista.VistaJuegoMemoriaEco;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import espol.poo.controlador.ControladorSuenio;
+import espol.poo.vista.VistaSuenio;
 
 
 public class ControladorPrincipal {
@@ -18,13 +22,14 @@ public class ControladorPrincipal {
     private ArrayList<ActividadAcademica> listaDeActividadesAcademicas = new ArrayList<>();
     private ArrayList<ActividadPersonal> listaDeActividadesPersonales = new ArrayList<>();
     private ArrayList<RegistroHidratacion> registrosHidratacion = new ArrayList<>();
+    private ArrayList<RegistrarHorasDeSuenio> registrosSueno = new ArrayList<>();
 
 
     // Controladores secundarios
     private ControladorActividades controladorActividad;
     private ControlHidratacion controladorHidratacion;
     private ControladorJuegoMemoriaEco controladorJuegoEco;
-
+    private ControladorSuenio controladorSuenio;
 
     public ControladorPrincipal() {
         this.vistaPrincipal = new VistaPrincipal();
@@ -114,6 +119,29 @@ public class ControladorPrincipal {
     registrosHidratacion.add(registro1);
     registrosHidratacion.add(registro2);
 
+RegistrarHorasDeSuenio sueno_registro1 = new RegistrarHorasDeSuenio(
+        LocalTime.of(23, 30),
+        LocalTime.of(7, 0)
+);
+RegistrarHorasDeSuenio sueno_registro2 = new RegistrarHorasDeSuenio(
+        LocalTime.of(0, 15),
+        LocalTime.of(8, 0)
+);
+
+// Simulamos fechas 23 y 24 de noviembre manualmente
+// (esto solo afecta la visualización, no la lógica)
+try {
+    java.lang.reflect.Field fechaField = RegistrarHorasDeSuenio.class.getDeclaredField("fechaRegistro");
+    fechaField.setAccessible(true);
+    fechaField.set(sueno_registro1, LocalDate.of(2025, 11, 23));
+    fechaField.set(sueno_registro2, LocalDate.of(2025, 11, 24));
+} catch (Exception e) {
+    e.printStackTrace();
+    }
+
+    registrosSueno.add(sueno_registro1);
+    registrosSueno.add(sueno_registro2);
+
     System.out.println("Datos iniciales cargados correctamente.\n");
     }
 
@@ -129,7 +157,7 @@ public class ControladorPrincipal {
                 case 1 -> abrirGestionActividades();
                 case 2 -> System.out.println("Técnicas de enfoque: pendiente de implementar.");
                 case 3 -> abrirControlHidratacion();
-                case 4 -> System.out.println("Registro de sueño: pendiente de implementar.");
+                case 4 -> abrirRegistroSueno();
                 case 5 -> System.out.println("Sostenibilidad: pendiente de implementar.");
                 case 6 -> abrirJuegoMemoria();
                 case 7 -> System.out.println("Saliendo del sistema...");
@@ -159,6 +187,20 @@ public class ControladorPrincipal {
         VistaJuegoMemoriaEco vistaJuego = new VistaJuegoMemoriaEco();
         controladorJuegoEco = new ControladorJuegoMemoriaEco(vistaJuego);
         controladorJuegoEco.iniciarJuego();
+}
+
+    private void abrirRegistroSueno() {
+    if (controladorSuenio == null) {
+        controladorSuenio = new ControladorSuenio();
+        // Cargamos los registros preexistentes
+        for (RegistrarHorasDeSuenio r : registrosSueno) {
+            controladorSuenio.registrarManual(r);
+        }
+    }
+    controladorSuenio.gestionarSuenio();
+}
+    public void registrarManual(RegistrarHorasDeSuenio registroSueno) {
+        registrosSueno.add(registroSueno);
 }
 
 
