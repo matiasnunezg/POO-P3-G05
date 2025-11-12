@@ -1,40 +1,67 @@
 package espol.poo.vista;
-import espol.poo.controlador.*;
+
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Scanner;
+import espol.poo.modelo.RegistrarHorasDeSuenio;
 
 public class VistaSuenio {
 
-
-
-    private ControladorSuenio controladorSueño = new ControladorSuenio();
     private Scanner sc = new Scanner(System.in);
 
-    public void mostrarMenuSueño() {
-        int opcion;
-        do {
-            System.out.println("\n--- MÓDULO DE SUEÑO ---");
-            System.out.println("1. Registrar horas de sueño");
-            System.out.println("2. Ver reporte semanal");
-            System.out.println("0. Volver al menú principal");
-            opcion = sc.nextInt();
-            sc.nextLine();
-            switch (opcion) {
-                case 1 -> registrarSueño();
-                case 2 -> controladorSueño.mostrarReporteSemanal();
-            }
-        } while (opcion != 0);
+    public int mostrarMenu() {
+        System.out.println("\n===== MENÚ SUEÑO =====");
+        System.out.println("1. Registrar horas de sueño");
+        System.out.println("2. Mostrar registros");
+        System.out.println("3. Generar reporte semanal");
+        System.out.println("4. Salir");
+        return pedirEntero("Ingrese una opción: ");
     }
 
-    private void registrarSueño() {
-        System.out.print("Ingrese hora en que se acostó (HH:MM): ");
-        LocalTime inicio = LocalTime.parse(sc.nextLine());
-        System.out.print("Ingrese hora en que despertó (HH:MM): ");
-        LocalTime fin = LocalTime.parse(sc.nextLine());
-        controladorSueño.registrarSuenio(inicio, fin);
+    public LocalTime pedirHora(String mensaje) {
+        while (true) {
+            System.out.print(mensaje + " (HH:MM): ");
+            String input = sc.nextLine();
+            try {
+                return LocalTime.parse(input);
+            } catch (Exception e) {
+                System.out.println(" Formato inválido. Ejemplo válido: 23:45");
+            }
+        }
+    }
+
+    public void mostrarMensaje(String msg) {
+        System.out.println(msg);
+    }
+
+    public void mostrarResumen(String texto) {
+        System.out.println("\n===== RESUMEN DE SUEÑO =====");
+        System.out.println(texto);
+    }
+
+    public void mostrarLista(List<RegistrarHorasDeSuenio> registros) {
+        System.out.println("\n===== REGISTROS DE SUEÑO =====");
+
+        if (registros.isEmpty()) {
+            System.out.println("No hay registros.");
+            return;
+        }
+
+        int i = 1;
+        for (RegistrarHorasDeSuenio r : registros) {
+            System.out.println(i++ + ". Fecha: " + r.getFechaRegistro() +
+                    " | Duración: " + String.format("%.1f h", r.getDuracionHoras()));
+        }
+    }
+
+    private int pedirEntero(String msg) {
+        while (true) {
+            try {
+                System.out.print(msg);
+                return Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+                System.out.println("Ingrese un número válido.");
+            }
+        }
     }
 }
-
-
-
-

@@ -33,15 +33,6 @@ public class RegistrarHorasDeSuenio {
         return duracionHoras >= metaRecomendada;
     }
 
-    public String mostrarResumen() {
-        String resultado = String.format("""
-        --- RESUMEN DE HOY ---
-        Sueño registrado: %.1fh
-        Recomendación estándar: %.1fh
-        Meta alcanzada: %s
-        """, duracionHoras, metaRecomendada, (cumpleMeta() ? "SÍ " : "NO"));
-        return resultado;
-    }
 
     public double getDuracionHoras() { 
         return duracionHoras; 
@@ -50,6 +41,17 @@ public class RegistrarHorasDeSuenio {
     public LocalDate getFechaRegistro() { 
         return fechaRegistro; 
     }
+
+    public String generarResumen() {
+    String resultado = String.format("""
+        --- RESUMEN DE HOY ---
+        Sueño registrado: %.1fh
+        Recomendación estándar: %.1fh
+        Meta alcanzada: %s
+        """, duracionHoras, metaRecomendada, (cumpleMeta() ? "SÍ " : "NO"));
+    return resultado;
+}
+
 }
 
 
