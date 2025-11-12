@@ -5,6 +5,8 @@ import espol.poo.modelo.Actividad.TipoPrioridad;
 import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
 import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
 import java.util.*;
+import espol.poo.vista.VistaHidratacion;
+import espol.poo.controlador.ControlHidratacion;
 
 
 public class ControladorPrincipal {
@@ -14,6 +16,8 @@ public class ControladorPrincipal {
     private ArrayList<Actividad> listaDeActividades = new ArrayList<>();
     private ArrayList<ActividadAcademica> listaDeActividadesAcademicas = new ArrayList<>();
     private ArrayList<ActividadPersonal> listaDeActividadesPersonales = new ArrayList<>();
+    private ArrayList<RegistroHidratacion> registrosHidratacion = new ArrayList<>();
+
     
     //private List<RegistroHidratacion> registrosHidratacion;
     //private List<RegistrarHorasDeSueno> registrosSueno; //Falta implementar
@@ -21,6 +25,8 @@ public class ControladorPrincipal {
 
     // Controladores secundarios
     private ControladorActividades controladorActividad;
+    private ControlHidratacion controladorHidratacion;
+
     // private ControladorHidratacion controladorHidratacion; 
     // private ControladorSueno controladorSueno;
     // private ControladorSostenibilidad controladorSostenibilidad; 
@@ -99,7 +105,25 @@ public class ControladorPrincipal {
     );
         listaDeActividades.add(examen);
         listaDeActividadesAcademicas.add(examen);
+    
+    RegistroHidratacion registro1 = new RegistroHidratacion(
+        2000.0,        // meta diaria (ml)
+        500.0,         // cantidad ingerida
+        500.0,         // acumulado diario
+        java.time.LocalDate.of(2025, 11, 23), // fecha
+        java.time.LocalTime.of(9, 30)         // hora
+    );
 
+    RegistroHidratacion registro2 = new RegistroHidratacion(
+        2000.0,        // meta diaria (ml)
+        300.0,         // cantidad ingerida
+        800.0,         // acumulado diario (suma con la anterior)
+        java.time.LocalDate.of(2025, 11, 24), // fecha
+        java.time.LocalTime.of(11, 0)         // hora
+    );
+
+    registrosHidratacion.add(registro1);
+    registrosHidratacion.add(registro2);
     // Registros simulados (si tus clases de registro usan otros parámetros, avísame)
     //registrosHidratacion.add(new RegistroHidratacion("23/11/2025", "09:30", 500));
     //registrosHidratacion.add(new RegistroHidratacion("24/11/2025", "11:00", 300));
@@ -124,7 +148,7 @@ public class ControladorPrincipal {
             switch (opcion) {
                 case 1 -> abrirGestionActividades();
                 case 2 -> System.out.println("Técnicas de enfoque: pendiente de implementar.");
-                case 3 -> System.out.println("Control de hidratación: pendiente de implementar.");
+                case 3 -> abrirControlHidratacion();
                 case 4 -> System.out.println("Registro de sueño: pendiente de implementar.");
                 case 5 -> System.out.println("Sostenibilidad: pendiente de implementar.");
                 case 6 -> System.out.println("Juego de memoria: pendiente de implementar.");
@@ -143,6 +167,13 @@ public class ControladorPrincipal {
         }
         controladorActividad.gestionarActividades();
     }
+
+    private void abrirControlHidratacion() {
+        VistaHidratacion vistaHidratacion = new VistaHidratacion();
+        controladorHidratacion = new ControlHidratacion(vistaHidratacion);
+        controladorHidratacion.getRegistros().addAll(registrosHidratacion);
+        controladorHidratacion.gestionarHidratacion();
+}
 
     /*
     private void abrirTecnicasEnfoque() {
