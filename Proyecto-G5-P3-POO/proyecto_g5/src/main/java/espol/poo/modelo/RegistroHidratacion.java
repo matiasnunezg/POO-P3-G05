@@ -2,102 +2,77 @@ package espol.poo.modelo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
+/**
+ * Clase modelo que representa un registro de hidratación diaria.
+ * Contiene solo atributos, constructores y métodos de acceso (get y set).
+ */
 public class RegistroHidratacion {
 
-    //  ATRIBUTOS 
-    private double metaDiaria;                  
-    private double acumuladoDiario;             
-    private ArrayList<Double> historialDiario;  
-    private LocalDate fechaActual;              
+    // ====== Atributos ======
+    private double metaDiaria;          // Meta de agua en mililitros
+    private double cantidadIngerida;    // Cantidad registrada en una ingesta
+    private double acumuladoDiario;     // Total acumulado en el día
+    private LocalDate fechaRegistro;    // Fecha del registro
+    private LocalTime horaRegistro;     // Hora del registro
 
-    // CONSTRUCTOR 
-    public RegistroHidratacion(double metaDiaria) {
-        this.metaDiaria = metaDiaria;
+    // ====== Constructores ======
+    public RegistroHidratacion() {
+        this.metaDiaria = 0.0;
+        this.cantidadIngerida = 0.0;
         this.acumuladoDiario = 0.0;
-        this.historialDiario = new ArrayList<>();
-        this.fechaActual = LocalDate.now(); 
+        this.fechaRegistro = LocalDate.now();
+        this.horaRegistro = LocalTime.now();
     }
 
-    // MÉTODOS 
-    // Registrar una nueva ingesta de agua
-    public void registrarIngesta(double cantidad) {
-        if (cantidad > 0) {
-            historialDiario.add(cantidad);
-            acumuladoDiario += cantidad;
-            System.out.println("Ingesta registrada: " + cantidad + " ml a las " + LocalTime.now());
-        } else {
-            System.out.println("Error: la cantidad debe ser mayor que 0.");
-        }
+    public RegistroHidratacion(double metaDiaria, double cantidadIngerida, double acumuladoDiario,
+        LocalDate fechaRegistro, LocalTime horaRegistro) {
+        this.metaDiaria = metaDiaria;
+        this.cantidadIngerida = cantidadIngerida;
+        this.acumuladoDiario = acumuladoDiario;
+        this.fechaRegistro = fechaRegistro;
+        this.horaRegistro = horaRegistro;
     }
 
-    // Establecer o actualizar la meta diaria
-    public void establecerMetaDiaria(double nuevaMeta) {
-        if (nuevaMeta > 0) {
-            this.metaDiaria = nuevaMeta;
-            System.out.println("Meta diaria actualizada a " + nuevaMeta + " ml.");
-        } else {
-            System.out.println("Error: la meta debe ser mayor que 0.");
-        }
-    }
+    // ====== Métodos Get y Set ======
 
-    //  Calcular el total acumulado del día
-    public double calcularAcumulado() {
-        return acumuladoDiario;
-    }
-
-    //  Obtener el porcentaje de progreso
-    public double obtenerProgreso() {
-        if (metaDiaria == 0) return 0;
-        double progreso = (acumuladoDiario / metaDiaria) * 100;
-        return Math.min(progreso, 100); 
-    }
-
-    //  Obtener historial del día actual
-    public void obtenerHistorialDelDia() {
-        System.out.println("Historial del " + fechaActual + ":");
-        if (historialDiario.isEmpty()) {
-            System.out.println("No hay registros de ingesta aún.");
-        } else {
-            for (int i = 0; i < historialDiario.size(); i++) {
-                System.out.println("Ingesta " + (i + 1) + ": " + historialDiario.get(i) + " ml");
-            }
-        }
-    }
-
-    
-    // GETTERS
     public double getMetaDiaria() {
         return metaDiaria;
+    }
+
+    public void setMetaDiaria(double metaDiaria) {
+        this.metaDiaria = metaDiaria;
+    }
+
+    public double getCantidadIngerida() {
+        return cantidadIngerida;
+    }
+
+    public void setCantidadIngerida(double cantidadIngerida) {
+        this.cantidadIngerida = cantidadIngerida;
     }
 
     public double getAcumuladoDiario() {
         return acumuladoDiario;
     }
 
-    public LocalDate getFechaActual() {
-        return fechaActual;
+    public void setAcumuladoDiario(double acumuladoDiario) {
+        this.acumuladoDiario = acumuladoDiario;
     }
 
-    public ArrayList<Double> getHistorialDiario() {
-        return historialDiario;
+    public LocalDate getFechaRegistro() {
+        return fechaRegistro;
     }
 
-    // NUEVOS GETTERS AÑADIDOS
-    public LocalDate getFecha() {
-        return fechaActual;
+    public void setFechaRegistro(LocalDate fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
     }
 
-    public double getMeta() {
-        return metaDiaria;
+    public LocalTime getHoraRegistro() {
+        return horaRegistro;
     }
 
-    public double getAcumulado() {
-        return acumuladoDiario;
-    }
-
-    public ArrayList<Double> getHistorial() {
-        return historialDiario;
+    public void setHoraRegistro(LocalTime horaRegistro) {
+        this.horaRegistro = horaRegistro;
     }
 }
