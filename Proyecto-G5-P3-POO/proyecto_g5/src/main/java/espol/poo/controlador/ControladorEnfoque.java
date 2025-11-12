@@ -28,6 +28,7 @@ public class ControladorEnfoque {
 
     public void esperarEnter() {
         sc.nextLine();
+        
     }
 
 }

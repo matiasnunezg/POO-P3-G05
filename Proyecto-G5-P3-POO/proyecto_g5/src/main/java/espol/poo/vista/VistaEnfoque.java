@@ -70,6 +70,7 @@ public class VistaEnfoque {
     public void mostrarDeepWorkFinal() {
         System.out.println("\n--- ¡SESIÓN DEEP WORK COMPLETADA! ---");
         System.out.println("Sesión registrada (avance actualizado en base al tiempo trabajado).");
+    
     }
 
 }
