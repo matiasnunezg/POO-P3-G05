@@ -1,39 +1,54 @@
 package espol.poo.controlador;
+
+// --- VISTAS ---
 import espol.poo.vista.VistaPrincipal;
+import espol.poo.vista.VistaActividad;
+import espol.poo.vista.VistaHidratacion;
+import espol.poo.vista.VistaEnfoque; // <<< Importado
+import espol.poo.vista.VistaJuegoMemoriaEco;
+// <<< Importado
+// --- MODELOS ---
 import espol.poo.modelo.*;
 import espol.poo.modelo.Actividad.TipoPrioridad;
 import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
 import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
+
+// --- UTILIDADES ---
 import java.util.*;
-import espol.poo.vista.VistaHidratacion;
-import espol.poo.controlador.ControladorJuegoMemoriaEco;
-import espol.poo.vista.VistaJuegoMemoriaEco;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import espol.poo.controlador.ControladorSuenio;
-import espol.poo.vista.VistaSuenio;
 
 
 public class ControladorPrincipal {
     private VistaPrincipal vistaPrincipal;
-
+    private VistaActividad vistaActividad;
+    private VistaEnfoque vistaEnfoque;
+    private VistaHidratacion vistaHidratacion;
+    
     // Repositorios globales
-    private ArrayList<Actividad> listaDeActividades = new ArrayList<>();
-    private ArrayList<ActividadAcademica> listaDeActividadesAcademicas = new ArrayList<>();
-    private ArrayList<ActividadPersonal> listaDeActividadesPersonales = new ArrayList<>();
-    private ArrayList<RegistroHidratacion> registrosHidratacion = new ArrayList<>();
-    private ArrayList<RegistrarHorasDeSuenio> registrosSueno = new ArrayList<>();
-
+    private ArrayList<Actividad> listaDeActividades;
+    private ArrayList<RegistroHidratacion> registrosHidratacion;
+    private ArrayList<RegistrarHorasDeSuenio> registrosSueno;
+    private TecnicasEnfoque tecnicas;
 
     // Controladores secundarios
     private ControladorActividades controladorActividad;
     private ControlHidratacion controladorHidratacion;
     private ControladorJuegoMemoriaEco controladorJuegoEco;
+    private ControladorEnfoque controladorEnfoque;    
     private ControladorSuenio controladorSuenio;
 
     public ControladorPrincipal() {
         this.vistaPrincipal = new VistaPrincipal();
+        this.vistaActividad = new VistaActividad();
+        this.vistaEnfoque = new VistaEnfoque();
+        this.vistaHidratacion = new VistaHidratacion();
 
+        // Inicializar Modelos (Listas y Reglas)
+        this.listaDeActividades = new ArrayList<>();
+        this.registrosHidratacion = new ArrayList<>();
+        this.registrosSueno = new ArrayList<>();
+        this.tecnicas = new TecnicasEnfoque();
     }
 
     public void inicializarApp() {
@@ -53,7 +68,7 @@ public class ControladorPrincipal {
             "Revisión general con el doctor" // descripcion
     );
         listaDeActividades.add(citaMedica);
-        listaDeActividadesPersonales.add(citaMedica);
+        
 
     ActividadAcademica proyecto = new ActividadAcademica(
             "Sistema Gestión Tiempo (Fase 1)",      // nombre
@@ -68,7 +83,7 @@ public class ControladorPrincipal {
             "Implementación de la lógica de POO en Java" // descrpcion
     );
         listaDeActividades.add(proyecto);
-        listaDeActividadesAcademicas.add(proyecto);
+        
 
     ActividadAcademica tarea = new ActividadAcademica(
             "Cuestionario Unidad 2",          // nombre
@@ -83,7 +98,7 @@ public class ControladorPrincipal {
             "Entrega en Aula Virtual"         // descrpcion
     );
         listaDeActividades.add(tarea);
-        listaDeActividadesAcademicas.add(tarea);
+        
 
     ActividadAcademica examen = new ActividadAcademica(
             "Examen Parcial",                 // nombre
@@ -98,7 +113,7 @@ public class ControladorPrincipal {
             "Evaluación parcial de la materia" // descrpcion
     );
         listaDeActividades.add(examen);
-        listaDeActividadesAcademicas.add(examen);
+        
     
     RegistroHidratacion registro1 = new RegistroHidratacion(
         2500.0,        // meta diaria (ml)
@@ -145,6 +160,8 @@ try {
     System.out.println("Datos iniciales cargados correctamente.\n");
     }
 
+
+    
     // Menú principal
     public void iniciarMenuPrincipal() {
         int opcion;

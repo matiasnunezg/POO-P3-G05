@@ -12,8 +12,10 @@ import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
 public class VistaActividad {
 
     Scanner sc = new Scanner(System.in);
+    
     public void mostrarListaActividades(ArrayList<Actividad> lista) {
     
+        
     // 1. Encabezado
     System.out.println("\n--- LISTADO DE ACTIVIDADES PENDIENTES ---");
     
@@ -51,12 +53,12 @@ public class VistaActividad {
             
             // Imprime la fila con el mismo formato que el encabezado
             System.out.printf("%-3s | %-10s | %-40s | %-12s | %-10s | %-8s%n",
-                    a.getId(),                 
-                    tipo,                     
-                    a.getNombre(),          
-                    a.getFechaVencimiento(),   
-                    a.getPrioridad(),        
-                    a.getAvance() + "%");     
+                    a.getId(),                 // ID (se convierte a String)
+                    tipo,                      // TIPO
+                    a.getNombre(),             // NOMBRE
+                    a.getFechaVencimiento(),   // VENCIMIENTO
+                    a.getPrioridad(),          // PRIORIDAD (se convierte a String)
+                    a.getAvance() + "%");      // AVANCE (añadimos el '%')
         }
     }
     
@@ -136,6 +138,9 @@ public boolean verificarRango(int valoringresado,int valorminimo, int valormaxim
     System.out.println(mensaje);
     System.out.println("Presione [ENTER] para continuar...");
     sc.nextLine();
+}
+    public void mostrarError(String mensaje) {
+        System.out.println("\n*** ¡Error! " + mensaje + " ***");
 }
     public int pedirOpcionGestion() {
         System.out.println("1. Visualizar actividades");
@@ -295,7 +300,7 @@ public int pedirNumeroRango(String mensaje, int min, int max) {
     return texto;
 }
     public int pedirNumeroPositivo(String mensaje) {
-    int numero = 0; 
+    int numero = 0; // Se inicializa en 0 (inválido)
     
     do {
         System.out.print(mensaje + " ");
@@ -305,18 +310,18 @@ public int pedirNumeroRango(String mensaje, int min, int max) {
             // Valida que el número sea estrictamente positivo
             if (numero <= 0) {
                 System.out.println("Error: El número debe ser positivo (mayor que 0).");
-                numero = 0; 
+                numero = 0; // Marca como inválido para repetir
             }
         
         } catch (InputMismatchException e) {
             System.out.println("Error: Debe ingresar solo números.");
-            numero = 0; 
+            numero = 0; // Marca como inválido
         
         } finally {
-            sc.nextLine(); 
+            sc.nextLine(); // Limpia el buffer
         }
     
-    } while (numero == 0); 
+    } while (numero == 0); // Repite mientras sea inválido (0)
     
     return numero;
 }
