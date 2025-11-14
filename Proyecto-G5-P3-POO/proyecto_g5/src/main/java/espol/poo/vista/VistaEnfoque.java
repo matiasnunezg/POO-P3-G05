@@ -99,7 +99,7 @@ public class VistaEnfoque {
      * Muestra un mensaje al salir del módulo.
      */
     public void mostrarVolver() {
-        System.out.println("Volviendo al menú principal...");
+        System.out.println("Volviendo al menú principal...\n");
     }
 
     public void mostrarInicioPomodoro() {

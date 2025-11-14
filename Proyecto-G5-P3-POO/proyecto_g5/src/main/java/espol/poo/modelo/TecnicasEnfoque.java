@@ -1,43 +1,28 @@
 package espol.poo.modelo;
 
-
+/**
+ * Modelo que almacena la configuración de las técnicas de enfoque.
+ * Centraliza las "reglas" (ej. tiempos, ciclos) en un solo lugar.
+ */
 public class TecnicasEnfoque {
 
-
-    private final int pomodoroTrabajoMinutos;
-    private final int pomodoroDescansoMinutos;
-    private final int pomodoroCiclosTotal;
-    private final int deepWorkMinutos;
-    private final int avanceBasePorCiclo;
-    private final int avanceBaseDeepWork;
-
-    public TecnicasEnfoque(int pomodoroTrabajoMinutos, int pomodoroDescansoMinutos, int pomodoroCiclosTotal,
-        int deepWorkMinutos, int avanceBasePorCiclo, int avanceBaseDeepWork) {
-        this.pomodoroTrabajoMinutos = pomodoroTrabajoMinutos;
-        this.pomodoroDescansoMinutos = pomodoroDescansoMinutos;
-        this.pomodoroCiclosTotal = pomodoroCiclosTotal;
-        this.deepWorkMinutos = deepWorkMinutos;
-        this.avanceBasePorCiclo = avanceBasePorCiclo;
-        this.avanceBaseDeepWork = avanceBaseDeepWork;
-        
+    // Los valores están definidos por el proyecto
+    private final int pomodoroTrabajoMinutos = 25;
+    private final int pomodoroDescansoMinutos = 5;
+    private final int pomodoroCiclosTotal = 4;
+    private final int deepWorkMinutos = 90;
+    
+    // El constructor ahora está vacío, ya que los valores son constantes
+    public TecnicasEnfoque() {
     }
 
+    // --- Getters para que el Controlador los use ---
     
     public int getPomodoroTrabajoMinutos() { return pomodoroTrabajoMinutos; }
     public int getPomodoroDescansoMinutos() { return pomodoroDescansoMinutos; }
     public int getPomodoroCiclosTotal() { return pomodoroCiclosTotal; }
     public int getDeepWorkMinutos() { return deepWorkMinutos; }
-
-
-    public int calcularAvancePomodoro(int ciclosCompletados) {
-        if (ciclosCompletados > 0) {
-            return this.avanceBasePorCiclo * ciclosCompletados; 
-        }
-        return 0;
-    }
-
-    public int calcularAvanceDeepWork() {
-        
-        return this.avanceBaseDeepWork;
-    }
+    
+    // --- LOS MÉTODOS DE CALCULAR AVANCE SE ELIMINAN DE AQUÍ ---
+    // (Esta lógica se moverá al Controlador y a ActividadAcademica)
 }

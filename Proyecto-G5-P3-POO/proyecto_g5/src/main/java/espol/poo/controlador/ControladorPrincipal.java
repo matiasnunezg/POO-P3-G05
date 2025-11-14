@@ -161,7 +161,7 @@ try {
     }
 
 
-    
+
     // Menú principal
     public void iniciarMenuPrincipal() {
         int opcion;
@@ -172,12 +172,12 @@ try {
 
             switch (opcion) {
                 case 1 -> abrirGestionActividades();
-                case 2 -> System.out.println("Técnicas de enfoque: pendiente de implementar.");
+                case 2 -> abrirTecnicasEnfoque();
                 case 3 -> abrirControlHidratacion();
                 case 4 -> abrirRegistroSueno();
                 case 5 -> System.out.println("Sostenibilidad: pendiente de implementar.");
                 case 6 -> abrirJuegoMemoria();
-                case 7 -> System.out.println("Saliendo del sistema...");
+                case 7 -> System.out.println("\nSaliendo del sistema...");
                 default -> System.out.println("Opción no válida, intente nuevamente.");
             }
         } while (opcion != 7);
@@ -188,7 +188,7 @@ try {
     // ==========================
     private void abrirGestionActividades() {
         if (controladorActividad == null) {
-            controladorActividad = new ControladorActividades(listaDeActividades,listaDeActividadesAcademicas,listaDeActividadesPersonales);
+            controladorActividad = new ControladorActividades(vistaActividad, listaDeActividades);
         }
         controladorActividad.gestionarActividades();
     }
@@ -215,10 +215,19 @@ try {
         }
     }
     controladorSuenio.gestionarSuenio();
-}
+    }
+
     public void registrarManual(RegistrarHorasDeSuenio registroSueno) {
         registrosSueno.add(registroSueno);
-}
+    }
+
+    private void abrirTecnicasEnfoque() {
+        if (controladorEnfoque == null) {
+            // Inyección de Dependencias
+            controladorEnfoque = new ControladorEnfoque(vistaEnfoque, listaDeActividades, tecnicas);
+        }
+        controladorEnfoque.gestionarEnfoque();
+    }
 
 
 }
