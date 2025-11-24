@@ -1,6 +1,7 @@
 package espol.poo.vista;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.InputMismatchException;
 
 import espol.poo.modelo.Actividad;
@@ -9,6 +10,9 @@ import espol.poo.modelo.ActividadAcademica;
 import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
 import espol.poo.modelo.ActividadPersonal;
 import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
+import espol.poo.modelo.SesionEnfoque;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 public class VistaActividad {
 
     Scanner sc = new Scanner(System.in);
@@ -66,56 +70,76 @@ public class VistaActividad {
     System.out.println("------------------------------------------------------------------------------------------------------");
 }
 public void mostrarDetalle(Actividad actividadmostrada) {
-    System.out.println("==============================================================");
-    System.out.println("==============================================================");
-    
-    if (actividadmostrada instanceof ActividadAcademica){
-        ActividadAcademica academica = (ActividadAcademica) actividadmostrada;
-        System.out.println("Detalles de "+academica.getActividadAcademica().toString());
-        System.out.println("==============================================================");
-        System.out.println("==============================================================");
-        System.out.println("Nombre: "+actividadmostrada.getNombre());
-        System.out.println("Tipo: "+academica.getActividadAcademica().toString());
-        System.out.println("Asignatura: "+academica.getAsignatura());
-        System.out.println("Prioridad: "+actividadmostrada.getPrioridad());
-        if (actividadmostrada.getAvance() == 100){
-            System.out.println("Estado: Terminada");
-        } else {
-            System.out.println("Estado: En curso");
+        System.out.println("\n=========================================");
+        System.out.println("      DETALLES DE LA ACTIVIDAD (ID " + actividadmostrada.getId() + ")");
+        System.out.println("=========================================");
+        
+        // --- BLOQUE 1: ACTIVIDAD ACADÉMICA ---
+        if (actividadmostrada instanceof ActividadAcademica){
+            ActividadAcademica academica = (ActividadAcademica) actividadmostrada;
+            
+            System.out.println("Nombre: " + actividadmostrada.getNombre());
+            System.out.println("Tipo: " + academica.getActividadAcademica().toString());
+            System.out.println("Asignatura: " + academica.getAsignatura());
+            System.out.println("Prioridad: " + actividadmostrada.getPrioridad());
+            
+            // Estado formateado
+            String estado = (actividadmostrada.getAvance() == 100) ? "Terminado" : "En curso";
+            System.out.println("Estado: " + estado);
+            
+            System.out.println("Fecha Límite: " + actividadmostrada.getFechaVencimiento());
+            System.out.println("Tiempo Estimado Total: " + actividadmostrada.getTiempoEstimado() + " min.");
+            System.out.println("Avance Actual: " + actividadmostrada.getAvance() + "%");
+
+            // >>> AQUÍ ESTÁ LA TABLA DE HISTORIAL (LO QUE FALTABA) <<<
+            List<SesionEnfoque> historial = academica.getHistorialSesiones();
+            
+            if (historial != null && !historial.isEmpty()) {
+                System.out.println("---------------------------------");
+                System.out.println("HISTORIAL DE GESTIÓN DEL TIEMPO");
+                System.out.println("---------------------------------");
+                
+                // Encabezados alineados
+                System.out.printf("| %-12s | %-16s | %-14s |%n", "Fecha Sesión", "Técnica Aplicada", "Duración (min)");
+                System.out.println("|--------------|------------------|----------------|");
+
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                for (SesionEnfoque sesion : historial) {
+                    // Formateamos la fecha para que no salga null
+                    String fechaStr = (sesion.getFecha() != null) ? sesion.getFecha().format(fmt) : "N/A";
+                    
+                    System.out.printf("| %-12s | %-16s | %-14d |%n",
+                            fechaStr, 
+                            sesion.getTecnica(), 
+                            sesion.getMinutos());
+                }
+                System.out.println("---------------------------------");
+            } else {
+                System.out.println("\n(No hay historial de técnicas de enfoque registrado)");
+            }
+        } 
+        
+        // --- BLOQUE 2: ACTIVIDAD PERSONAL ---
+        else { 
+            ActividadPersonal personal = (ActividadPersonal) actividadmostrada;
+            
+            System.out.println("Nombre: " + actividadmostrada.getNombre());
+            System.out.println("Tipo: " + personal.getActividadPersonal().toString());
+            System.out.println("Lugar: " + personal.getLugar());
+            System.out.println("Prioridad: " + actividadmostrada.getPrioridad());
+            
+            String estado = (actividadmostrada.getAvance() == 100) ? "Terminado" : "En curso";
+            System.out.println("Estado: " + estado);
+            
+            System.out.println("Fecha Límite: " + actividadmostrada.getFechaVencimiento());
+            System.out.println("Tiempo Estimado Total: " + actividadmostrada.getTiempoEstimado() + " min.");
+            System.out.println("Avance Actual: " + actividadmostrada.getAvance() + "%");
         }
-        System.out.println("Fecha Limite: "+actividadmostrada.getFechaVencimiento());
         
-        // --- CORRECCIÓN DE COPIAR/PEGAR ---
-        System.out.println("Tiempo Estimado Total: "+actividadmostrada.getTiempoEstimado() + " min.");
-        
-        System.out.println("Avance Actual: "+actividadmostrada.getAvance() + "%");
-    } 
-    else { // No es necesario 'if (actividadmostrada instanceof ActividadPersonal)'
-        ActividadPersonal personal = (ActividadPersonal) actividadmostrada;
-        System.out.println("Detalles de "+personal.getActividadPersonal());
-        System.out.println("==============================================================");
-        System.out.println("==============================================================");
-        System.out.println("Nombre: "+actividadmostrada.getNombre());
-        System.out.println("Tipo: "+personal.getActividadPersonal().toString());
-        System.out.println("Lugar: "+personal.getLugar());
-        System.out.println("Prioridad: "+actividadmostrada.getPrioridad());
-        if (actividadmostrada.getAvance() == 100){
-            System.out.println("Estado: Terminada");
-        } else {
-            System.out.println("Estado: En curso");
-        }
-        System.out.println("Fecha Limite: "+actividadmostrada.getFechaVencimiento());
-        
-        // --- CORRECCIÓN DE COPIAR/PEGAR ---
-        System.out.println("Tiempo Estimado Total: "+actividadmostrada.getTiempoEstimado() + " min.");
-        
-        System.out.println("Avance Actual: "+actividadmostrada.getAvance() + "%");
-    }
-    
-    // --- ¡¡SOLUCIÓN AL BUCLE INFINITO!! ---
-    // Llama a tu método que espera a que el usuario presione [ENTER]
-    mostrarMensaje("Presione [ENTER] para volver a la lista...");
-}
+        // --- IMPORTANTE: ESTA LÍNEA EVITA EL BUCLE INFINITO ---
+        System.out.println("Presione [ENTER] para volver a la lista...");
+        sc.nextLine();}
 
 public boolean verificarRango(int valoringresado,int valorminimo, int valormaximo){
         if ((valorminimo <= valoringresado) && (valormaximo >= valoringresado)){
@@ -197,35 +221,40 @@ public boolean verificarRango(int valoringresado,int valorminimo, int valormaxim
         return opcion;
     }
     public int pedirIdActividad(int tamanoLista) {
-        if (tamanoLista == 0) {
-            System.out.println("No hay actividades para seleccionar.");
-            return 0; 
+    if (tamanoLista == 0) {
+        System.out.println("No hay actividades para seleccionar.");
+        return 0; 
+    }
+
+    int id = -1; // Usamos -1 para controlar el bucle
+
+    do {
+        // Ya no mostramos el rango estricto en el mensaje
+        System.out.print("Ingrese el ID de la actividad (o '0' para volver): ");
+        
+        try {
+            id = sc.nextInt();
+            
+            // VALIDACIÓN RELAJADA:
+            // Solo verificamos que no sea negativo.
+            // Si escribe 999, el Controlador le dirá "ID no encontrado", y eso está bien.
+            if (id < 0) {
+                System.out.println("Error: El ID no puede ser negativo.");
+                id = -1;
+            }
+        
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Debe ingresar solo números.");
+            id = -1; 
+        
+        } finally {
+            sc.nextLine(); 
         }
 
-        int id = 0;
-
-        do {
-            System.out.print("Ingrese el ID de la actividad (1 - " + tamanoLista + "): ");
-            
-            try {
-                id = sc.nextInt();
-                if (verificarRango(id, 1, tamanoLista) == false) {
-                    System.out.println("Error: El ID no es válido. Debe ser un número entre 1 y " + tamanoLista + ".");
-                    id = 0;
-                }
-            
-            } catch (InputMismatchException e) {
-                System.out.println("Error: Debe ingresar solo números.");
-                id = 0; 
-            
-            } finally {
-                sc.nextLine(); 
-            }
-
-        } while (id == 0);
-        
-        return id;
-    }
+    } while (id == -1);
+    
+    return id;
+}
 public int pedirNumeroRango(String mensaje, int min, int max) {
     int numero = 0;
     do {
