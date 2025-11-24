@@ -2,78 +2,43 @@ package espol.poo.controlador;
 
 import espol.poo.modelo.RegistrarHorasDeSuenio;
 import espol.poo.vista.VistaSuenio;
-
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class ControladorSuenio {
 
-    private ArrayList<RegistrarHorasDeSuenio> registros = new ArrayList<>();
-    private VistaSuenio vista = new VistaSuenio();
+    private ArrayList<RegistrarHorasDeSuenio> registros;
+    private VistaSuenio vista;
 
+    public ControladorSuenio() {
+        this.registros = new ArrayList<>();
+        this.vista = new VistaSuenio();
+    }
+    
+    // Método principal que gestiona el flujo del menú
     public void gestionarSuenio() {
         int opcion;
-
         do {
             opcion = vista.mostrarMenu();
-
             switch (opcion) {
-                case 1 -> registrarHoras();
-                case 2 -> mostrarRegistros();
-                case 3 -> generarReporteSemanal();
-                case 4 -> vista.mostrarMensaje("Saliendo del módulo de sueño...");
+                case 1 -> registrarNuevoSuenio();
+                case 2 -> vista.mostrarReporteGrafico(registros);
+                case 3 -> vista.mostrarMensaje("Saliendo del módulo de sueño...");
                 default -> vista.mostrarMensaje("Opción inválida.");
             }
-
-        } while (opcion != 4);
+        } while (opcion != 3);
     }
 
-    private void registrarHoras() {
-        vista.mostrarMensaje("\n--- Registrar Horas de Sueño ---");
+    // Coordina la entrada de datos, creación del objeto y muestra del resultado
+    private void registrarNuevoSuenio() {
+        vista.mostrarMensaje("\n--- REGISTRAR HORAS DE SUEÑO ---");
+        
+        LocalTime inicio = vista.pedirHora("Ingrese la hora en que se acostó");
+        LocalTime fin = vista.pedirHora("Ingrese la hora en que despertó");
 
-        LocalTime inicio = vista.pedirHora("Ingrese la hora de acostarse");
-        LocalTime fin = vista.pedirHora("Ingrese la hora de despertarse");
+        RegistrarHorasDeSuenio nuevoRegistro = new RegistrarHorasDeSuenio(inicio, fin);
+        registros.add(nuevoRegistro);
 
-        RegistrarHorasDeSuenio registro = new RegistrarHorasDeSuenio(inicio, fin);
-        registros.add(registro);
-
-        vista.mostrarResumen(registro.generarResumen());
+        vista.mostrarResultadoInmediato(nuevoRegistro);
     }
-
-    private void mostrarRegistros() {
-        vista.mostrarLista(registros);
-    }
-
-    private void generarReporteSemanal() {
-        vista.mostrarMensaje("\n===== REPORTE SEMANAL =====");
-
-        LocalDate hace7dias = LocalDate.now().minusDays(7);
-
-        double total = 0;
-        int contador = 0;
-
-        for (RegistrarHorasDeSuenio r : registros) {
-            if (!r.getFechaRegistro().isBefore(hace7dias)) {
-                total += r.getDuracionHoras();
-                contador++;
-            }
-        }
-
-        if (contador == 0) {
-            vista.mostrarMensaje("No hay registros en la última semana.");
-            return;
-        }
-
-        double promedio = total / contador;
-
-        vista.mostrarMensaje("Horas totales: " + String.format("%.1f h", total));
-        vista.mostrarMensaje("Promedio diario: " + String.format("%.1f h", promedio));
-    }
-
-    public void registrarManual(espol.poo.modelo.RegistrarHorasDeSuenio registro) {
-    if (registro != null) {
-        registros.add(registro);
-    }
-}
 }
