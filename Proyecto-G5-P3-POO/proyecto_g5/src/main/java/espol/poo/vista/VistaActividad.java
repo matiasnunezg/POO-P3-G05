@@ -167,7 +167,7 @@ public boolean verificarRango(int valoringresado,int valorminimo, int valormaxim
         System.out.println("\n*** ¡Error! " + mensaje + " ***");
 }
     public int pedirOpcionGestion() {
-        System.out.println("1. Visualizar actividades");
+        System.out.println("\n1. Visualizar actividades");
         System.out.println("2. Crear actividad");
         System.out.println("3. Registrar avance de actividad");
         System.out.println("4. Eliminar actividad");

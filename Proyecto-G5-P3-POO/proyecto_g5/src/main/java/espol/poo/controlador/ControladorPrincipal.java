@@ -175,7 +175,7 @@ try {
                 case 2 -> abrirTecnicasEnfoque();
                 case 3 -> abrirControlHidratacion();
                 case 4 -> abrirRegistroSueno();
-                case 5 -> System.out.println("Sostenibilidad: pendiente de implementar.");
+                case 5 -> System.out.println("\nSostenibilidad: pendiente de implementar.");
                 case 6 -> abrirJuegoMemoria();
                 case 7 -> System.out.println("\nSaliendo del sistema...");
                 default -> System.out.println("Opción no válida, intente nuevamente.");

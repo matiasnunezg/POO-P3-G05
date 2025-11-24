@@ -50,7 +50,7 @@ public class ControladorActividades {
 
         while (!volver) {
             opcion = vista.pedirOpcionGestion(); // Asumo que la vista tiene este método
-
+            
             switch (opcion) {
                 case 1:
                     visualizarActividades();
