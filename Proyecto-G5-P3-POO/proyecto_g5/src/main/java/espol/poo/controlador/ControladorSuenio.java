@@ -42,3 +42,5 @@ public class ControladorSuenio {
         vista.mostrarResultadoInmediato(nuevoRegistro);
     }
 }
+
+//hola 
