@@ -67,3 +67,5 @@ public class RegistrarHorasDeSuenio {
     public LocalDate getFechaRegistro() { return fechaRegistro; }
     public double getDuracionTotalHoras() { return duracionTotalHoras; }
 }
+
+//suenio 
