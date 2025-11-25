@@ -41,6 +41,10 @@ public class ControladorSuenio {
 
         vista.mostrarResultadoInmediato(nuevoRegistro);
     }
+    // Permite agregar registros desde fuera del controlador (útil para cargar datos)
+    public void agregarRegistroManual(RegistrarHorasDeSuenio registro) {
+        if (registro != null) {
+            this.registros.add(registro);
+        }
+    }
 }
-
-//hola 
