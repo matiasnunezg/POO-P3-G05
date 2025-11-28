@@ -88,7 +88,7 @@ public void mostrarDetalle(Actividad actividadmostrada) {
             System.out.println("Estado: " + estado);
             
             System.out.println("Fecha Límite: " + actividadmostrada.getFechaVencimiento());
-            System.out.println("Tiempo Estimado Total: " + actividadmostrada.getTiempoEstimado() + " min.");
+            System.out.println("Tiempo Estimado Total: " + actividadmostrada.getTiempoEstimadoFormateado());
             System.out.println("Avance Actual: " + actividadmostrada.getAvance() + "%");
 
             // >>> AQUÍ ESTÁ LA TABLA DE HISTORIAL (LO QUE FALTABA) <<<
@@ -109,10 +109,10 @@ public void mostrarDetalle(Actividad actividadmostrada) {
                     // Formateamos la fecha para que no salga null
                     String fechaStr = (sesion.getFecha() != null) ? sesion.getFecha().format(fmt) : "N/A";
                     
-                    System.out.printf("| %-12s | %-16s | %-14d |%n",
+                    System.out.printf("| %-12s | %-16s | %-14s |%n",
                             fechaStr, 
                             sesion.getTecnica(), 
-                            sesion.getMinutos());
+                            sesion.getDuracionFormateada());
                 }
                 System.out.println("---------------------------------");
             } else {
@@ -376,7 +376,7 @@ public int pedirNumeroRango(String mensaje, int min, int max) {
             // 3. Valida el rango
             if (opcion < 1 || opcion > maxOpcion) {
                 System.out.println("Error: Opción fuera de rango.");
-                opcion = 0; // Marca como inválido para repetir
+                opcion = 0; // Marca como invál ido para repetir
             }
         
         } catch (InputMismatchException e) {
@@ -560,9 +560,10 @@ public int pedirNumeroRango(String mensaje, int min, int max) {
     }
     
     public String pedirHoraVencimiento() {
-    System.out.println("--- Ingrese la Hora de Vencimiento (Formato 24h) ---");
-    int hora = pedirNumeroRango("Ingrese la Hora (0-23):", 0, 23);
-    int minuto = pedirNumeroRango("Ingrese los Minutos (0-59):", 0, 59);
-    return String.format("%02d:%02d", hora, minuto);
-}
+        System.out.println("--- Ingrese la Hora de Vencimiento (Formato 24h) ---");
+        int hora = pedirNumeroRango("Ingrese la Hora (0-23):", 0, 23);
+        int minuto = pedirNumeroRango("Ingrese los Minutos (0-59):", 0, 59);
+        return String.format("%02d:%02d", hora, minuto);
+    }
+
 }

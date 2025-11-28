@@ -82,4 +82,21 @@ public class Actividad {
         this.avance = 0; 
     }
 
+    public String getTiempoEstimadoFormateado() {
+        int minutos = this.getTiempoEstimado();
+
+        if (minutos < 60) {
+            return minutos + " min";
+        }
+        int horas = minutos / 60;
+        int minsRest = minutos % 60;
+
+        if (minsRest == 0){ 
+            return horas + " h";
+        }
+        else{
+            return horas + " h " + minsRest + " min";
+        }
+        }
+
 }

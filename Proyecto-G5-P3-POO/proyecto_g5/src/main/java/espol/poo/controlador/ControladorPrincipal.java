@@ -24,6 +24,7 @@ public class ControladorPrincipal {
     private VistaActividad vistaActividad;
     private VistaEnfoque vistaEnfoque;
     private VistaHidratacion vistaHidratacion;
+    private RegistroSostenible registroSostenible;
 
     // Repositorios globales
     private ArrayList<Actividad> listaDeActividades;
@@ -43,6 +44,7 @@ public class ControladorPrincipal {
         this.vistaActividad = new VistaActividad();
         this.vistaEnfoque = new VistaEnfoque();
         this.vistaHidratacion = new VistaHidratacion();
+        this.registroSostenible = new RegistroSostenible();
 
         // Inicializar Modelos (Listas y Reglas)
         this.listaDeActividades = new ArrayList<>();
@@ -54,77 +56,102 @@ public class ControladorPrincipal {
     public void inicializarApp() {
         System.out.println("Inicializando aplicación...");
 
-        // Actividades personales y académicas (de ejemplo)
+        // 1) Actividad Personal: Cita médica (30 nov)
         ActividadPersonal citaMedica = new ActividadPersonal(
-                "Cita médica", // nombre
-                TipoPrioridad.Alta, // prioridad
-                "30/11/2025 17:00", // fechaVencimiento
+                "Cita médica",
+                TipoPrioridad.Alta,
+                "30/11/2025 17:00",
                 0, // avance
                 1, // id
-                45, // tiempoEstimado (min)
-                "30/11/2025", // fechaActual (puedes ajustar)
-                "Clínica Central", // lugar
-                TipoActividadPersonal.Citas, // actividadPersonal
-                "Revisión general con el doctor" // descripcion
+                45, // tiempoEstimado
+                "30/11/2025",
+                "Clínica Central",
+                TipoActividadPersonal.Citas,
+                "Revisión general con el doctor"
         );
         listaDeActividades.add(citaMedica);
 
+        // 2) Proyecto académico con 70% de avance
         ActividadAcademica proyecto = new ActividadAcademica(
-                "Sistema Gestión Tiempo (Fase 1)", // nombre
-                TipoPrioridad.Alta, // prioridad
-                "25/11/2025 23:59", // fechaVencimiento
-                0, // avance (%)
-                2, // id
-                60, // tiempoEstimado (horas o min según tu modelo)
-                "25/11/2025", // fechaActual
-                "Programación Orientada a Objetos", // asignatura
-                TipoActividadAcademica.Proyecto, // actividadAcademica
-                "Implementación de la lógica de POO en Java" // descrpcion
+                "Sistema Gestión Tiempo (Fase 1)",
+                TipoPrioridad.Alta,
+                "30/11/2025 23:59",
+                68,  // >>> AVANCE INICIAL = 68%
+                2,
+                3600, // tiempo estimado total (min)
+                "28/11/2025",
+                "Programación Orientada a Objetos",
+                TipoActividadAcademica.Proyecto,
+                "Implementación de la lógica de POO en Java"
         );
+
+        // >>> AGREGO LAS 2 SESIONES POMODORO AL PROYECTO PARA LLEGAR A 70%
+        proyecto.registrarSesion("Pomodoro", 25);
+        proyecto.registrarSesion("Pomodoro", 25);
+
+        // ====== SIMULAR FECHAS ANTIGUAS EN CADA SESIÓN ======
+        List<SesionEnfoque> historial = proyecto.getHistorialSesiones();
+
+        try {
+            java.lang.reflect.Field fechaField = SesionEnfoque.class.getDeclaredField("fecha");
+            fechaField.setAccessible(true);
+
+            // Primera sesión → 27/11/2025
+            fechaField.set(historial.get(0), java.time.LocalDate.of(2025, 11, 27));
+
+            // Segunda sesión → 28/11/2025
+            fechaField.set(historial.get(1), java.time.LocalDate.of(2025, 11, 28));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         listaDeActividades.add(proyecto);
 
+        // 3) Tarea académica
         ActividadAcademica tarea = new ActividadAcademica(
-                "Cuestionario Unidad 2", // nombre
-                TipoPrioridad.Media, // prioridad
-                "03/12/2025 23:59", // fechaVencimiento
+                "Cuestionario Unidad 2",
+                TipoPrioridad.Media,
+                "03/12/2025 23:59",
                 0, // avance
-                3, // id
-                120, // tiempoEstimado
-                "03/12/2025", // fechaActual
-                "Matemática Discreta", // asignatura
-                TipoActividadAcademica.Tarea, // actividadAcademica
-                "Entrega en Aula Virtual" // descrpcion
+                3,
+                90,
+                "27/11/2025",
+                "Matemática Discreta",
+                TipoActividadAcademica.Tarea,
+                "Entrega en Aula Virtual"
         );
         listaDeActividades.add(tarea);
 
+        // 4) Examen académico
         ActividadAcademica examen = new ActividadAcademica(
-                "Examen Parcial", // nombre
-                TipoPrioridad.Alta, // prioridad
-                "10/12/2025 09:00", // fechaVencimiento
-                0, // avance
-                4, // id
-                120, // tiempoEstimado
-                "10/12/2025", // fechaActual
-                "Cálculo Avanzado", // asignatura
-                TipoActividadAcademica.Examen, // actividadAcademica
-                "Evaluación parcial de la materia" // descrpcion
+                "Examen Parcial",
+                TipoPrioridad.Alta,
+                "10/12/2025 09:00",
+                0,
+                4,
+                120,
+                "26/11/2025",
+                "Cálculo Avanzado",
+                TipoActividadAcademica.Examen,
+                "Evaluación parcial de la materia"
         );
         listaDeActividades.add(examen);
 
         RegistroHidratacion registro1 = new RegistroHidratacion(
-                2500.0, // meta diaria (ml)
-                500.0, // cantidad ingerida
-                500.0, // acumulado diario
-                java.time.LocalDate.of(2025, 11, 23), // fecha
-                java.time.LocalTime.of(9, 30) // hora
+                2500.0,                     // meta diaria (ml)
+                500.0,                      // cantidad ingerida en ese momento
+                500.0,                      // acumulado diario
+                java.time.LocalDate.of(2025, 11, 23), // FECHA SIMULADA
+                java.time.LocalTime.of(9, 30)         // HORA SIMULADA
         );
 
         RegistroHidratacion registro2 = new RegistroHidratacion(
-                2500.0, // meta diaria (ml)
-                300.0, // cantidad ingerida
-                800.0, // acumulado diario (suma con la anterior)
-                java.time.LocalDate.of(2025, 11, 24), // fecha
-                java.time.LocalTime.of(11, 0) // hora
+                2500.0,                     // meta diaria (ml)
+                300.0,                      // cantidad ingerida en ese momento
+                800.0,                      // acumulado diario
+                java.time.LocalDate.of(2025, 11, 24), // FECHA SIMULADA
+                java.time.LocalTime.of(11, 0)         // HORA SIMULADA
         );
 
         registrosHidratacion.add(registro1);
@@ -133,14 +160,14 @@ public class ControladorPrincipal {
         // --- CARGA DE DATOS DE SUEÑO ---
         RegistrarHorasDeSuenio sueno_registro1 = new RegistrarHorasDeSuenio(
                 LocalTime.of(23, 30),
-                LocalTime.of(7, 0)
+                LocalTime.of(4, 0)
         );
         RegistrarHorasDeSuenio sueno_registro2 = new RegistrarHorasDeSuenio(
                 LocalTime.of(0, 15),
                 LocalTime.of(8, 0)
         );
 
-        // Simulamos fechas usando reflexión (mismo truco que tenías)
+
         try {
             java.lang.reflect.Field fechaField = RegistrarHorasDeSuenio.class.getDeclaredField("fechaRegistro");
             fechaField.setAccessible(true);
@@ -152,6 +179,28 @@ public class ControladorPrincipal {
 
         registrosSueno.add(sueno_registro1);
         registrosSueno.add(sueno_registro2);
+
+        // --- CARGA DE DATOS DE SOSTENIBILIDAD (23 y 24 de noviembre) ---
+
+        // Día 23/11/2025 → Acciones: Transporte público (1), Reciclaje (4)
+        List<Integer> acciones23 = new ArrayList<>();
+        acciones23.add(1);
+        acciones23.add(4);
+        RegistroDiarioSostenible s23 = new RegistroDiarioSostenible(
+                LocalDate.of(2025, 11, 23),
+                acciones23
+        );
+        registroSostenible.agregarRegistro(s23);
+
+        // Día 24/11/2025 → Acciones: No imprimir (2), No usar desechables (3)
+        List<Integer> acciones24 = new ArrayList<>();
+        acciones24.add(2);
+        acciones24.add(3);
+        RegistroDiarioSostenible s24 = new RegistroDiarioSostenible(
+                LocalDate.of(2025, 11, 24),
+                acciones24
+        );
+        registroSostenible.agregarRegistro(s24);
 
         System.out.println("Datos iniciales cargados correctamente.\n");
     }
@@ -169,7 +218,7 @@ public class ControladorPrincipal {
                 case 2 -> abrirTecnicasEnfoque();
                 case 3 -> abrirControlHidratacion();
                 case 4 -> abrirRegistroSueno();
-                case 5 -> System.out.println("\nSostenibilidad: pendiente de implementar.");
+                case 5 -> abrirSostenibilidad();
                 case 6 -> abrirJuegoMemoria();
                 case 7 -> System.out.println("\nSaliendo del sistema...");
                 default -> System.out.println("Opción no válida, intente nuevamente.");
@@ -201,9 +250,7 @@ public class ControladorPrincipal {
         controladorJuegoEco.iniciarJuego();
     }
 
-    // =========================================================
-    // AQUÍ ESTABA EL ERROR DE NOMBRE, YA CORREGIDO:
-    // =========================================================
+
     private void abrirRegistroSueno() {
         if (controladorSuenio == null) {
             controladorSuenio = new ControladorSuenio();
@@ -230,4 +277,11 @@ public class ControladorPrincipal {
         }
         controladorEnfoque.gestionarEnfoque();
     }
+
+
+    private void abrirSostenibilidad() {
+    ControladorSostenibilidad controladorSost = new ControladorSostenibilidad(registroSostenible);
+    controladorSost.iniciarRegistroDiario();
+    }
+
 }

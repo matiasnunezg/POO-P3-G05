@@ -29,4 +29,20 @@ public class SesionEnfoque {
     public int getMinutos() {
         return minutos;
     }
+
+    public String getDuracionFormateada() {
+        if (minutos < 60){
+            return minutos + " min";
+        }
+
+        int h = minutos / 60;
+        int m = minutos % 60;
+
+        if (m == 0) {
+            return h + " h";
+        }
+        else{
+            return h + " h " + m + " min";}
+    }
+    
 }

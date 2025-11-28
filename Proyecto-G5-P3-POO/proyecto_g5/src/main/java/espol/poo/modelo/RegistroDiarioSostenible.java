@@ -1,29 +1,36 @@
 package espol.poo.modelo;
+
 import java.time.LocalDate;
 import java.util.List;
 
-    /* * 2. CLASE REGISTRO DIARIO
-     * Representa un día específico (ej: 14/10/2025).
-     * Guarda la fecha y la lista de cosas que el usuario hizo ese día.
-     */
-
-
 public class RegistroDiarioSostenible {
-private LocalDate fecha;
-    private List<AccionSostenible> accionesDelDia;
 
-    public RegistroDiarioSostenible(LocalDate fecha, List<AccionSostenible> accionesDelDia) {
+    private LocalDate fecha;
+    // Guarda los IDs de las acciones seleccionadas (1,2,3,4)
+    private List<Integer> accionesSeleccionadasIds;
+
+    public RegistroDiarioSostenible(LocalDate fecha, List<Integer> accionesSeleccionadasIds) {
         this.fecha = fecha;
-        this.accionesDelDia = accionesDelDia;
+        this.accionesSeleccionadasIds = accionesSeleccionadasIds;
     }
 
-    public LocalDate getFecha() { return fecha; }
-    public List<AccionSostenible> getAccionesDelDia() { return accionesDelDia; }
+    public LocalDate getFecha() {
+        return fecha;
+    }
 
-    public int calcularPuntos() {
+    public List<Integer> getAccionesSeleccionadasIds() {
+        return accionesSeleccionadasIds;
+    }
+
+    // Calcula los puntos del día usando la tabla (id -> puntos)
+    public int calcularPuntos(List<AccionPuntos> accionesPuntos) {
         int total = 0;
-        for (AccionSostenible a : accionesDelDia) {
-            total += a.getPuntos();
+        for (Integer id : accionesSeleccionadasIds) {
+            for (AccionPuntos ap : accionesPuntos) {
+                if (ap.getId() == id) {
+                    total += ap.getPuntos();
+                }
+            }
         }
         return total;
     }

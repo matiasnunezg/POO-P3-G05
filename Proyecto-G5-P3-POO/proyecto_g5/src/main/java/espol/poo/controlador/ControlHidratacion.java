@@ -49,7 +49,7 @@ public class ControlHidratacion {
                     opcionMostrarProgreso();
                     break;
                 case 4:
-                    vista.mostrarMensaje("Volviendo al menú principal...");
+                    vista.mostrarMensaje("Volviendo al menú principal...\n");
                     break;
                 default:
                     vista.mostrarMensaje("Opción no válida. Intente nuevamente.");
@@ -109,27 +109,33 @@ public class ControlHidratacion {
     }
 
     // Opción 3: mostrar progreso (calcula con registros del día)
-    private void opcionMostrarProgreso() {
-        LocalDate hoy = LocalDate.now();
-        double totalHoy = calcularTotalDelDia(hoy);
-        double faltante = Math.max(0.0, this.metaDiaria - totalHoy);
-        double porcentaje = calcularPorcentaje(totalHoy, this.metaDiaria);
+private void opcionMostrarProgreso() {
+    LocalDate hoy = LocalDate.now();
+    double totalHoy = calcularTotalDelDia(hoy);
+    double faltante = Math.max(0.0, this.metaDiaria - totalHoy);
+    double porcentaje = calcularPorcentaje(totalHoy, this.metaDiaria);
 
-        // construir listas de cantidades y horas del día (para que la vista muestre historial dentro del progreso)
-        ArrayList<Double> cantidades = new ArrayList<>();
-        ArrayList<LocalTime> horas = new ArrayList<>();
+    ArrayList<Double> cantidades = new ArrayList<>();
+    ArrayList<LocalTime> horas = new ArrayList<>();
 
-        for (RegistroHidratacion r : registros) {
-            if (r.getFechaRegistro() != null && r.getFechaRegistro().equals(hoy)) {
-                cantidades.add(r.getCantidadIngerida());
-                horas.add(r.getHoraRegistro());
-            }
+    for (RegistroHidratacion r : registros) {
+        if (r.getFechaRegistro().equals(hoy)) {
+            cantidades.add(r.getCantidadIngerida());
+            horas.add(r.getHoraRegistro());
         }
-
-        // LLAMADA A LA VISTA CORRECTA
-        String fechaStr = hoy.getDayOfMonth() + "/" + hoy.getMonthValue() + "/" + hoy.getYear();
-        vista.mostrarProgresoDetallado(fechaStr, this.metaDiaria, totalHoy, faltante, porcentaje, cantidades, horas);
     }
+
+    
+    String fechaStr = hoy.getDayOfMonth() + "/" + hoy.getMonthValue() + "/" + hoy.getYear();
+    
+    // NUEVO: MOSTRAR HISTORIAL AUTOMÁTICAMENTE
+    vista.mostrarHistorialAnterior(registros, hoy);
+    
+    // MOSTRAR PROGRESO DEL DÍA ACTUAL
+    vista.mostrarProgresoDetallado(fechaStr, this.metaDiaria, totalHoy, faltante, porcentaje, cantidades, horas);
+
+
+}
 
     // ---------- MÉTODOS AUXILIARES ----------
 

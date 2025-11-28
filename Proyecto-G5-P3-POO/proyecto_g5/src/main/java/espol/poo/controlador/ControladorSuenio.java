@@ -23,7 +23,7 @@ public class ControladorSuenio {
             switch (opcion) {
                 case 1 -> registrarNuevoSuenio();
                 case 2 -> vista.mostrarReporteGrafico(registros);
-                case 3 -> vista.mostrarMensaje("Saliendo del módulo de sueño...");
+                case 3 -> vista.mostrarMensaje("Saliendo del módulo de sueño...\n");
                 default -> vista.mostrarMensaje("Opción inválida.");
             }
         } while (opcion != 3);

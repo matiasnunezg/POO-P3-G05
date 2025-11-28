@@ -17,8 +17,37 @@ public class ControladorJuegoMemoriaEco {
         this.modelo = new JuegoMemoriaEco();
     }
 
+    private void imprimirUbicacionDePares() {
+        System.out.println("\n=== UBICACIÓN DE PARES (SOLO PARA REVISIÓN) ===");
+
+        // Para evitar imprimir duplicados
+        java.util.HashSet<String> yaMostrados = new java.util.HashSet<>();
+
+        for (int i = 0; i < 16; i++) {
+            String carta = modelo.getCarta(i);
+
+            if (!yaMostrados.contains(carta)) {
+                // buscar su pareja
+                for (int j = i + 1; j < 16; j++) {
+                    if (modelo.getCarta(j).equals(carta)) {
+                        System.out.printf("%-10s → posiciones %d y %d%n",
+                                carta, (i + 1), (j + 1));
+                        yaMostrados.add(carta);
+                        break;
+                    }
+                }
+            }
+        }
+
+        System.out.println("===============================================\n");
+    }
+
+
     public void iniciarJuego() {
         vista.mostrarBienvenida();
+        // Mostrar ubicación exacta de los pares (solo para revisión)
+        imprimirUbicacionDePares();
+        vista.pausar();
 
         while (!modelo.juegoTerminado()) {
             mostrarTableroTemporal();

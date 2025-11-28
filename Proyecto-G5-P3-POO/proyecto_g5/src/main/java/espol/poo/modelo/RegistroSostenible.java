@@ -5,13 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-    /* * 3. CLASE REGISTRO SOSTENIBLE (GESTOR)
-     * Es el historial completo. Guarda una lista de "Registros Diarios".
-     * Aquí se calculan las estadísticas semanales y frecuencias.
-     */
-
-
 public class RegistroSostenible {
+
     private List<RegistroDiarioSostenible> registros;
 
     public RegistroSostenible() {
@@ -26,12 +21,13 @@ public class RegistroSostenible {
         return registros;
     }
 
-    // Calcula cuántas veces se repitió cada acción (ID -> Cantidad)
+    // Calcula cuántas veces se repitió cada acción (por ID)
     public Map<Integer, Integer> calcularFrecuencias() {
         Map<Integer, Integer> freq = new HashMap<>();
+
         for (RegistroDiarioSostenible r : registros) {
-            for (AccionSostenible a : r.getAccionesDelDia()) {
-                freq.put(a.getId(), freq.getOrDefault(a.getId(), 0) + 1);
+            for (int idAccion : r.getAccionesSeleccionadasIds()) {
+                freq.put(idAccion, freq.getOrDefault(idAccion, 0) + 1);
             }
         }
         return freq;
@@ -40,7 +36,7 @@ public class RegistroSostenible {
     public int contarDiasConAcciones() {
         int count = 0;
         for (RegistroDiarioSostenible r : registros) {
-            if (!r.getAccionesDelDia().isEmpty()) {
+            if (!r.getAccionesSeleccionadasIds().isEmpty()) {
                 count++;
             }
         }
@@ -50,7 +46,7 @@ public class RegistroSostenible {
     public int contarDiasPerfectos(int totalAcciones) {
         int count = 0;
         for (RegistroDiarioSostenible r : registros) {
-            if (r.getAccionesDelDia().size() == totalAcciones) {
+            if (r.getAccionesSeleccionadasIds().size() == totalAcciones) {
                 count++;
             }
         }

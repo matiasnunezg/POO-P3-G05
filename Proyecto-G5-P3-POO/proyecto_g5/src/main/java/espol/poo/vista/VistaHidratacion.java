@@ -1,9 +1,12 @@
 package espol.poo.vista;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import espol.poo.modelo.RegistroHidratacion;
 
 public class VistaHidratacion {
 
@@ -111,6 +114,37 @@ public class VistaHidratacion {
         presioneEnterParaContinuar();
     }
 
+public void mostrarHistorialAnterior(ArrayList<RegistroHidratacion> registros, LocalDate hoy) {
+
+    System.out.println("\n--- HISTORIAL DE DÍAS ANTERIORES ---");
+
+    DateTimeFormatter fFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter fHora = DateTimeFormatter.ofPattern("hh:mm a");
+
+    LocalDate fechaActual = null;
+    boolean hayRegistros = false;
+
+    for (RegistroHidratacion r : registros) {
+
+        if (r.getFechaRegistro().equals(hoy)) continue;
+
+        hayRegistros = true;
+
+        if (!r.getFechaRegistro().equals(fechaActual)) {
+            fechaActual = r.getFechaRegistro();
+            System.out.println("\nFecha: " + fechaActual.format(fFecha));
+        }
+
+        System.out.println("- " + r.getHoraRegistro().format(fHora)
+                           + ": " + (int) r.getCantidadIngerida() + " ml");
+    }
+
+    if (!hayRegistros) {
+        System.out.println("No hay registros anteriores.\n");
+    }
+
+    System.out.println("---------------------------------------");
+}
 
     public void mostrarMensaje(String msg) {
         System.out.println(msg);

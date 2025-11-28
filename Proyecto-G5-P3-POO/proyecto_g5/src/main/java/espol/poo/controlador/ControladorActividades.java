@@ -49,7 +49,7 @@ public class ControladorActividades {
         boolean volver = false;
 
         while (!volver) {
-            opcion = vista.pedirOpcionGestion(); // Asumo que la vista tiene este método
+            opcion = vista.pedirOpcionGestion(); 
             
             switch (opcion) {
                 case 1:
@@ -69,7 +69,7 @@ public class ControladorActividades {
                     vista.mostrarMensaje("Volviendo al menú principal...");
                     break;
                 default:
-                    vista.mostrarError("Opción no válida."); // Asumo que la vista tiene este método
+                    vista.mostrarError("Opción no válida."); 
             }
         }
     }
@@ -88,7 +88,7 @@ public class ControladorActividades {
             String fechavencimiento = vista.pedirfechaVencimiento() + " " + vista.pedirHoraVencimiento();
             String fechaActual = getFechaActual();
             String descripcion = vista.pedirTextoNoVacio("Ingrese descripcion de la actividad: ");
-            int tiempoestimado = vista.pedirNumeroPositivo("Ingrese el tiempo estimado: ");
+            int tiempoestimado = vista.pedirNumeroPositivo("Ingrese el tiempo estimado (en minutos): ");
             
             // Crea el ID basado en el tamaño actual de la lista
             int nuevoId = listaDeActividades.size() + 1;

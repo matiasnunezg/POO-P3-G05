@@ -77,11 +77,11 @@ public class VistaSuenio {
 
             double horas = r.getDuracionTotalHoras();
             String barra = generarBarraAscii(horas);
-            String comentario = (horas >= 8.0) ? "(¡Meta Superada!)" : (horas < 6.0 ? "(Bajo)" : "");
+            String comentario = (horas >= 8.0) ? "(¡Meta Superada!)" : (horas < 6.0 ? "(Por debajo de la meta)" : "");
 
             System.out.printf("%-10s | %-12s | %s %s\n", 
                     fechaStr, 
-                    String.format("%.1fh", horas), 
+                    String.format(java.util.Locale.US, "%.1fh", horas),
                     barra, 
                     comentario);
         }
