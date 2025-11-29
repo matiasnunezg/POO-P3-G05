@@ -1,6 +1,6 @@
 package espol.poo.controlador;
 
-import espol.poo.modelo.JuegoMemoriaEco;
+import espol.poo.modelo.juegomemoria.JuegoMemoriaEco;
 import espol.poo.vista.VistaJuegoMemoriaEco;
 
 /**

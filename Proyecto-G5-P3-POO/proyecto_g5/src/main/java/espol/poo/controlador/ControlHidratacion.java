@@ -1,6 +1,6 @@
 package espol.poo.controlador;
 
-import espol.poo.modelo.RegistroHidratacion;
+import espol.poo.modelo.hidrataciones.RegistroHidratacion;
 import espol.poo.vista.VistaHidratacion;
 
 import java.time.LocalDate;

@@ -8,10 +8,18 @@ import espol.poo.vista.VistaEnfoque;
 import espol.poo.vista.VistaJuegoMemoriaEco;
 
 // --- MODELOS ---
-import espol.poo.modelo.*;
-import espol.poo.modelo.Actividad.TipoPrioridad;
-import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
-import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
+import espol.poo.modelo.actividades.Actividad;
+import espol.poo.modelo.actividades.ActividadAcademica;
+import espol.poo.modelo.actividades.ActividadPersonal;
+import espol.poo.modelo.actividades.Actividad.TipoPrioridad;
+import espol.poo.modelo.actividades.ActividadAcademica.TipoActividadAcademica;
+import espol.poo.modelo.actividades.ActividadPersonal.TipoActividadPersonal;
+import espol.poo.modelo.enfoques.SesionEnfoque;
+import espol.poo.modelo.enfoques.TecnicasEnfoque;
+import espol.poo.modelo.hidrataciones.RegistroHidratacion;
+import espol.poo.modelo.sostenibilidad.RegistroDiarioSostenible;
+import espol.poo.modelo.sostenibilidad.RegistroSostenible;
+import espol.poo.modelo.suenio.RegistrarHorasDeSuenio;
 
 // --- UTILIDADES ---
 import java.util.*;
@@ -171,8 +179,8 @@ public class ControladorPrincipal {
         try {
             java.lang.reflect.Field fechaField = RegistrarHorasDeSuenio.class.getDeclaredField("fechaRegistro");
             fechaField.setAccessible(true);
-            fechaField.set(sueno_registro1, LocalDate.of(2025, 11, 23));
-            fechaField.set(sueno_registro2, LocalDate.of(2025, 11, 24));
+            fechaField.set(sueno_registro1, LocalDate.of(2025, 11, 28));
+            fechaField.set(sueno_registro2, LocalDate.of(2025, 11, 29));
         } catch (Exception e) {
             e.printStackTrace();
         }

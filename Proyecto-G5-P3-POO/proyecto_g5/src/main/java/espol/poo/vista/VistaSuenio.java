@@ -1,12 +1,13 @@
 package espol.poo.vista;
 
-import espol.poo.modelo.RegistrarHorasDeSuenio;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale; 
 import java.util.Scanner;
+
+import espol.poo.modelo.suenio.RegistrarHorasDeSuenio;
 
 public class VistaSuenio {
 

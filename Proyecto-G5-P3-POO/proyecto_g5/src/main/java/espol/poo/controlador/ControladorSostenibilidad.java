@@ -1,8 +1,8 @@
 package espol.poo.controlador;
 
-import espol.poo.modelo.RegistroDiarioSostenible;
-import espol.poo.modelo.RegistroSostenible;
-import espol.poo.modelo.AccionPuntos;
+import espol.poo.modelo.sostenibilidad.AccionPuntos;
+import espol.poo.modelo.sostenibilidad.RegistroDiarioSostenible;
+import espol.poo.modelo.sostenibilidad.RegistroSostenible;
 import espol.poo.vista.VistaSostenibilidad;
 
 import java.time.LocalDate;

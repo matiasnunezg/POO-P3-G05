@@ -1,4 +1,4 @@
-package espol.poo.modelo;
+package espol.poo.modelo.suenio;
 
 import java.time.Duration;
 import java.time.LocalDate;

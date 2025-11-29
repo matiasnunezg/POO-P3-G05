@@ -1,6 +1,6 @@
 package espol.poo.controlador;
 
-import espol.poo.modelo.RegistrarHorasDeSuenio;
+import espol.poo.modelo.suenio.RegistrarHorasDeSuenio;
 import espol.poo.vista.VistaSuenio;
 import java.time.LocalTime;
 import java.util.ArrayList;

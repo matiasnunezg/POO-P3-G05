@@ -1,4 +1,4 @@
-package espol.poo.modelo;
+package espol.poo.modelo.actividades;
 
 public class Actividad {
 
