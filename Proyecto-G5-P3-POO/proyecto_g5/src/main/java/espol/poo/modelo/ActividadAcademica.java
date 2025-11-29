@@ -27,31 +27,17 @@ public class ActividadAcademica extends Actividad{
 
 public void registrarSesion(String tecnica, int minutos) {
     
-    // --- PASO 1: AÑADIR AL HISTORIAL ---
-    // (Asegúrate de que esta lista esté inicializada en tu constructor)
     if (this.historialSesiones == null) {
         this.historialSesiones = new ArrayList<>();
     }
     this.historialSesiones.add(new SesionEnfoque(tecnica, minutos));
-
-    
-    // --- PASO 2: ACTUALIZAR EL AVANCE (CORREGIDO) ---
-    
-    // Obtenemos el tiempo estimado (ej. 60)
     double tiempoEstimadoMinutos = this.getTiempoEstimado(); 
 
     if (tiempoEstimadoMinutos > 0) {
         
-        // Los 'minutos' de la sesión (ej. 90) también están en minutos.
-        // ¡Ya no multiplicamos por 60!
-        
-        // Calcula el porcentaje de esta sesión (ej. (90 / 60) * 100 = 150%)
+
         int avanceSesion = (int) Math.round((minutos / tiempoEstimadoMinutos) * 100);
-        
-        // Suma el avance nuevo al que ya existía (ej. 7% + 150% = 157%)
         int nuevoAvance = this.getAvance() + avanceSesion;
-        
-        // --- Lógica para que no pase de 100 ---
         if (nuevoAvance >= 100) {
             this.setAvance(100);
         } else {
@@ -59,8 +45,7 @@ public void registrarSesion(String tecnica, int minutos) {
         }
     }
 }
-    
-    // <<< AÑADIDO: Getter para el historial
+
     public List<SesionEnfoque> getHistorialSesiones() {
         return historialSesiones;
     }

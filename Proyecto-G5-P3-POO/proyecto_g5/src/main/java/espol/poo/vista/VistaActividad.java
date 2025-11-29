@@ -91,7 +91,6 @@ public void mostrarDetalle(Actividad actividadmostrada) {
             System.out.println("Tiempo Estimado Total: " + actividadmostrada.getTiempoEstimadoFormateado());
             System.out.println("Avance Actual: " + actividadmostrada.getAvance() + "%");
 
-            // >>> AQUÍ ESTÁ LA TABLA DE HISTORIAL (LO QUE FALTABA) <<<
             List<SesionEnfoque> historial = academica.getHistorialSesiones();
             
             if (historial != null && !historial.isEmpty()) {
@@ -314,12 +313,7 @@ public int pedirNumeroRango(String mensaje, int min, int max) {
     
     do {
         System.out.print(mensaje + " ");
-        
-        // 1. Lee la línea completa y usa .trim()
-        // .trim() quita los espacios en blanco del inicio y del final.
         texto = sc.nextLine().trim(); 
-        
-        // 2. Comprueba si, después de quitar espacios, la cadena está vacía
         if (texto.isEmpty()) {
             System.out.println("Error: El campo no puede estar vacío. Intente de nuevo.");
         }
