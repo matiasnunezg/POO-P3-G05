@@ -1,10 +1,10 @@
 package espol.poo.controlador;
 
 import espol.poo.vista.VistaEnfoque;
-import espol.poo.modelo.Actividad;
-import espol.poo.modelo.ActividadAcademica;
-import espol.poo.modelo.TecnicasEnfoque; // Importa el modelo de Técnicas
-import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica; // Importa el Enum
+import espol.poo.modelo.actividades.Actividad;
+import espol.poo.modelo.actividades.ActividadAcademica;
+import espol.poo.modelo.actividades.ActividadAcademica.TipoActividadAcademica; // Importa el Enum
+import espol.poo.modelo.enfoques.TecnicasEnfoque;
 
 import java.util.ArrayList;
 import java.util.List;

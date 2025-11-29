@@ -3,8 +3,8 @@ package espol.poo.vista;
 import java.util.List;
 import java.util.Scanner;
 // Importa las clases del Modelo que se usan en los métodos
-import espol.poo.modelo.Actividad;
-import espol.poo.modelo.ActividadAcademica; 
+import espol.poo.modelo.actividades.Actividad;
+import espol.poo.modelo.actividades.ActividadAcademica; 
 
 /**
  * Vista para el módulo de Técnicas de Enfoque.

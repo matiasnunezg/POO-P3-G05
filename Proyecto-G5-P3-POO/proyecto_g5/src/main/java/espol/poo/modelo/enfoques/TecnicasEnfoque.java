@@ -1,4 +1,4 @@
-package espol.poo.modelo;
+package espol.poo.modelo.enfoques;
 
 /**
  * Modelo que almacena la configuración de las técnicas de enfoque.

@@ -1,4 +1,4 @@
-package espol.poo.modelo;
+package espol.poo.modelo.hidrataciones;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

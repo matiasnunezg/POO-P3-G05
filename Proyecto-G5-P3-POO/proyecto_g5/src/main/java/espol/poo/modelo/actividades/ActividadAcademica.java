@@ -1,6 +1,7 @@
-package espol.poo.modelo;
+package espol.poo.modelo.actividades;
 import java.util.ArrayList;
 import java.util.List;
+import espol.poo.modelo.enfoques.SesionEnfoque;
 
 public class ActividadAcademica extends Actividad{
     private String asignatura;

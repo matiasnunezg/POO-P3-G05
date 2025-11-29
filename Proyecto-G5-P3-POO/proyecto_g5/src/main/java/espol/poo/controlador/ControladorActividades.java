@@ -2,12 +2,12 @@ package espol.poo.controlador;
 
 import java.util.ArrayList;
 import java.util.List; // <<< Es mejor usar la interfaz List
-import espol.poo.modelo.Actividad;
-import espol.poo.modelo.ActividadAcademica;
-import espol.poo.modelo.ActividadPersonal;
-import espol.poo.modelo.Actividad.TipoPrioridad;
-import espol.poo.modelo.ActividadAcademica.TipoActividadAcademica;
-import espol.poo.modelo.ActividadPersonal.TipoActividadPersonal;
+import espol.poo.modelo.actividades.Actividad;
+import espol.poo.modelo.actividades.ActividadAcademica;
+import espol.poo.modelo.actividades.ActividadPersonal;
+import espol.poo.modelo.actividades.Actividad.TipoPrioridad;
+import espol.poo.modelo.actividades.ActividadAcademica.TipoActividadAcademica;
+import espol.poo.modelo.actividades.ActividadPersonal.TipoActividadPersonal;
 import espol.poo.vista.VistaActividad;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

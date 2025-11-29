@@ -1,4 +1,4 @@
-package espol.poo.modelo;
+package espol.poo.modelo.juegomemoria;
 
 import java.util.ArrayList;
 import java.util.Collections;

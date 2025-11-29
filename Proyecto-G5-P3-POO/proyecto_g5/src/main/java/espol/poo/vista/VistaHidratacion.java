@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import espol.poo.modelo.RegistroHidratacion;
+import espol.poo.modelo.hidrataciones.RegistroHidratacion;
 
 public class VistaHidratacion {
 

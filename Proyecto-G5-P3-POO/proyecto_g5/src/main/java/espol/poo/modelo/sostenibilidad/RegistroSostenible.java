@@ -1,4 +1,4 @@
-package espol.poo.modelo;
+package espol.poo.modelo.sostenibilidad;
 
 import java.util.ArrayList;
 import java.util.HashMap;
