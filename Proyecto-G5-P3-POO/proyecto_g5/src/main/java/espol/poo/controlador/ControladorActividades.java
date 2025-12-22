@@ -198,42 +198,32 @@ public class ControladorActividades {
         }
     }
 
-    /**
-     * Registra un nuevo porcentaje de avance para una actividad.
-     */
+
     public void registrarAvance() {
         vista.mostrarMensaje("--- 3. Registrar Avance ---");
 
-        // 1. Crear una lista temporal solo para las actividades incompletas.
         ArrayList<Actividad> listaIncompletas = new ArrayList<>();
         
-        // 2. Revisar la lista maestra
         for (Actividad a : this.listaDeActividades) {
-            // 3. Añadir SÓLO las que tengan avance MENOR A 100
             if (a.getAvance() < 100) {
                 listaIncompletas.add(a);
             }
         }
 
-        // 4. Mostrar SÓLO la lista filtrada
         vista.mostrarListaActividades(listaIncompletas); 
         
-        // 5. Pedir el ID
         int id = vista.pedirIdActividad(listaIncompletas.size()); 
         if (id == 0) {
             vista.mostrarMensaje("Cancelando...");
             return; 
         }
 
-        // 6. Buscar la actividad (¡OJO! Busca en la lista 'incompletas')
         Actividad actividad = buscarActividadPorId(id, listaIncompletas); 
         
         if (actividad == null) {
-            vista.mostrarError("ID no válido."); // Mensaje de error específico
+            vista.mostrarError("ID no válido.");
             return;
         }
-
-        // 7. Pedir el nuevo avance (tu lógica está bien)
         int avance = 0;
         int validacion = 0;
         while (validacion == 0){
@@ -247,15 +237,11 @@ public class ControladorActividades {
             }
         }
         
-        // 8. Actualizar la actividad (el objeto original se actualiza)
         actividad.setAvance(avance); 
         
         vista.mostrarMensaje("Avance de '" + actividad.getNombre() + "' actualizado a " + avance + "%.");
     }
 
-    /**
-     * Método de ayuda para buscar por ID en cualquier lista.
-     */
     private Actividad buscarActividadPorId(int id, List<Actividad> lista) {
         for (Actividad a : lista) {
             if (a.getId() == id) {
@@ -265,11 +251,9 @@ public class ControladorActividades {
         return null;
     }
 
-    /**
-     * Getter para la lista principal (si otro controlador la necesitara).
-     */
+
     public List<Actividad> getListaDeActividades() {
         return this.listaDeActividades;
     }
 
-} // <<< La clase termina aquí
+}
