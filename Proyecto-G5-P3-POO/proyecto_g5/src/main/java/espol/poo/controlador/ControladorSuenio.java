@@ -30,8 +30,7 @@ public class ControladorSuenio {
     }
 
     // Coordina la entrada de datos, creación del objeto y muestra del resultado
-    private void registrarNuevoSuenio() {
-        vista.mostrarMensaje("\n--- REGISTRAR HORAS DE SUEÑO ---");
+    private void regqa--- REGISTRAR HORAS DE SUEÑO ---");
         
         LocalTime inicio = vista.pedirHora("Ingrese la hora en que se acostó");
         LocalTime fin = vista.pedirHora("Ingrese la hora en que despertó");
