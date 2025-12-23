@@ -3,6 +3,7 @@ package espol.poo.sistemabienestarestudiantil.modelo.hidrataciones;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
  * Modelo simple que representa una toma de agua.
  * NO contiene lógica, solo datos.
  */
