@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
+import espol.poo.sistemabienestarestudiantil.ui.HidratacionActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
         // --- OPCIONES PENDIENTES (Muestran mensaje temporal) ---
         findViewById(R.id.btnActividades).setOnClickListener(v -> mostrarMensaje("Gestión de Actividades: En construcción"));
         findViewById(R.id.btnEnfoque).setOnClickListener(v -> mostrarMensaje("Técnicas de Enfoque: En construcción"));
-        findViewById(R.id.btnHidratacion).setOnClickListener(v -> mostrarMensaje("Hidratación: En construcción"));
+        findViewById(R.id.btnHidratacion).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HidratacionActivity.class);
+            startActivity(intent);
+        });
         findViewById(R.id.btnSuenio).setOnClickListener(v -> mostrarMensaje("Registro de Sueño: En construcción"));
         findViewById(R.id.btnSostenibilidad).setOnClickListener(v -> mostrarMensaje("Sostenibilidad: En construcción"));
 
