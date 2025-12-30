@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
-import espol.poo.sistemabienestarestudiantil.ui.HidratacionActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // 1. Inicializar la "Base de Datos" (Modelo)
-        // Esto asegura que las listas existan antes de usar cualquier otra pantalla
         AppRepository.getInstance();
 
         // 2. Configurar los botones
@@ -27,34 +25,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configurarBotones() {
-        // --- OPCIONES PENDIENTES (Muestran mensaje temporal) ---
-        findViewById(R.id.btnActividades).setOnClickListener(v -> mostrarMensaje("Gestión de Actividades: En construcción"));
+        // --- AQUÍ ESTÁ EL CAMBIO (TU PARTE) ---
+        // Antes solo mostraba mensaje, ahora abre TU lista
+        findViewById(R.id.btnActividades).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ListaActividadesActivity.class);
+            startActivity(intent);
+        });
+
+        // --- OPCIONES PENDIENTES ---
         findViewById(R.id.btnEnfoque).setOnClickListener(v -> mostrarMensaje("Técnicas de Enfoque: En construcción"));
+
+        // --- HIDRATACIÓN (Ya estaba conectado por tu amigo) ---
         findViewById(R.id.btnHidratacion).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, HidratacionActivity.class);
             startActivity(intent);
         });
+
         findViewById(R.id.btnSuenio).setOnClickListener(v -> mostrarMensaje("Registro de Sueño: En construcción"));
         findViewById(R.id.btnSostenibilidad).setOnClickListener(v -> mostrarMensaje("Sostenibilidad: En construcción"));
 
-        // --- OPCIÓN DEL JUEGO (La que vamos a programar ahora) ---
+        // --- OPCIÓN DEL JUEGO (Lo dejé tal cual estaba en tu código) ---
         findViewById(R.id.btnJuego).setOnClickListener(v -> {
-            // Navegamos a la actividad del juego
+            // Nota: Si JuegoMemoriaActivity no existe aún, comenta estas 2 líneas para que no de error
             Intent intent = new Intent(MainActivity.this, JuegoMemoriaActivity.class);
             startActivity(intent);
         });
 
         // --- SALIR ---
         findViewById(R.id.btnSalir).setOnClickListener(v -> {
-            // Cierra la aplicación completamente y quita las actividades de la pila
             finishAffinity();
         });
     }
 
-    // Método auxiliar para no repetir código de Toast
+    // Método auxiliar (respetando el código de tu amigo)
     private void mostrarMensaje(String texto) {
         Toast.makeText(this, texto, Toast.LENGTH_SHORT).show();
     }
-
-    
 }

@@ -1,77 +1,60 @@
 package espol.poo.sistemabienestarestudiantil.data;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// Importamos el modelo de Sueño
-import espol.poo.sistemabienestarestudiantil.modelo.suenio.RegistrarHorasDeSuenio;
+import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 
 public class AppRepository {
 
     private static AppRepository instance;
+    private List<Actividad> listaActividades;
 
-    // --- 1. Variables para Actividades (Lo que ya tenías) ---
-    private final List<String> actividades = new ArrayList<>();
-
-    // --- 2. Variables para Sueño (Lo nuevo) ---
-    private List<RegistrarHorasDeSuenio> listaSuenio;
-
-    // Constructor privado
+    // Constructor privado (Singleton)
     private AppRepository() {
-        // Inicializamos la lista de sueño
-        listaSuenio = new ArrayList<>();
-
-        // Cargamos los datos iniciales de ambos módulos
-        seed();
+        listaActividades = new ArrayList<>();
+        // Aquí podrías agregar datos de prueba si quisieras
     }
 
-    public static synchronized AppRepository getInstance() {
+    // Método para obtener la única instancia (Singleton)
+    public static AppRepository getInstance() {
         if (instance == null) {
             instance = new AppRepository();
         }
         return instance;
     }
 
-    // Método para poblar datos de prueba (Seed)
-    private void seed() {
-        // --- Seed de Actividades ---
-        actividades.add("Cita médica - 30/11 17:00");
-        actividades.add("Proyecto POO - Avance 68%");
-        actividades.add("Cuestionario Unidad 2 - 03/12");
-
-        // --- Seed de Sueño (Datos de prueba) ---
-        // Agregamos registros con fechas pasadas (ayer y anteayer)
-        listaSuenio.add(new RegistrarHorasDeSuenio(
-                LocalTime.of(23, 0),
-                LocalTime.of(7, 0),
-                LocalDate.now().minusDays(1)
-        ));
-
-        listaSuenio.add(new RegistrarHorasDeSuenio(
-                LocalTime.of(1, 0),
-                LocalTime.of(5, 30),
-                LocalDate.now().minusDays(2)
-        ));
+    // Método para obtener la lista (Ya lo tenías)
+    public List<Actividad> getListaActividades() {
+        return listaActividades;
     }
 
-    // ================= SECCIÓN ACTIVIDADES =================
-    public List<String> getActividades() {
-        return actividades;
+    // --- ESTE ES EL QUE TE FALTABA ---
+    public void agregarActividad(Actividad actividad) {
+        listaActividades.add(actividad);
     }
 
-    public void addActividad(String txt) {
-        actividades.add(txt);
+    public Actividad buscarActividadPorId(int idBuscado) {
+        // Asegúrate que esta variable 'listaDeActividades' se llame IGUAL que la que definiste arriba en la clase
+        for (Actividad a : listaActividades) {
+            if (a.getId() == idBuscado) {
+                return a; // ¡Encontrado!
+            }
+        }
+        return null; // No se encontró
     }
 
-    // ================= SECCIÓN SUEÑO =================
-    public List<RegistrarHorasDeSuenio> getListaSuenio() {
-        return listaSuenio;
-    }
+    public int getProximoId() {
+        int maxId = 0;
 
-    public void agregarSuenio(RegistrarHorasDeSuenio registro) {
-        // Agregamos al inicio (índice 0) para que aparezca primero en la lista visual
-        listaSuenio.add(0, registro);
+        // Buscamos el ID más alto que exista en la lista
+        for (Actividad a : listaActividades) {
+            if (a.getId() > maxId) {
+                maxId = a.getId();
+            }
+        }
+
+        // Retornamos el siguiente (Si no hay nada, devuelve 1)
+        return maxId + 1;
     }
 }

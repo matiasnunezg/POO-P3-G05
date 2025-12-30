@@ -68,4 +68,6 @@ public class ActividadAcademica extends Actividad {
     public List<SesionEnfoque> getHistorialSesiones() {
         return historialSesiones;
     }
+
+
 }

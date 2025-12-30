@@ -98,4 +98,9 @@ public class Actividad {
             return horas + " h " + minsRest + " min";
         }
     }
+
+    public void setTiempoEstimado(int tiempo) {
+        this.tiempoEstimado = tiempo;
+    }
+
 }
