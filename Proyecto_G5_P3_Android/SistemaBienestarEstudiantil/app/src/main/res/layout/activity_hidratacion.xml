@@ -38,14 +38,15 @@
                     android:layout_height="wrap_content"
                     android:text="Seleccionar Fecha:"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tvFechaActual"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/ic_launcher_background"
                     android:padding="10dp"
-                    android:text="12/11/2025"
-                    android:layout_marginTop="5dp"/>
+                    android:text="12/11/2025" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -75,14 +76,15 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="96dp"
                     android:layout_toEndOf="@id/tvPorcentaje"
-                    android:layout_marginStart="20dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Meta diaria:" />
+
                     <TextView
                         android:id="@+id/tvMetaValor"
                         android:layout_width="wrap_content"
@@ -96,9 +98,9 @@
                         android:id="@+id/btnEstablecerMeta"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#0033CC"
                         android:text="Establecer Meta"
-                        android:textAllCaps="false"
-                        android:backgroundTint="#0033CC"/>
+                        android:textAllCaps="false" />
                 </LinearLayout>
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
