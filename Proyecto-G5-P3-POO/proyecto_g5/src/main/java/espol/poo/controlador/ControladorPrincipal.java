@@ -35,10 +35,20 @@ public class ControladorPrincipal {
     private RegistroSostenible registroSostenible;
 
     // Repositorios globales
+<<<<<<< Updated upstream
     private ArrayList<Actividad> listaDeActividades;
     private ArrayList<RegistroHidratacion> registrosHidratacion;
     private ArrayList<RegistrarHorasDeSuenio> registrosSueno;
     private TecnicasEnfoque tecnicas;
+=======
+    private ArrayList<Actividad> listaDeActividades = new ArrayList<>();
+    private ArrayList<ActividadAcademica> listaDeActividadesAcademicas = new ArrayList<>();
+    private ArrayList<ActividadPersonal> listaDeActividadesPersonales = new ArrayList<>();
+    
+    //private List<RegistroHidratacion> registrosHidratacion;   
+    //private List<RegistrarHorasDeSueno> registrosSueno; //Falta implementar
+    //private List<RegistroDiarioSostenible> registrosSostenibilidad; //Falta implementar
+>>>>>>> Stashed changes
 
     // Controladores secundarios
     private ControladorActividades controladorActividad;
