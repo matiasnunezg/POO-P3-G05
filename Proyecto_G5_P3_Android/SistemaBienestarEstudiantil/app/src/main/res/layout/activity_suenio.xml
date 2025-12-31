@@ -3,18 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     android:padding="16dp"
     android:background="#F8F9FA">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Control de Sueño"
-        android:textSize="26sp"
-        android:textStyle="bold"
+        android:layout_height="114dp"
+
         android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        android:paddingStart="24dp"
+        android:paddingTop="45dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="5dp"
+        android:text="Control de Sueño"
         android:textColor="#3F51B5"
-        android:layout_marginBottom="24dp"/>
+        android:textSize="26sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnNuevoRegistro"
