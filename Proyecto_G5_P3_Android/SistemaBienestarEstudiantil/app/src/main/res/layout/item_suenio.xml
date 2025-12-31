@@ -4,21 +4,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="12dp"
-    android:background="@android:color/white"
-    android:layout_marginBottom="4dp">
+    android:layout_marginBottom="8dp"
+    android:background="@android:drawable/dialog_holo_light_frame">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="6dp">
 
         <TextView
             android:id="@+id/tvFecha"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Lun 12/12"
+            android:text="Lun 12/Dic"
             android:textStyle="bold"
             android:textColor="#333"/>
 
@@ -35,7 +35,7 @@
         android:id="@+id/progressBarSuenio"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="12dp"
+        android:layout_height="14dp"
         android:max="120"
         android:progress="80"/>
 </LinearLayout>

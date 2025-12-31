@@ -1,60 +1,84 @@
 package espol.poo.sistemabienestarestudiantil.data;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
+import espol.poo.sistemabienestarestudiantil.modelo.suenio.RegistrarHorasDeSuenio;
 
 public class AppRepository {
 
     private static AppRepository instance;
+
+    // Variables de almacenamiento
     private List<Actividad> listaActividades;
+    private List<RegistrarHorasDeSuenio> listaSuenio;
 
     // Constructor privado (Singleton)
     private AppRepository() {
+        // Inicializar Actividades
         listaActividades = new ArrayList<>();
-        // Aquí podrías agregar datos de prueba si quisieras
+
+        // Inicializar Sueño
+        listaSuenio = new ArrayList<>();
+        cargarDatosPruebaSuenio();
     }
 
-    // Método para obtener la única instancia (Singleton)
-    public static AppRepository getInstance() {
+    public static synchronized AppRepository getInstance() {
         if (instance == null) {
             instance = new AppRepository();
         }
         return instance;
     }
 
-    // Método para obtener la lista (Ya lo tenías)
+    // ==========================================
+    //           MÓDULO DE ACTIVIDADES
+    // ==========================================
+
     public List<Actividad> getListaActividades() {
         return listaActividades;
     }
 
-    // --- ESTE ES EL QUE TE FALTABA ---
     public void agregarActividad(Actividad actividad) {
         listaActividades.add(actividad);
     }
 
     public Actividad buscarActividadPorId(int idBuscado) {
-        // Asegúrate que esta variable 'listaDeActividades' se llame IGUAL que la que definiste arriba en la clase
         for (Actividad a : listaActividades) {
             if (a.getId() == idBuscado) {
-                return a; // ¡Encontrado!
+                return a;
             }
         }
-        return null; // No se encontró
+        return null;
     }
 
     public int getProximoId() {
         int maxId = 0;
-
-        // Buscamos el ID más alto que exista en la lista
         for (Actividad a : listaActividades) {
             if (a.getId() > maxId) {
                 maxId = a.getId();
             }
         }
-
-        // Retornamos el siguiente (Si no hay nada, devuelve 1)
         return maxId + 1;
+    }
+
+    // ==========================================
+    //             MÓDULO DE SUEÑO
+    // ==========================================
+
+    public List<RegistrarHorasDeSuenio> getListaSuenio() {
+        return listaSuenio;
+    }
+
+    public void agregarSuenio(RegistrarHorasDeSuenio registro) {
+        // Agregamos al inicio para que aparezca primero en la lista
+        listaSuenio.add(0, registro);
+    }
+
+    private void cargarDatosPruebaSuenio() {
+        listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(23, 0), LocalTime.of(7, 0), LocalDate.now().minusDays(1)));
+        listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(1, 30), LocalTime.of(6, 0), LocalDate.now().minusDays(2)));
     }
 }

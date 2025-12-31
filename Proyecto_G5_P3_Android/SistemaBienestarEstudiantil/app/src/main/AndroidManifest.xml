@@ -45,6 +45,9 @@
             android:exported="false"
             android:parentActivityName=".ui.ListaActividadesActivity" />
 
+        <activity android:name=".ui.SuenioActivity" />
+        <activity android:name=".ui.RegistrarSuenioActivity" />
+
     </application>
 
 </manifest>
