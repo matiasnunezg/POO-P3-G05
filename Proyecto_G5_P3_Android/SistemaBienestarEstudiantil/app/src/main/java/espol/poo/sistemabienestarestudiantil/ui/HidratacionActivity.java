@@ -40,8 +40,13 @@ public class HidratacionActivity extends AppCompatActivity {
         tvTotalConsumido = findViewById(R.id.tvTotalConsumido);
         containerRegistros = findViewById(R.id.containerRegistros);
 
-        // 2. Mostrar fecha por defecto
-        mostrarFechaActual();
+        // 2. LOGICA DE FECHA: Cargar del repo o mostrar la de hoy
+        String fechaGuardada = AppRepository.getInstance().getFechaSeleccionadaRepo();
+        if (fechaGuardada != null && !fechaGuardada.isEmpty()) {
+            tvFechaActual.setText(fechaGuardada);
+        } else {
+            mostrarFechaActual();
+        }
 
         // 3. Listeners de botones principales
         layoutSelectorFecha.setOnClickListener(v -> abrirCalendario());
@@ -73,7 +78,6 @@ public class HidratacionActivity extends AppCompatActivity {
 
         // Cargar la lista visual
         for (RegistroHidratacion reg : AppRepository.getInstance().getListaHidratacion()) {
-            // Se usa reg.getHora() que ahora manejaremos como String para evitar errores de API
             agregarRegistroVisual(reg.getCantidadMl(), reg.getHora().toString());
         }
     }
@@ -90,7 +94,12 @@ public class HidratacionActivity extends AppCompatActivity {
     private void abrirCalendario() {
         Calendar calendar = Calendar.getInstance();
         new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-            tvFechaActual.setText(String.format("%02d/%02d/%d", dayOfMonth, month + 1, year));
+            String fechaSeleccionada = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year);
+            tvFechaActual.setText(fechaSeleccionada);
+
+            // AGREGADO: Guardar fecha en el repositorio
+            AppRepository.getInstance().setFechaSeleccionadaRepo(fechaSeleccionada);
+
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
@@ -109,10 +118,8 @@ public class HidratacionActivity extends AppCompatActivity {
                 metaActual = Double.parseDouble(valor);
                 tvMetaValor.setText((int)metaActual + " ml");
 
-                // Guardar meta en el repositorio
                 AppRepository.getInstance().setMetaDiaria(metaActual);
 
-                // Actualizar círculo con la nueva meta
                 int porcentaje = (int) ((totalConsumido / metaActual) * 100);
                 tvPorcentaje.setText((porcentaje > 100 ? 100 : porcentaje) + "%");
                 progressCircular.setProgress(porcentaje > 100 ? 100 : porcentaje);
@@ -133,31 +140,42 @@ public class HidratacionActivity extends AppCompatActivity {
         android.widget.EditText etHora = dialogView.findViewById(R.id.etHoraToma);
 
         dialogView.findViewById(R.id.btnGuardarToma).setOnClickListener(v -> {
-            String cantStr = etCantidad.getText().toString();
-            String horaStr = etHora.getText().toString();
+            String cantStr = etCantidad.getText().toString().trim();
+            String horaStr = etHora.getText().toString().trim();
+            String regexHora = "^(1[0-2]|0?[1-9]):[0-5][0-9]\\s?(AM|PM|am|pm)$";
 
-            // ... dentro de btnGuardar.setOnClickListener ...
             if (!cantStr.isEmpty() && !horaStr.isEmpty()) {
-                double ml = Double.parseDouble(cantStr);
+                if (!horaStr.matches(regexHora)) {
+                    etHora.setError("Formato inválido. Use ej: 10:30 AM o 3:05 PM");
+                    return;
+                }
 
-                // 1. Actualizar la interfaz (Círculo, textos, etc.)
-                totalConsumido += ml;
-                tvTotalConsumido.setText((int)totalConsumido + " ml");
-                int porcentaje = (int) ((totalConsumido / metaActual) * 100);
-                tvPorcentaje.setText((porcentaje > 100 ? 100 : porcentaje) + "%");
-                progressCircular.setProgress(porcentaje > 100 ? 100 : porcentaje);
-                agregarRegistroVisual(ml, horaStr);
+                try {
+                    double ml = Double.parseDouble(cantStr);
 
-                // 2. GUARDAR DATOS REALES (Sin nulos para evitar que la app se cierre)
-                String fechaActual = tvFechaActual.getText().toString(); // Tomamos la fecha de la pantalla
+                    totalConsumido += ml;
+                    tvTotalConsumido.setText((int)totalConsumido + " ml");
 
-                // Creamos el objeto con los Strings (ml, fecha, hora escrita por usuario)
-                RegistroHidratacion nuevoReg = new RegistroHidratacion(ml, fechaActual, horaStr);
+                    int porcentaje = (int) ((totalConsumido / metaActual) * 100);
+                    int progresoFinal = (porcentaje > 100) ? 100 : porcentaje;
 
-                // Guardamos en el AppRepository
-                AppRepository.getInstance().agregarRegistroHidratacion(nuevoReg);
+                    tvPorcentaje.setText(progresoFinal + "%");
+                    progressCircular.setProgress(progresoFinal);
 
-                dialog.dismiss();
+                    agregarRegistroVisual(ml, horaStr);
+
+                    String fechaActual = tvFechaActual.getText().toString();
+                    RegistroHidratacion nuevoReg = new RegistroHidratacion(ml, fechaActual, horaStr);
+                    AppRepository.getInstance().agregarRegistroHidratacion(nuevoReg);
+
+                    dialog.dismiss();
+
+                } catch (NumberFormatException e) {
+                    etCantidad.setError("Ingrese un número válido");
+                }
+            } else {
+                if(cantStr.isEmpty()) etCantidad.setError("Falta la cantidad");
+                if(horaStr.isEmpty()) etHora.setError("Falta la hora");
             }
         });
 

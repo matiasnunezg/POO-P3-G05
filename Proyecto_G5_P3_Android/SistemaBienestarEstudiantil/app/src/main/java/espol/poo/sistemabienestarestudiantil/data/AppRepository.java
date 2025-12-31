@@ -12,6 +12,7 @@ public class AppRepository {
     // Añade estas dos líneas debajo de listaActividades
     private List<RegistroHidratacion> listaHidratacion;
     private double metaDiaria = 2500.0;
+    private String fechaSeleccionadaRepo = ""; // Guardará la fecha como texto
 
     // Constructor privado (Singleton)
     private AppRepository() {
@@ -84,5 +85,13 @@ public class AppRepository {
             total += r.getCantidadMl();
         }
         return total;
+    }
+
+    public String getFechaSeleccionadaRepo() {
+        return fechaSeleccionadaRepo;
+    }
+
+    public void setFechaSeleccionadaRepo(String fecha) {
+        this.fechaSeleccionadaRepo = fecha;
     }
 }
