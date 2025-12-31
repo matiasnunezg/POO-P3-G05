@@ -174,28 +174,23 @@
                     android:layout_marginBottom="10dp"/>
 
                 <!-- REGISTRO -->
-                <TextView
+                <LinearLayout
+                    android:id="@+id/containerRegistros"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="250 ml - 10:30 AM"
-                    android:background="#E3F2FD"
-                    android:padding="10dp"
-                    android:layout_marginBottom="6dp"/>
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="250 ml - 11:30 AM"
-                    android:background="#E3F2FD"
-                    android:padding="10dp"
-                    android:layout_marginBottom="6dp"/>
+                    <TextView
+                        android:id="@+id/tvSinRegistros"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No hay registros aún"
+                        android:textColor="#757575"
+                        android:padding="10dp"
+                        android:gravity="center"/>
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="300 ml - 12:40 PM"
-                    android:background="#E3F2FD"
-                    android:padding="10dp"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -219,7 +214,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="800 ml"
+                        android:text="0 ml"
                         android:textStyle="bold"/>
                 </LinearLayout>
 

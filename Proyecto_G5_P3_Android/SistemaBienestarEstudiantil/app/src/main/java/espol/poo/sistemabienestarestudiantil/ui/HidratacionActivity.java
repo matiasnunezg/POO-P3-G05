@@ -19,6 +19,9 @@ public class HidratacionActivity extends AppCompatActivity {
     private android.widget.ProgressBar progressCircular;
     private TextView tvPorcentaje;
     private double metaActual = 2500.0;
+    private TextView tvTotalConsumido;
+    private LinearLayout containerRegistros;
+    private double totalConsumido = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,23 @@ public class HidratacionActivity extends AppCompatActivity {
         android.widget.Button btnEstablecerMeta = findViewById(R.id.btnEstablecerMeta);
 
         btnEstablecerMeta.setOnClickListener(v -> abrirDialogoActualizarMeta());
+
+        // Vincular el botón verde de la interfaz principal
+        android.widget.Button btnRegistrarToma = findViewById(R.id.btnRegistrarToma);
+        tvTotalConsumido = findViewById(R.id.tvTotalConsumido);
+        containerRegistros = findViewById(R.id.containerRegistros);
+
+        btnRegistrarToma.setOnClickListener(v -> abrirDialogoRegistroToma());
+
+        // --- BLOQUE FINAL: BOTÓN VOLVER AL MENÚ ---
+        // Buscamos el botón naranja por el ID que definiste en el XML
+        android.widget.Button btnVolverMenu = findViewById(R.id.btnVolverMenu);
+
+        btnVolverMenu.setOnClickListener(v -> {
+            // 'finish()' cierra la pantalla actual y te regresa
+            // automáticamente a la 'MainActivity'
+            finish();
+        });
     }
 
     private void mostrarFechaActual() {
@@ -113,5 +133,69 @@ public class HidratacionActivity extends AppCompatActivity {
 
         btnCancelar.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
+    }
+    private void abrirDialogoRegistroToma() {
+        android.view.LayoutInflater inflater = getLayoutInflater();
+        android.view.View dialogView = inflater.inflate(R.layout.dialog_registrar_toma, null);
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        android.app.AlertDialog dialog = builder.create();
+
+        android.widget.EditText etCantidad = dialogView.findViewById(R.id.etCantidadToma);
+        android.widget.EditText etHora = dialogView.findViewById(R.id.etHoraToma);
+        android.widget.Button btnGuardar = dialogView.findViewById(R.id.btnGuardarToma);
+        android.widget.Button btnCancelar = dialogView.findViewById(R.id.btnCancelarToma);
+
+        btnGuardar.setOnClickListener(v -> {
+            String cantStr = etCantidad.getText().toString();
+            String horaStr = etHora.getText().toString();
+
+            if (!cantStr.isEmpty() && !horaStr.isEmpty()) {
+                double ml = Double.parseDouble(cantStr);
+
+                // 1. Sumar al total y actualizar texto inferior
+                totalConsumido += ml;
+                tvTotalConsumido.setText((int)totalConsumido + " ml");
+
+                // 2. Calcular porcentaje y actualizar círculo azul
+                int porcentaje = (int) ((totalConsumido / metaActual) * 100);
+                if (porcentaje > 100) porcentaje = 100;
+                tvPorcentaje.setText(porcentaje + "%");
+                progressCircular.setProgress(porcentaje);
+
+                // 3. Crear la franja azul en la lista de registros
+                agregarRegistroVisual(ml, horaStr);
+
+                dialog.dismiss();
+            } else {
+                if(cantStr.isEmpty()) etCantidad.setError("Ingrese cantidad");
+                if(horaStr.isEmpty()) etHora.setError("Ingrese hora");
+            }
+        });
+
+        btnCancelar.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+    }
+
+    private void agregarRegistroVisual(double ml, String hora) {
+        // Eliminar el mensaje "No hay registros" si es el primero
+        View sinReg = findViewById(R.id.tvSinRegistros);
+        if (sinReg != null) containerRegistros.removeView(sinReg);
+
+        // Crear la franja azul dinámicamente
+        TextView nuevoItem = new TextView(this);
+        nuevoItem.setText((int)ml + " ml - " + hora);
+        nuevoItem.setBackgroundColor(android.graphics.Color.parseColor("#E3F2FD"));
+        nuevoItem.setPadding(30, 30, 30, 30);
+        nuevoItem.setTextColor(android.graphics.Color.BLACK);
+        nuevoItem.setTextSize(16f);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 0, 0, 15);
+        nuevoItem.setLayoutParams(params);
+
+        containerRegistros.addView(nuevoItem, 0); // Agrega al inicio para que el último se vea arriba
     }
 }
