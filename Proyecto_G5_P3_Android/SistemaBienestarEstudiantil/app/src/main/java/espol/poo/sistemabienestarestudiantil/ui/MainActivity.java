@@ -2,10 +2,13 @@ package espol.poo.sistemabienestarestudiantil.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import espol.poo.sistemabienestarestudiantil.R;
+import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,22 +17,48 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.btnActividades).setOnClickListener(v ->
-                startActivity(new Intent(this, ActividadesActivity.class)));
+        // 1. Inicializar la "Base de Datos" (Modelo)
+        AppRepository.getInstance();
 
-        findViewById(R.id.btnEnfoque).setOnClickListener(v ->
-                startActivity(new Intent(this, EnfoqueActivity.class)));
+        // 2. Configurar los botones
+        configurarBotones();
+    }
 
-        findViewById(R.id.btnHidratacion).setOnClickListener(v ->
-                startActivity(new Intent(this, HidratacionActivity.class)));
+    private void configurarBotones() {
+        // --- AQUÍ ESTÁ EL CAMBIO (TU PARTE) ---
+        // Antes solo mostraba mensaje, ahora abre TU lista
+        findViewById(R.id.btnActividades).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ListaActividadesActivity.class);
+            startActivity(intent);
+        });
 
-        findViewById(R.id.btnSuenio).setOnClickListener(v ->
-                startActivity(new Intent(this, SuenioActivity.class)));
+        // --- OPCIONES PENDIENTES ---
+        findViewById(R.id.btnEnfoque).setOnClickListener(v -> mostrarMensaje("Técnicas de Enfoque: En construcción"));
 
-        findViewById(R.id.btnSostenibilidad).setOnClickListener(v ->
-                startActivity(new Intent(this, SostenibilidadActivity.class)));
+        // --- HIDRATACIÓN (Ya estaba conectado por tu amigo) ---
+        findViewById(R.id.btnHidratacion).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HidratacionActivity.class);
+            startActivity(intent);
+        });
 
-        findViewById(R.id.btnJuego).setOnClickListener(v ->
-                startActivity(new Intent(this, JuegoMemoriaActivity.class)));
+        findViewById(R.id.btnSuenio).setOnClickListener(v -> mostrarMensaje("Registro de Sueño: En construcción"));
+        findViewById(R.id.btnSostenibilidad).setOnClickListener(v -> mostrarMensaje("Sostenibilidad: En construcción"));
+
+        // --- OPCIÓN DEL JUEGO (Lo dejé tal cual estaba en tu código) ---
+        findViewById(R.id.btnJuego).setOnClickListener(v -> {
+            // Nota: Si JuegoMemoriaActivity no existe aún, comenta estas 2 líneas para que no de error
+            Intent intent = new Intent(MainActivity.this, JuegoMemoriaActivity.class);
+            startActivity(intent);
+        });
+
+        // --- SALIR ---
+        findViewById(R.id.btnSalir).setOnClickListener(v -> {
+            finishAffinity();
+        });
+    }
+
+    // Método auxiliar (respetando el código de tu amigo)
+    private void mostrarMensaje(String texto) {
+        Toast.makeText(this, texto, Toast.LENGTH_SHORT).show();
     }
 }

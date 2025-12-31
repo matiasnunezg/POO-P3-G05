@@ -3,33 +3,58 @@ package espol.poo.sistemabienestarestudiantil.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
+
 public class AppRepository {
 
     private static AppRepository instance;
+    private List<Actividad> listaActividades;
 
-    // Por ahora solo demostrativo: “actividades” como Strings
-    private final List<String> actividades = new ArrayList<>();
-
+    // Constructor privado (Singleton)
     private AppRepository() {
-        seed();
+        listaActividades = new ArrayList<>();
+        // Aquí podrías agregar datos de prueba si quisieras
     }
 
+    // Método para obtener la única instancia (Singleton)
     public static AppRepository getInstance() {
-        if (instance == null) instance = new AppRepository();
+        if (instance == null) {
+            instance = new AppRepository();
+        }
         return instance;
     }
 
-    private void seed() {
-        actividades.add("Cita médica - 30/11 17:00");
-        actividades.add("Proyecto POO - Avance 68%");
-        actividades.add("Cuestionario Unidad 2 - 03/12");
+    // Método para obtener la lista (Ya lo tenías)
+    public List<Actividad> getListaActividades() {
+        return listaActividades;
     }
 
-    public List<String> getActividades() {
-        return actividades;
+    // --- ESTE ES EL QUE TE FALTABA ---
+    public void agregarActividad(Actividad actividad) {
+        listaActividades.add(actividad);
     }
 
-    public void addActividad(String txt) {
-        actividades.add(txt);
+    public Actividad buscarActividadPorId(int idBuscado) {
+        // Asegúrate que esta variable 'listaDeActividades' se llame IGUAL que la que definiste arriba en la clase
+        for (Actividad a : listaActividades) {
+            if (a.getId() == idBuscado) {
+                return a; // ¡Encontrado!
+            }
+        }
+        return null; // No se encontró
+    }
+
+    public int getProximoId() {
+        int maxId = 0;
+
+        // Buscamos el ID más alto que exista en la lista
+        for (Actividad a : listaActividades) {
+            if (a.getId() > maxId) {
+                maxId = a.getId();
+            }
+        }
+
+        // Retornamos el siguiente (Si no hay nada, devuelve 1)
+        return maxId + 1;
     }
 }
