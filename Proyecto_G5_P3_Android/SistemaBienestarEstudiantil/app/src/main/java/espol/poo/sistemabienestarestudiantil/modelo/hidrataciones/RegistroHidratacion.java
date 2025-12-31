@@ -1,21 +1,18 @@
 package espol.poo.sistemabienestarestudiantil.modelo.hidrataciones;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 /**
- * Modelo simple que representa una toma de agua.
- * NO contiene lógica, solo datos.
+ * Modelo compatible con API 24 que representa una toma de agua.
+ * Se utilizan Strings para fecha y hora para evitar errores de compatibilidad.
  */
 public class RegistroHidratacion {
 
     // ---------- ATRIBUTOS ----------
-    private double cantidadMl;       // Ej: 250 ml
-    private LocalDate fecha;          // Ej: 12/11/2025
-    private LocalTime hora;           // Ej: 10:30 AM
+    private double cantidadMl;       // Ej: 250.0
+    private String fecha;            // Cambiado a String para compatibilidad API 24
+    private String hora;             // Cambiado a String para compatibilidad API 24
 
     // ---------- CONSTRUCTOR ----------
-    public RegistroHidratacion(double cantidadMl, LocalDate fecha, LocalTime hora) {
+    public RegistroHidratacion(double cantidadMl, String fecha, String hora) {
         this.cantidadMl = cantidadMl;
         this.fecha = fecha;
         this.hora = hora;
@@ -31,19 +28,19 @@ public class RegistroHidratacion {
         this.cantidadMl = cantidadMl;
     }
 
-    public LocalDate getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
-    public LocalTime getHora() {
+    public String getHora() {
         return hora;
     }
 
-    public void setHora(LocalTime hora) {
+    public void setHora(String hora) {
         this.hora = hora;
     }
 }

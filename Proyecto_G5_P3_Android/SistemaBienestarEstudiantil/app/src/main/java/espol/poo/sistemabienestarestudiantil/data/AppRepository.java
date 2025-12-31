@@ -1,5 +1,5 @@
 package espol.poo.sistemabienestarestudiantil.data;
-
+import espol.poo.sistemabienestarestudiantil.modelo.hidrataciones.RegistroHidratacion;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +9,15 @@ public class AppRepository {
 
     private static AppRepository instance;
     private List<Actividad> listaActividades;
+    // Añade estas dos líneas debajo de listaActividades
+    private List<RegistroHidratacion> listaHidratacion;
+    private double metaDiaria = 2500.0;
 
     // Constructor privado (Singleton)
     private AppRepository() {
         listaActividades = new ArrayList<>();
-        // Aquí podrías agregar datos de prueba si quisieras
+        // Inicializa la lista de hidratación aquí
+        listaHidratacion = new ArrayList<>();
     }
 
     // Método para obtener la única instancia (Singleton)
@@ -56,5 +60,29 @@ public class AppRepository {
 
         // Retornamos el siguiente (Si no hay nada, devuelve 1)
         return maxId + 1;
+    }
+
+    public List<RegistroHidratacion> getListaHidratacion() {
+        return listaHidratacion;
+    }
+
+    public void agregarRegistroHidratacion(RegistroHidratacion registro) {
+        listaHidratacion.add(registro);
+    }
+
+    public double getMetaDiaria() {
+        return metaDiaria;
+    }
+
+    public void setMetaDiaria(double meta) {
+        this.metaDiaria = meta;
+    }
+
+    public double getTotalConsumido() {
+        double total = 0;
+        for (RegistroHidratacion r : listaHidratacion) {
+            total += r.getCantidadMl();
+        }
+        return total;
     }
 }
