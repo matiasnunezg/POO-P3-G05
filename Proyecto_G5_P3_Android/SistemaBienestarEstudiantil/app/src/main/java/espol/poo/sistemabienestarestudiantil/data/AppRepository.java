@@ -7,23 +7,36 @@ import java.util.List;
 
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.suenio.RegistrarHorasDeSuenio;
+import espol.poo.sistemabienestarestudiantil.modelo.hidrataciones.RegistroHidratacion;
 
 public class AppRepository {
 
     private static AppRepository instance;
 
-    // Variables de almacenamiento
+    // --- VARIABLES DE ALMACENAMIENTO ---
+    
+    // Actividades 
     private List<Actividad> listaActividades;
+    
+    // Sueño 
     private List<RegistrarHorasDeSuenio> listaSuenio;
+    
+    // Hidratación
+    private List<RegistroHidratacion> listaHidratacion;
+    private double metaDiaria = 2500.0;
+    private String fechaSeleccionadaRepo = ""; 
 
-    // Constructor privado (Singleton)
+    // --- CONSTRUCTOR PRIVADO (SINGLETON) ---
     private AppRepository() {
-        // Inicializar Actividades
+        // 1. Inicializar Actividades
         listaActividades = new ArrayList<>();
 
-        // Inicializar Sueño
+        // 2. Inicializar Sueño y cargar datos prueba
         listaSuenio = new ArrayList<>();
         cargarDatosPruebaSuenio();
+
+        // 3. Inicializar Hidratación
+        listaHidratacion = new ArrayList<>();
     }
 
     public static synchronized AppRepository getInstance() {
@@ -65,7 +78,7 @@ public class AppRepository {
     }
 
     // ==========================================
-    //             MÓDULO DE SUEÑO
+    //            MÓDULO DE SUEÑO 
     // ==========================================
 
     public List<RegistrarHorasDeSuenio> getListaSuenio() {
@@ -80,5 +93,41 @@ public class AppRepository {
     private void cargarDatosPruebaSuenio() {
         listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(23, 0), LocalTime.of(7, 0), LocalDate.now().minusDays(1)));
         listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(1, 30), LocalTime.of(6, 0), LocalDate.now().minusDays(2)));
+    }
+
+    // ==========================================
+    //         MÓDULO DE HIDRATACIÓN (AMIGO)
+    // ==========================================
+
+    public List<RegistroHidratacion> getListaHidratacion() {
+        return listaHidratacion;
+    }
+
+    public void agregarRegistroHidratacion(RegistroHidratacion registro) {
+        listaHidratacion.add(registro);
+    }
+
+    public double getMetaDiaria() {
+        return metaDiaria;
+    }
+
+    public void setMetaDiaria(double meta) {
+        this.metaDiaria = meta;
+    }
+
+    public double getTotalConsumido() {
+        double total = 0;
+        for (RegistroHidratacion r : listaHidratacion) {
+            total += r.getCantidadMl();
+        }
+        return total;
+    }
+
+    public String getFechaSeleccionadaRepo() {
+        return fechaSeleccionadaRepo;
+    }
+
+    public void setFechaSeleccionadaRepo(String fecha) {
+        this.fechaSeleccionadaRepo = fecha;
     }
 }

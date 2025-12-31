@@ -48,6 +48,9 @@
         <activity android:name=".ui.SuenioActivity" />
         <activity android:name=".ui.RegistrarSuenioActivity" />
 
+        <activity android:name=".ui.DeepWorkActivity" />
+        <activity android:name=".ui.PomodoroActivity" />
+
     </application>
 
 </manifest>

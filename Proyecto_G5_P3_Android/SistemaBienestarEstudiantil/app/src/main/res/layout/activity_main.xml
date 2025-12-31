@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="#E8F5E9"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,115 +11,133 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp"
+        android:paddingTop="80dp">
 
+        <!-- TEXTO INSTITUCIONAL -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:text="Escuela Superior Politécnica del Litoral"
+            android:textColor="#1B5E20"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <!-- TÍTULO PRINCIPAL -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="Bienestar Estudiantil"
-            android:textColor="#000000"
+            android:textColor="#1B5E20"
             android:textSize="28sp"
             android:textStyle="bold" />
 
+        <!-- SUBTÍTULO -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:text="Selecciona una opción para empezar"
-            android:textColor="#757575"
+            android:textColor="#4CAF50"
             android:textSize="14sp" />
 
+        <!-- BOTONES -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alignmentMode="alignMargins"
             android:columnCount="2"
-            android:columnOrderPreserved="false"
-            android:rowCount="4"
             android:useDefaultMargins="true">
 
             <Button
                 android:id="@+id/btnActividades"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="110dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="6dp"
+                android:backgroundTint="#2E7D32"
                 android:text="1. Gestión de\nActividades"
                 android:textAllCaps="false"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/btnEnfoque"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="110dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:text="2. Técnicas de\nEnfoque"
-                android:textAllCaps="false"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
 
             <Button
                 android:id="@+id/btnHidratacion"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="110dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="6dp"
-                android:text="3. Control de\nHidratación"
+                android:backgroundTint="#2E7D32"
+                android:text="2. Control de\nHidratación"
                 android:textAllCaps="false"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
 
             <Button
                 android:id="@+id/btnSuenio"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="110dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="6dp"
-                android:text="4. Registro de\nSueño"
+                android:backgroundTint="#2E7D32"
+                android:text="3. Registro de\nSueño"
                 android:textAllCaps="false"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
 
             <Button
                 android:id="@+id/btnSostenibilidad"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="110dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="6dp"
-                android:text="5. Diario\nSostenible"
+                android:backgroundTint="#2E7D32"
+                android:text="4. Diario\nSostenible"
                 android:textAllCaps="false"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
 
-            <Button
-                android:id="@+id/btnJuego"
+            <Space
                 android:layout_width="0dp"
-                android:layout_height="110dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:backgroundTint="#FF9800"
-                android:text="6. Juego de\nMemoria"
-                android:textColor="#FFFFFF"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_height="0dp"
+                android:layout_columnWeight="1" />
 
         </GridLayout>
 
+        <!-- JUEGO DE MEMORIA -->
+        <Button
+            android:id="@+id/btnJuego"
+            android:layout_width="180dp"
+            android:layout_height="110dp"
+            android:layout_margin="6dp"
+            android:backgroundTint="#2E7D32"
+            android:text="5. Juego de\nMemoria"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- SALIR -->
         <Button
             android:id="@+id/btnSalir"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="20dp"
             android:layout_marginHorizontal="20dp"
-            android:backgroundTint="#D32F2F"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#607D8B"
             android:text="Salir"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </ScrollView>
+

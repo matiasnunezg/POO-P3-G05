@@ -1,16 +1,204 @@
 package espol.poo.sistemabienestarestudiantil.ui;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Calendar;
+
 import espol.poo.sistemabienestarestudiantil.R;
+import espol.poo.sistemabienestarestudiantil.data.AppRepository;
+import espol.poo.sistemabienestarestudiantil.modelo.hidrataciones.RegistroHidratacion;
 
 public class HidratacionActivity extends AppCompatActivity {
+    private TextView tvFechaActual;
+    private LinearLayout layoutSelectorFecha;
+    private TextView tvMetaValor;
+    private android.widget.ProgressBar progressCircular;
+    private TextView tvPorcentaje;
+    private double metaActual = 2500.0;
+    private TextView tvTotalConsumido;
+    private LinearLayout containerRegistros;
+    private double totalConsumido = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hidratacion);
+
+        // 1. Vincular vistas
+        tvFechaActual = findViewById(R.id.tvFechaActual);
+        layoutSelectorFecha = findViewById(R.id.layoutSelectorFecha);
+        tvMetaValor = findViewById(R.id.tvMetaValor);
+        tvPorcentaje = findViewById(R.id.tvPorcentaje);
+        progressCircular = findViewById(R.id.progressCircular);
+        tvTotalConsumido = findViewById(R.id.tvTotalConsumido);
+        containerRegistros = findViewById(R.id.containerRegistros);
+
+        // 2. LOGICA DE FECHA: Cargar del repo o mostrar la de hoy
+        String fechaGuardada = AppRepository.getInstance().getFechaSeleccionadaRepo();
+        if (fechaGuardada != null && !fechaGuardada.isEmpty()) {
+            tvFechaActual.setText(fechaGuardada);
+        } else {
+            mostrarFechaActual();
+        }
+
+        // 3. Listeners de botones principales
+        layoutSelectorFecha.setOnClickListener(v -> abrirCalendario());
+
+        findViewById(R.id.btnEstablecerMeta).setOnClickListener(v -> abrirDialogoActualizarMeta());
+
+        findViewById(R.id.btnRegistrarToma).setOnClickListener(v -> abrirDialogoRegistroToma());
+
+        findViewById(R.id.btnVolverMenu).setOnClickListener(v -> finish());
+
+        // 4. CARGAR DATOS DEL REPOSITORIO (Autoguardado al entrar)
+        cargarDatosDesdeRepositorio();
+    }
+
+    private void cargarDatosDesdeRepositorio() {
+        // Cargar Meta
+        metaActual = AppRepository.getInstance().getMetaDiaria();
+        tvMetaValor.setText((int)metaActual + " ml");
+
+        // Cargar Consumo Total
+        totalConsumido = AppRepository.getInstance().getTotalConsumido();
+        tvTotalConsumido.setText((int)totalConsumido + " ml");
+
+        // Actualizar UI del círculo
+        int porcentaje = (int) ((totalConsumido / metaActual) * 100);
+        if (porcentaje > 100) porcentaje = 100;
+        tvPorcentaje.setText(porcentaje + "%");
+        progressCircular.setProgress(porcentaje);
+
+        // Cargar la lista visual
+        for (RegistroHidratacion reg : AppRepository.getInstance().getListaHidratacion()) {
+            agregarRegistroVisual(reg.getCantidadMl(), reg.getHora().toString());
+        }
+    }
+
+    private void mostrarFechaActual() {
+        Calendar calendar = Calendar.getInstance();
+        String fecha = String.format("%02d/%02d/%d",
+                calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.YEAR));
+        tvFechaActual.setText(fecha);
+    }
+
+    private void abrirCalendario() {
+        Calendar calendar = Calendar.getInstance();
+        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            String fechaSeleccionada = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year);
+            tvFechaActual.setText(fechaSeleccionada);
+
+            // AGREGADO: Guardar fecha en el repositorio
+            AppRepository.getInstance().setFechaSeleccionadaRepo(fechaSeleccionada);
+
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void abrirDialogoActualizarMeta() {
+        android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_actualizar_meta, null);
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).setView(dialogView).create();
+
+        TextView tvMetaActualDialog = dialogView.findViewById(R.id.tvMetaActualDialog);
+        android.widget.EditText etNuevaMeta = dialogView.findViewById(R.id.etNuevaMeta);
+
+        tvMetaActualDialog.setText((int)metaActual + " ml");
+
+        dialogView.findViewById(R.id.btnGuardarMeta).setOnClickListener(v -> {
+            String valor = etNuevaMeta.getText().toString();
+            if (!valor.isEmpty()) {
+                metaActual = Double.parseDouble(valor);
+                tvMetaValor.setText((int)metaActual + " ml");
+
+                AppRepository.getInstance().setMetaDiaria(metaActual);
+
+                int porcentaje = (int) ((totalConsumido / metaActual) * 100);
+                tvPorcentaje.setText((porcentaje > 100 ? 100 : porcentaje) + "%");
+                progressCircular.setProgress(porcentaje > 100 ? 100 : porcentaje);
+
+                dialog.dismiss();
+            }
+        });
+
+        dialogView.findViewById(R.id.btnCancelarMeta).setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+    }
+
+    private void abrirDialogoRegistroToma() {
+        android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_registrar_toma, null);
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).setView(dialogView).create();
+
+        android.widget.EditText etCantidad = dialogView.findViewById(R.id.etCantidadToma);
+        android.widget.EditText etHora = dialogView.findViewById(R.id.etHoraToma);
+
+        dialogView.findViewById(R.id.btnGuardarToma).setOnClickListener(v -> {
+            String cantStr = etCantidad.getText().toString().trim();
+            String horaStr = etHora.getText().toString().trim();
+            String regexHora = "^(1[0-2]|0?[1-9]):[0-5][0-9]\\s?(AM|PM|am|pm)$";
+
+            if (!cantStr.isEmpty() && !horaStr.isEmpty()) {
+                if (!horaStr.matches(regexHora)) {
+                    etHora.setError("Formato inválido. Use ej: 10:30 AM o 3:05 PM");
+                    return;
+                }
+
+                try {
+                    double ml = Double.parseDouble(cantStr);
+
+                    totalConsumido += ml;
+                    tvTotalConsumido.setText((int)totalConsumido + " ml");
+
+                    int porcentaje = (int) ((totalConsumido / metaActual) * 100);
+                    int progresoFinal = (porcentaje > 100) ? 100 : porcentaje;
+
+                    tvPorcentaje.setText(progresoFinal + "%");
+                    progressCircular.setProgress(progresoFinal);
+
+                    agregarRegistroVisual(ml, horaStr);
+
+                    String fechaActual = tvFechaActual.getText().toString();
+                    RegistroHidratacion nuevoReg = new RegistroHidratacion(ml, fechaActual, horaStr);
+                    AppRepository.getInstance().agregarRegistroHidratacion(nuevoReg);
+
+                    dialog.dismiss();
+
+                } catch (NumberFormatException e) {
+                    etCantidad.setError("Ingrese un número válido");
+                }
+            } else {
+                if(cantStr.isEmpty()) etCantidad.setError("Falta la cantidad");
+                if(horaStr.isEmpty()) etHora.setError("Falta la hora");
+            }
+        });
+
+        dialogView.findViewById(R.id.btnCancelarToma).setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+    }
+
+    private void agregarRegistroVisual(double ml, String hora) {
+        View sinReg = findViewById(R.id.tvSinRegistros);
+        if (sinReg != null) containerRegistros.removeView(sinReg);
+
+        TextView nuevoItem = new TextView(this);
+        nuevoItem.setText((int)ml + " ml - " + hora);
+        nuevoItem.setBackgroundColor(android.graphics.Color.parseColor("#E3F2FD"));
+        nuevoItem.setPadding(30, 30, 30, 30);
+        nuevoItem.setTextColor(android.graphics.Color.BLACK);
+        nuevoItem.setTextSize(16f);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 0, 0, 15);
+        nuevoItem.setLayoutParams(params);
+
+        containerRegistros.addView(nuevoItem, 0);
     }
 }

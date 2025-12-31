@@ -8,4 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="suenio_mal">#D32F2F</color>     <color name="suenio_regular">#F57C00</color> <color name="suenio_bien">#388E3C</color>    </resources>
+    <color name="suenio_mal">#D32F2F</color>
+    <color name="suenio_regular">#F57C00</color>
+    <color name="suenio_bien">#388E3C</color>
+
+    <color name="colorAzulDeep">#1A237E</color>
+    <color name="colorAzulPastilla">#3949AB</color>
+    <color name="colorFondoPastilla">#E0E7FF</color>
+</resources>

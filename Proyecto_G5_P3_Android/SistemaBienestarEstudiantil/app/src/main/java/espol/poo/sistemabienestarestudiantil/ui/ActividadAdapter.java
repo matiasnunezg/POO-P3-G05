@@ -61,13 +61,17 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
 
             // Configuramos sus clics
             holder.btnPomodoro.setOnClickListener(v -> {
-                Toast.makeText(context, "Iniciando Pomodoro para: " + actividad.getNombre(), Toast.LENGTH_SHORT).show();
-                // Aquí conectarás tu lógica de reloj Pomodoro
+                Intent intent = new Intent(context, PomodoroActivity.class);
+                intent.putExtra("ID_EXTRA", actividad.getId());
+                intent.putExtra("nombre_tarea", actividad.getNombre());
+                context.startActivity(intent);
             });
 
             holder.btnDeepWork.setOnClickListener(v -> {
-                Toast.makeText(context, "Iniciando Deep Work para: " + actividad.getNombre(), Toast.LENGTH_SHORT).show();
-                // Aquí conectarás tu lógica de Deep Work
+                Intent intent = new Intent(context, DeepWorkActivity.class);
+                intent.putExtra("ID_EXTRA", actividad.getId());
+                intent.putExtra("nombre_tarea", actividad.getNombre());
+                context.startActivity(intent);
             });
 
         } else {

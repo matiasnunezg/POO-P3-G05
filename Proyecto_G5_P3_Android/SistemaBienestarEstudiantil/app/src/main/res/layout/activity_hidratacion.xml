@@ -31,6 +31,7 @@
             app:cardElevation="4dp"
             android:layout_marginBottom="16dp">
 
+            <!-- LinearLayout PADRE -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,6 +47,7 @@
 
                 <!-- Selector visual de fecha -->
                 <LinearLayout
+                    android:id="@+id/layoutSelectorFecha"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:background="#FFFFFF"
@@ -59,8 +61,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="12/11/2025"
-                        android:textSize="16sp"/>
+                        android:text="Selecciona una fecha"
+                        android:textSize="16sp"
+                        android:textColor="#000000"/>
 
                     <ImageView
                         android:layout_width="24dp"
@@ -68,7 +71,8 @@
                         android:src="@android:drawable/ic_menu_my_calendar"/>
                 </LinearLayout>
 
-            </LinearLayout>
+            </LinearLayout> <!-- 👈 ESTE ERA EL QUE FALTABA -->
+
         </androidx.cardview.widget.CardView>
 
         <!-- BLOQUE META DIARIA -->
@@ -85,23 +89,26 @@
                 android:orientation="horizontal"
                 android:padding="20dp">
 
-                <!-- CÍRCULO PORCENTAJE -->
                 <FrameLayout
                     android:layout_width="120dp"
                     android:layout_height="120dp">
 
                     <ProgressBar
+                        android:id="@+id/progressCircular"
+                        style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:indeterminate="false"
                         android:max="100"
-                        android:progress="40"
-                        style="?android:attr/progressBarStyleLarge"/>
+                        android:progress="0"
+                        android:secondaryProgress="100"
+                        android:progressDrawable="@drawable/circular_progress_bar" />
 
                     <TextView
+                        android:id="@+id/tvPorcentaje"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="40%"
+                        android:text="0%"
                         android:gravity="center"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -127,7 +134,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="2000 ml"
+                        android:text="2500 ml"
                         android:textColor="#1A73E8"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -159,34 +166,31 @@
                 android:padding="16dp">
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Registros del Día"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"/>
 
                 <!-- REGISTRO -->
-                <TextView
+                <LinearLayout
+                    android:id="@+id/containerRegistros"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="250 ml - 10:30 AM"
-                    android:background="#E3F2FD"
-                    android:padding="10dp"
-                    android:layout_marginBottom="6dp"/>
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="250 ml - 11:30 AM"
-                    android:background="#E3F2FD"
-                    android:padding="10dp"
-                    android:layout_marginBottom="6dp"/>
+                    <TextView
+                        android:id="@+id/tvSinRegistros"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No hay registros aún"
+                        android:textColor="#757575"
+                        android:padding="10dp"
+                        android:gravity="center"/>
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="300 ml - 12:40 PM"
-                    android:background="#E3F2FD"
-                    android:padding="10dp"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -200,6 +204,8 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Total consumido:"
                         android:textStyle="bold"/>
 
@@ -208,7 +214,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="800 ml"
+                        android:text="0 ml"
                         android:textStyle="bold"/>
                 </LinearLayout>
 
