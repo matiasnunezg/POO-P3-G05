@@ -62,14 +62,14 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
             // Configuramos sus clics
             holder.btnPomodoro.setOnClickListener(v -> {
                 Intent intent = new Intent(context, PomodoroActivity.class);
-                // Enviamos el nombre de la actividad para que aparezca en el encabezado
+                intent.putExtra("ID_EXTRA", actividad.getId());
                 intent.putExtra("nombre_tarea", actividad.getNombre());
                 context.startActivity(intent);
             });
 
             holder.btnDeepWork.setOnClickListener(v -> {
                 Intent intent = new Intent(context, DeepWorkActivity.class);
-                // Esto envía el nombre de la tarea a la siguiente pantalla
+                intent.putExtra("ID_EXTRA", actividad.getId());
                 intent.putExtra("nombre_tarea", actividad.getNombre());
                 context.startActivity(intent);
             });

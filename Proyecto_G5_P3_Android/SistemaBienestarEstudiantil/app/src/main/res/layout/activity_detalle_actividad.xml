@@ -153,9 +153,9 @@
             android:id="@+id/cardHistorial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
-            android:visibility="gone"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
@@ -184,71 +184,31 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Fecha"
+                        android:text="Fecha Sesión"
                         android:textStyle="bold"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Técnica"
+                        android:text="Técnica Aplicada"
                         android:textStyle="bold"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
-                        android:text="Minutos"
+                        android:text="Duración"
                         android:textStyle="bold"/>
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/contenedorFilasHistorial"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="12/10/2025"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Pomodoro"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:text="25"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="13/10/2025"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Deep Work"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:text="90"/>
+                    android:orientation="vertical">
                 </LinearLayout>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
         <Button
             android:id="@+id/btnVolver"
             android:layout_width="match_parent"

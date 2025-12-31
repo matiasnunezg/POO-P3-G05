@@ -1,5 +1,6 @@
 package espol.poo.sistemabienestarestudiantil.ui;
 
+import android.content.Intent; // IMPORTANTE: Añadido para la navegación
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -8,61 +9,69 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import java.util.List;
 import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadPersonal;
+import espol.poo.sistemabienestarestudiantil.modelo.enfoques.SesionEnfoque;
 
 public class DetalleActividadActivity extends AppCompatActivity {
 
-    // Vistas Comunes
     private TextView txtTitulo, lblNombre, lblPrioridad, lblEstado, lblFecha, lblTiempo, lblAvance, lblDescripcion;
-
-    // Contenedores (Layouts que vamos a ocultar/mostrar)
-    private LinearLayout layoutInfoAcademica, layoutInfoPersonal;
+    private LinearLayout layoutInfoAcademica, layoutInfoPersonal, contenedorFilasHistorial;
     private CardView cardHistorial;
-
-    // Vistas Específicas (hijas de los layouts anteriores)
     private TextView lblTipo, lblAsignatura, lblLugar;
+    private int idActividadActual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_actividad);
 
-        try {
-            inicializarVistas();
+        // 1. Vincular el botón
+        View btnVolver = findViewById(R.id.btnVolver);
 
-            // 1. Obtener ID enviado desde la lista
-            int idActividad = getIntent().getIntExtra("ID_EXTRA", -1);
-
-            // 2. Buscar el objeto REAL en el repositorio
-            Actividad actividad = AppRepository.getInstance().buscarActividadPorId(idActividad);
-
-            // Validación de seguridad
-            if (actividad == null) {
-                Toast.makeText(this, "Error: Actividad no encontrada", Toast.LENGTH_SHORT).show();
-                finish(); // Cerramos la pantalla si no existe
-                return;
-            }
-
-            // 3. Mostrar los datos según el tipo
-            mostrarDatos(actividad);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Ocurrió un error al cargar: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        // 2. Configurar el clic inmediatamente
+        if (btnVolver != null) {
+            btnVolver.setOnClickListener(v -> {
+                finish(); // Cierra esta pantalla y regresa a la anterior
+            });
         }
 
-        // Botón Volver
-        findViewById(R.id.btnVolver).setOnClickListener(v -> finish());
+        // 3. Luego cargar lo demás
+        try {
+            inicializarVistas();
+            cargarDatosActividad();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    // Este método se ejecuta cuando regresas del Pomodoro o DeepWork
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        Actividad a = AppRepository.getInstance().buscarActividadPorId(idActividadActual);
+        if (a != null) {
+            mostrarDatos(a);
+        }
+    }
+
+    private void cargarDatosActividad() {
+        int idActividad = getIntent().getIntExtra("ID_EXTRA", -1);
+        Actividad actividad = AppRepository.getInstance().buscarActividadPorId(idActividad);
+
+        if (actividad == null) {
+            Toast.makeText(this, "Error: Actividad no encontrada", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        mostrarDatos(actividad);
     }
 
     private void inicializarVistas() {
-
-
-        // Datos generales
         txtTitulo = findViewById(R.id.txtTituloDetalle);
         lblNombre = findViewById(R.id.lblNombre);
         lblPrioridad = findViewById(R.id.lblPrioridad);
@@ -72,69 +81,78 @@ public class DetalleActividadActivity extends AppCompatActivity {
         lblAvance = findViewById(R.id.lblAvance);
         lblDescripcion = findViewById(R.id.lblDescripcion);
 
-        // Contenedores
         layoutInfoAcademica = findViewById(R.id.layoutInfoAcademica);
         layoutInfoPersonal = findViewById(R.id.layoutInfoPersonal);
         cardHistorial = findViewById(R.id.cardHistorial);
+        contenedorFilasHistorial = findViewById(R.id.contenedorFilasHistorial);
 
-        // Campos específicos
         lblTipo = findViewById(R.id.lblTipo);
         lblAsignatura = findViewById(R.id.lblAsignatura);
         lblLugar = findViewById(R.id.lblLugar);
     }
 
-
-
     private void mostrarDatos(Actividad a) {
-        // --- 1. LLENAR DATOS COMUNES ---
         txtTitulo.setText("DETALLES (ID " + a.getId() + ")");
         lblNombre.setText("Nombre: " + a.getNombre());
         lblPrioridad.setText("Prioridad: " + a.getPrioridad());
         lblFecha.setText("Fecha Límite: " + a.getFechaVencimiento());
         lblTiempo.setText("Tiempo Estimado: " + a.getTiempoEstimado() + " min");
         lblAvance.setText("Avance Actual: " + a.getAvance() + "%");
+        lblDescripcion.setText(a.getDescripcion() != null ? a.getDescripcion() : "Sin descripción");
 
-        // Manejo seguro de la descripción (por si es null)
-        if (a.getDescripcion() != null) {
-            lblDescripcion.setText(a.getDescripcion());
-        } else {
-            lblDescripcion.setText("Sin descripción");
-        }
-
-        // Estado calculado
         String estado = (a.getAvance() >= 100) ? "Completada" : "En Curso";
         lblEstado.setText("Estado: " + estado);
 
-
-        // --- 2. LÓGICA DE VISIBILIDAD SEGÚN TIPO ---
-
         if (a instanceof ActividadAcademica) {
-            // === CASO ACADÉMICO ===
             ActividadAcademica acad = (ActividadAcademica) a;
-
-            // Mostrar lo académico
             layoutInfoAcademica.setVisibility(View.VISIBLE);
-            cardHistorial.setVisibility(View.VISIBLE); // Tabla de historial VISIBLE
-
-            // Ocultar lo personal
             layoutInfoPersonal.setVisibility(View.GONE);
-
-            // Llenar datos específicos (USANDO TUS MÉTODOS EXACTOS)
             lblTipo.setText("Tipo: " + acad.getActividadAcademica());
             lblAsignatura.setText("Asignatura: " + acad.getAsignatura());
 
+            // --- LISTENERS PARA LAS TÉCNICAS (POMODORO / DEEP WORK) ---
+            // Asegúrate de que estos IDs existan en tu XML de Detalles
+            View btnPomo = findViewById(R.id.btnPomodoro);
+            if (btnPomo != null) {
+                btnPomo.setOnClickListener(v -> {
+                    Intent intent = new Intent(this, PomodoroActivity.class);
+                    intent.putExtra("ID_EXTRA", a.getId());
+                    intent.putExtra("nombre_tarea", a.getNombre());
+                    startActivity(intent);
+                });
+            }
+
+            View btnDeep = findViewById(R.id.btnDeepWork);
+            if (btnDeep != null) {
+                btnDeep.setOnClickListener(v -> {
+                    Intent intent = new Intent(this, DeepWorkActivity.class);
+                    intent.putExtra("ID_EXTRA", a.getId());
+                    intent.putExtra("nombre_tarea", a.getNombre());
+                    startActivity(intent);
+                });
+            }
+
+            // --- HISTORIAL DINÁMICO ---
+            List<SesionEnfoque> sesiones = acad.getHistorialSesiones();
+            if (sesiones != null && !sesiones.isEmpty()) {
+                cardHistorial.setVisibility(View.VISIBLE);
+                contenedorFilasHistorial.removeAllViews();
+
+                for (SesionEnfoque s : sesiones) {
+                    View fila = getLayoutInflater().inflate(R.layout.item_historial_fila, null);
+                    ((TextView) fila.findViewById(R.id.txtFechaRow)).setText(s.getFecha());
+                    ((TextView) fila.findViewById(R.id.txtTecnicaRow)).setText(s.getTecnica());
+                    ((TextView) fila.findViewById(R.id.txtMinutosRow)).setText(s.getDuracionFormateada());
+                    contenedorFilasHistorial.addView(fila);
+                }
+            } else {
+                cardHistorial.setVisibility(View.GONE);
+            }
         } else if (a instanceof ActividadPersonal) {
-            // === CASO PERSONAL ===
             ActividadPersonal pers = (ActividadPersonal) a;
-
-            // Mostrar lo personal
             layoutInfoPersonal.setVisibility(View.VISIBLE);
-
-            // Ocultar lo académico y la tabla
             layoutInfoAcademica.setVisibility(View.GONE);
-            cardHistorial.setVisibility(View.GONE); // Tabla de historial OCULTA
-
-            // Llenar datos específicos (USANDO TUS MÉTODOS EXACTOS)
+            cardHistorial.setVisibility(View.GONE);
             lblLugar.setText("Lugar: " + pers.getLugar());
         }
     }

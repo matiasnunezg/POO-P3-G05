@@ -48,7 +48,7 @@ public class ActividadAcademica extends Actividad {
             this.historialSesiones = new ArrayList<>();
         }
 
-        // Esto saldrá en rojo hasta que crees la clase SesionEnfoque
+
         this.historialSesiones.add(new SesionEnfoque(tecnica, minutos));
 
         double tiempoEstimadoMinutos = this.getTiempoEstimado();
