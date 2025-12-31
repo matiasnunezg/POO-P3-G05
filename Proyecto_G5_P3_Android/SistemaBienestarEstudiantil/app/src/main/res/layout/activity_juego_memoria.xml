@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E8F5E9"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:paddingTop="10dp">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="Juego de Memoria Ecológico"
+        android:textColor="#1B5E20"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/tvIntentos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Intentos: 0"
+            android:textColor="#2E7D32"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="20dp"/>
+
+        <TextView
+            android:id="@+id/tvPares"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pares: 0 / 8"
+            android:textColor="#2E7D32"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/gridTablero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        android:rowCount="4"
+        android:alignmentMode="alignMargins"
+        android:useDefaultMargins="true">
+
+        <Button android:id="@+id/btn_card_0" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_1" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_2" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_3" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+
+        <Button android:id="@+id/btn_card_4" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_5" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_6" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_7" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+
+        <Button android:id="@+id/btn_card_8" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_9" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_10" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_11" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+
+        <Button android:id="@+id/btn_card_12" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_13" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_14" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+        <Button android:id="@+id/btn_card_15" android:layout_width="70dp" android:layout_height="90dp" android:layout_margin="4dp" android:text="?" android:textSize="20sp" android:textStyle="bold" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"/>
+
+    </GridLayout>
+
+    <Button
+        android:id="@+id/btnVolver"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="#607D8B"
+        android:text="Regresar a las instrucciones"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

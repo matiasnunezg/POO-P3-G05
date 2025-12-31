@@ -50,6 +50,8 @@
 
         <activity android:name=".ui.DeepWorkActivity" />
         <activity android:name=".ui.PomodoroActivity" />
+        <activity android:name=".ui.IntroJuegoActivity" />
+        <activity android:name=".ui.JuegoMemoriaActivity" />
 
     </application>
 

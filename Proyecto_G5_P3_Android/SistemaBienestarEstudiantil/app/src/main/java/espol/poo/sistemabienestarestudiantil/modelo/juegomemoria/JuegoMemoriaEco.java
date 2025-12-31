@@ -19,7 +19,18 @@ public class JuegoMemoriaEco {
     }
 
     private List<String> generarCartas() {
-        List<String> base = List.of("Árbol", "Agua", "Sol", "Flor", "Tierra", "Fuego", "Hoja", "Luz");
+        // CAMBIO: Usamos Emojis en lugar de palabras para mejor visualización
+        List<String> base = List.of(
+                "🌳", // Árbol
+                "💧", // Agua
+                "☀️", // Sol
+                "🌸", // Flor
+                "🌍", // Tierra
+                "🔥", // Fuego (o Energía)
+                "♻️", // Reciclaje
+                "💡"  // Luz/Idea
+        );
+
         List<String> baraja = new ArrayList<>();
         for (String p : base) {
             baraja.add(p);

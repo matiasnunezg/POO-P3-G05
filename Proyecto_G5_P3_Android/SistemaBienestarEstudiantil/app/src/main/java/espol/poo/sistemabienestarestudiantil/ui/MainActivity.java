@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Juego de Memoria
         findViewById(R.id.btnJuego).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, JuegoMemoriaActivity.class);
+            // CAMBIO: Ahora dirigimos a la Intro, no al juego directo
+            Intent intent = new Intent(MainActivity.this, IntroJuegoActivity.class);
             startActivity(intent);
         });
 
