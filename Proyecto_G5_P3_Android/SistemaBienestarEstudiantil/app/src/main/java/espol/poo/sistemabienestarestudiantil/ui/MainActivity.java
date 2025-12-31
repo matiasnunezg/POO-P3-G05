@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // --- OPCIONES PENDIENTES ---
-        findViewById(R.id.btnEnfoque).setOnClickListener(v -> mostrarMensaje("Técnicas de Enfoque: En construcción"));
 
         // --- HIDRATACIÓN (Ya estaba conectado por tu amigo) ---
         findViewById(R.id.btnHidratacion).setOnClickListener(v -> {

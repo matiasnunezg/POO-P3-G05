@@ -44,7 +44,8 @@
             android:name=".ui.RegistrarAvanceActivity"
             android:exported="false"
             android:parentActivityName=".ui.ListaActividadesActivity" />
-
+        <activity android:name=".ui.DeepWorkActivity" />
+        <activity android:name=".ui.PomodoroActivity" />
     </application>
 
 </manifest>
