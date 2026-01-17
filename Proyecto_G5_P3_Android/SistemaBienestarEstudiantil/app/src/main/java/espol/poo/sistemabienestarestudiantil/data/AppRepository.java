@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
+import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
+import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadPersonal;
 import espol.poo.sistemabienestarestudiantil.modelo.suenio.RegistrarHorasDeSuenio;
 import espol.poo.sistemabienestarestudiantil.modelo.hidrataciones.RegistroHidratacion;
 
@@ -30,6 +32,54 @@ public class AppRepository {
     private AppRepository() {
         // 1. Inicializar Actividades
         listaActividades = new ArrayList<>();
+        listaActividades.add(new ActividadAcademica(
+                "Leer capítulo 5",
+                Actividad.TipoPrioridad.Baja,
+                "2026-01-19",
+                70,
+                1,
+                120,
+                LocalDate.now().toString(),
+                "Física",
+                ActividadAcademica.TipoActividadAcademica.Tarea,
+                "Aprender teoría y practicar ejercicios"// Materia (dato extra)
+        ));
+        listaActividades.add(new ActividadAcademica(
+                "Examen 2do Parcial",
+                Actividad.TipoPrioridad.Alta,
+                "2026-01-23",
+                0,
+                2,
+                180,
+                LocalDate.now().toString(),
+                "Programación Orientada a Objetos",
+                ActividadAcademica.TipoActividadAcademica.Proyecto,
+                "Repasar teoría y practicar ejercicios"// Materia (dato extra)
+        ));
+        listaActividades.add(new ActividadAcademica(
+                "Proyecto Intro",
+                Actividad.TipoPrioridad.Alta,
+                "2026-01-30",
+                70,
+                3,
+                150,
+                LocalDate.now().toString(),
+                "Introducción a la Mecatrónica",
+                ActividadAcademica.TipoActividadAcademica.Proyecto,
+                "Realizar diapositivas y terminar maqueta"// Materia (dato extra)
+        ));
+        listaActividades.add(new ActividadPersonal(
+                "Viaje a Montañita",
+                Actividad.TipoPrioridad.Alta,
+                "2026-02-15",
+                0,
+                4,
+                4800,
+                LocalDate.now().toString(),
+                "Montañita",
+                ActividadPersonal.TipoActividadPersonal.Hobbies,
+                "Conocer sitios turísticos y ir de fiesta con amigos"// Materia (dato extra)
+        ));
 
         // 2. Inicializar Sueño y cargar datos prueba
         listaSuenio = new ArrayList<>();
