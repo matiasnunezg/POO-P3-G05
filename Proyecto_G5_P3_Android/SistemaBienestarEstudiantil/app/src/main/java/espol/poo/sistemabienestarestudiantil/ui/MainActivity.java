@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // --- AQUÍ ESTÁ EL CAMBIO ---
-        // Ahora el botón 3 abre TU pantalla de Sueño
         findViewById(R.id.btnSuenio).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SuenioActivity.class);
             startActivity(intent);
