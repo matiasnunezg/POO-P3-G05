@@ -34,20 +34,23 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Sueño
         findViewById(R.id.btnSuenio).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SuenioActivity.class);
             startActivity(intent);
         });
-        // ---------------------------
 
-        // Sostenibilidad (Sigue en construcción por ahora)
-        findViewById(R.id.btnSostenibilidad).setOnClickListener(v ->
-                android.widget.Toast.makeText(this, "Sostenibilidad: En construcción", android.widget.Toast.LENGTH_SHORT).show()
-        );
+        // ---------------------------
+        // AQUÍ ESTÁ EL CAMBIO:
+        // Sostenibilidad (Ya conectada)
+        findViewById(R.id.btnSostenibilidad).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SostenibilidadActivity.class);
+            startActivity(intent);
+        });
+        // ---------------------------
 
         // Juego de Memoria
         findViewById(R.id.btnJuego).setOnClickListener(v -> {
-            // CAMBIO: Ahora dirigimos a la Intro, no al juego directo
             Intent intent = new Intent(MainActivity.this, IntroJuegoActivity.class);
             startActivity(intent);
         });
