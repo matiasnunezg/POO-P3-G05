@@ -46,7 +46,7 @@ public class SostenibilidadActivity extends AppCompatActivity {
     }
 
     private void calcularResumen() {
-        List<RegistroDiarioSostenible> lista = AppRepository.getInstance().getListaSostenibilidad();
+        List<RegistroDiarioSostenible> lista = AppRepository.getInstance(this).getListaSostenibilidad();
 
         // 1. Fechas (Hoy - Hace 6 días)
         LocalDate hoy = LocalDate.now();

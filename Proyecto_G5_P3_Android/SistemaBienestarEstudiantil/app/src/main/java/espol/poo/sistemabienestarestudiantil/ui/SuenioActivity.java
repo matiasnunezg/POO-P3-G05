@@ -38,7 +38,7 @@ public class SuenioActivity extends AppCompatActivity {
 
     private void configurarLista() {
         // Conectar Adapter con Repositorio
-        adapter = new SuenioAdapter(AppRepository.getInstance().getListaSuenio());
+        adapter = new SuenioAdapter(AppRepository.getInstance(this).getListaSuenio());
         binding.recyclerSuenio.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerSuenio.setAdapter(adapter);
     }

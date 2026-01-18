@@ -54,7 +54,7 @@ public class RegistrarSuenioActivity extends AppCompatActivity {
 
         // Crear objeto y guardar en Repositorio
         RegistrarHorasDeSuenio nuevo = new RegistrarHorasDeSuenio(horaInicio, horaFin);
-        AppRepository.getInstance().agregarSuenio(nuevo);
+        AppRepository.getInstance(this).agregarSuenio(nuevo);
 
         Toast.makeText(this, "Registro guardado", Toast.LENGTH_SHORT).show();
         finish(); // Volver a la pantalla anterior

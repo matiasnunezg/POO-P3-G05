@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // 1. Inicializar la "Base de Datos"
-        AppRepository.getInstance();
+        AppRepository.getInstance(this);
 
         // 2. Configurar los botones
         configurarBotones();
