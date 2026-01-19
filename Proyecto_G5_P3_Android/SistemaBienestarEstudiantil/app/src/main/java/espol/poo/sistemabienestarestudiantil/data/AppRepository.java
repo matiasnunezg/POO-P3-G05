@@ -11,7 +11,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// Importaciones de Modelos
+// Importaciones
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadPersonal;
@@ -24,17 +24,19 @@ public class AppRepository {
     private static AppRepository instance;
     private Context context;
 
-    // Archivos
+    // --- ARCHIVOS DE GUARDADO ---
     private final String FILE_ACTIVIDADES = "actividades.ser";
     private final String FILE_SUENIO = "historial_suenio.ser";
+    private final String FILE_HIDRATACION = "historial_agua.ser";
+    private final String FILE_META_HIDRATACION = "meta_agua.ser"; // Agregado por tu compañero
 
-    // --- VARIABLES DE ALMACENAMIENTO ---
+    // --- LISTAS ---
     private List<Actividad> listaActividades;
     private List<RegistrarHorasDeSuenio> listaSuenio;
     private List<RegistroHidratacion> listaHidratacion;
     private List<RegistroDiarioSostenible> listaSostenibilidad;
 
-    // Variables extras
+    // --- VARIABLES ---
     private double metaDiaria = 2500.0;
     private String fechaSeleccionadaRepo = "";
 
@@ -42,16 +44,15 @@ public class AppRepository {
     private AppRepository(Context context) {
         this.context = context;
 
-        // 1. ACTIVIDADES (Corregido con los datos reales de tus compañeros)
+        // 1. ACTIVIDADES (Tu corrección con .Hobbies)
         listaActividades = new ArrayList<>();
         if (context != null) {
             cargarActividadesDelArchivo();
         } else {
-            // Si no hay archivo, cargamos los datos obligatorios
             cargarDatosOriginalesActividades();
         }
 
-        // 2. SUEÑO (Tu parte)
+        // 2. SUEÑO (Tu parte: Datos del 18 de Enero)
         listaSuenio = new ArrayList<>();
         if (context != null) {
             cargarSuenioDelArchivo();
@@ -59,8 +60,14 @@ public class AppRepository {
             cargarDatosPruebaSuenio();
         }
 
-        // 3. HIDRATACIÓN (Seguro)
+        // 3. HIDRATACIÓN (Parte de tu compañero: Datos del 19 Enero + Meta)
         listaHidratacion = new ArrayList<>();
+        if (context != null) {
+            cargarHidratacionDelArchivo(); // Carga historial
+            cargarMetaDelArchivo();        // Carga la meta personalizada
+        } else {
+            cargarDatosPruebaHidratacion(); // Datos por defecto
+        }
 
         // 4. SOSTENIBILIDAD (Seguro)
         listaSostenibilidad = new ArrayList<>();
@@ -76,9 +83,13 @@ public class AppRepository {
         if (instance == null) {
             instance = new AppRepository(context.getApplicationContext());
         }
+        // Si ya existe pero no tenía contexto, se lo ponemos y recargamos TODO
         if (instance.context == null && context != null) {
             instance.context = context.getApplicationContext();
             instance.cargarSuenioDelArchivo();
+            instance.cargarHidratacionDelArchivo();
+            instance.cargarMetaDelArchivo();
+            instance.cargarActividadesDelArchivo();
         }
         return instance;
     }
@@ -91,9 +102,8 @@ public class AppRepository {
     }
 
     // ==========================================
-    // MÓDULO DE SUEÑO
+    //           MÓDULO DE SUEÑO (TU PARTE)
     // ==========================================
-
     public List<RegistrarHorasDeSuenio> getListaSuenio() { return listaSuenio; }
 
     public void agregarSuenio(RegistrarHorasDeSuenio registro) {
@@ -142,9 +152,87 @@ public class AppRepository {
     }
 
     // ==========================================
-    // MÓDULO DE ACTIVIDADES (ADAPTADO A TUS COMPAÑEROS)
+    //           MÓDULO DE HIDRATACIÓN (FUSIONADO)
     // ==========================================
+    public List<RegistroHidratacion> getListaHidratacion() { return listaHidratacion; }
 
+    public void agregarRegistroHidratacion(RegistroHidratacion registro) {
+        listaHidratacion.add(registro);
+        if (context != null) guardarHidratacionEnArchivo();
+    }
+
+    // Datos del compañero (usa Strings, así que lo respetamos)
+    private void cargarDatosPruebaHidratacion() {
+        listaHidratacion.add(new RegistroHidratacion(500.0, "19/01/2026", "13:00 PM"));
+        listaHidratacion.add(new RegistroHidratacion(300.0, "19/01/2026", "17:00 PM"));
+    }
+
+    public double getMetaDiaria() { return metaDiaria; }
+
+    // Al cambiar la meta, guardamos en archivo (Lógica del compañero)
+    public void setMetaDiaria(double meta) {
+        this.metaDiaria = meta;
+        if (context != null) guardarMetaEnArchivo();
+    }
+
+    public double getTotalConsumido() {
+        double total = 0;
+        for (RegistroHidratacion r : listaHidratacion) { total += r.getCantidadMl(); }
+        return total;
+    }
+
+    public String getFechaSeleccionadaRepo() { return fechaSeleccionadaRepo; }
+    public void setFechaSeleccionadaRepo(String fecha) { this.fechaSeleccionadaRepo = fecha; }
+
+    // --- Persistencia Hidratación ---
+    private void guardarHidratacionEnArchivo() {
+        try {
+            FileOutputStream fos = context.openFileOutput(FILE_HIDRATACION, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(listaHidratacion);
+            oos.close(); fos.close();
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void cargarHidratacionDelArchivo() {
+        try {
+            FileInputStream fis = context.openFileInput(FILE_HIDRATACION);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            listaHidratacion = (List<RegistroHidratacion>) ois.readObject();
+            ois.close(); fis.close();
+        } catch (Exception e) {
+            listaHidratacion = new ArrayList<>();
+            cargarDatosPruebaHidratacion();
+            if (context != null) guardarHidratacionEnArchivo();
+        }
+    }
+
+    // --- Persistencia Meta (Lógica del compañero) ---
+    private void guardarMetaEnArchivo() {
+        try {
+            FileOutputStream fos = context.openFileOutput(FILE_META_HIDRATACION, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(Double.valueOf(metaDiaria));
+            oos.close(); fos.close();
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    private void cargarMetaDelArchivo() {
+        try {
+            FileInputStream fis = context.openFileInput(FILE_META_HIDRATACION);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Double metaGuardada = (Double) ois.readObject();
+            if (metaGuardada != null) metaDiaria = metaGuardada;
+            ois.close(); fis.close();
+        } catch (Exception e) {
+            if (context != null) guardarMetaEnArchivo();
+        }
+    }
+
+    // ==========================================
+    //           MÓDULO DE ACTIVIDADES
+    // ==========================================
     public List<Actividad> getListaActividades() { return listaActividades; }
 
     public void agregarActividad(Actividad actividad) {
@@ -195,93 +283,18 @@ public class AppRepository {
         }
     }
 
-    // --- CORRECCIÓN EXACTA SEGÚN TUS ARCHIVOS ---
     private void cargarDatosOriginalesActividades() {
         try {
-            // 1. Actividad Personal: Usamos .Hobbies (vimos en tu código que existe)
-            // Constructor: nombre, prioridad, fechaVenc, avance, id, tiempo, fechaActual, lugar, tipoPersonal, desc
-            listaActividades.add(new ActividadPersonal(
-                    "Viaje a Montañita",
-                    Actividad.TipoPrioridad.Media,
-                    "2026-02-15",
-                    0,
-                    1,
-                    4800,
-                    LocalDate.now().toString(),
-                    "Montañita",
-                    ActividadPersonal.TipoActividadPersonal.Hobbies, // <-- Correcto
-                    "Viaje con amigos"
-            ));
-
-            // 2. Tarea
-            listaActividades.add(new ActividadAcademica(
-                    "Leer capítulo 5",
-                    Actividad.TipoPrioridad.Baja,
-                    "2026-01-19",
-                    70,
-                    2,
-                    120,
-                    LocalDate.now().toString(),
-                    "Física",
-                    ActividadAcademica.TipoActividadAcademica.Tarea, // <-- Correcto
-                    "Teoría"
-            ));
-
-            // 3. Examen
-            listaActividades.add(new ActividadAcademica(
-                    "Examen Parcial",
-                    Actividad.TipoPrioridad.Alta,
-                    "2026-01-23",
-                    0,
-                    3,
-                    180,
-                    LocalDate.now().toString(),
-                    "POO",
-                    ActividadAcademica.TipoActividadAcademica.Examen, // <-- Correcto
-                    "Estudiar"
-            ));
-
-            // 4. Proyecto
-            listaActividades.add(new ActividadAcademica(
-                    "Proyecto Final",
-                    Actividad.TipoPrioridad.Alta,
-                    "2026-01-30",
-                    0,
-                    4,
-                    150,
-                    LocalDate.now().toString(),
-                    "Mecatrónica",
-                    ActividadAcademica.TipoActividadAcademica.Proyecto, // <-- Correcto
-                    "Maqueta"
-            ));
-
-        } catch (Exception e) {
-            // Si por alguna razón los compañeros cambiaron algo más, esto evita que la app explote
-            e.printStackTrace();
-        }
+            listaActividades.add(new ActividadPersonal("Viaje a Montañita", Actividad.TipoPrioridad.Media, "2026-02-15", 0, 1, 4800, LocalDate.now().toString(), "Montañita", ActividadPersonal.TipoActividadPersonal.Hobbies, "Viaje con amigos"));
+            listaActividades.add(new ActividadAcademica("Leer capítulo 5", Actividad.TipoPrioridad.Baja, "2026-01-19", 70, 2, 120, LocalDate.now().toString(), "Física", ActividadAcademica.TipoActividadAcademica.Tarea, "Teoría"));
+            listaActividades.add(new ActividadAcademica("Examen Parcial", Actividad.TipoPrioridad.Alta, "2026-01-23", 0, 3, 180, LocalDate.now().toString(), "POO", ActividadAcademica.TipoActividadAcademica.Examen, "Estudiar"));
+            listaActividades.add(new ActividadAcademica("Proyecto Final", Actividad.TipoPrioridad.Alta, "2026-01-30", 0, 4, 150, LocalDate.now().toString(), "Mecatrónica", ActividadAcademica.TipoActividadAcademica.Proyecto, "Maqueta"));
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     // ==========================================
-    // MÓDULO DE HIDRATACIÓN (INTACTO)
+    //           MÓDULO DE SOSTENIBILIDAD
     // ==========================================
-
-    public List<RegistroHidratacion> getListaHidratacion() { return listaHidratacion; }
-    public void agregarRegistroHidratacion(RegistroHidratacion registro) { listaHidratacion.add(registro); }
-    public double getMetaDiaria() { return metaDiaria; }
-    public void setMetaDiaria(double meta) { this.metaDiaria = meta; }
-
-    public double getTotalConsumido() {
-        double total = 0;
-        for (RegistroHidratacion r : listaHidratacion) { total += r.getCantidadMl(); }
-        return total;
-    }
-    public String getFechaSeleccionadaRepo() { return fechaSeleccionadaRepo; }
-    public void setFechaSeleccionadaRepo(String fecha) { this.fechaSeleccionadaRepo = fecha; }
-
-    // ==========================================
-    // MÓDULO DE SOSTENIBILIDAD (INTACTO)
-    // ==========================================
-
     public List<RegistroDiarioSostenible> getListaSostenibilidad() { return listaSostenibilidad; }
 
     public void agregarRegistroSostenible(RegistroDiarioSostenible nuevoRegistro) {

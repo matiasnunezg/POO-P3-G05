@@ -62,23 +62,39 @@ public class HidratacionActivity extends AppCompatActivity {
     }
 
     private void cargarDatosDesdeRepositorio() {
-        // Cargar Meta
+        // 1. Cargar Meta
         metaActual = AppRepository.getInstance(this).getMetaDiaria();
         tvMetaValor.setText((int)metaActual + " ml");
 
-        // Cargar Consumo Total
-        totalConsumido = AppRepository.getInstance(this).getTotalConsumido();
-        tvTotalConsumido.setText((int)totalConsumido + " ml");
+        // 2. Limpiar el contenedor visual antes de cargar nuevos datos
+        containerRegistros.removeAllViews();
+        totalConsumido = 0.0; // Reiniciamos para calcular solo lo del día seleccionado
 
-        // Actualizar UI del círculo
+        // 3. Obtener la fecha que muestra el TextView actualmente
+        String fechaVisible = tvFechaActual.getText().toString();
+
+        // 4. Filtrar y cargar solo los registros que coincidan con la fecha seleccionada
+        for (RegistroHidratacion reg : AppRepository.getInstance(this).getListaHidratacion()) {
+            if (reg.getFecha().equals(fechaVisible)) {
+                totalConsumido += reg.getCantidadMl();
+                agregarRegistroVisual(reg.getCantidadMl(), reg.getHora());
+            }
+        }
+
+        // 5. Actualizar UI de progreso y totales del día
+        tvTotalConsumido.setText((int)totalConsumido + " ml");
         int porcentaje = (int) ((totalConsumido / metaActual) * 100);
         if (porcentaje > 100) porcentaje = 100;
         tvPorcentaje.setText(porcentaje + "%");
         progressCircular.setProgress(porcentaje);
 
-        // Cargar la lista visual
-        for (RegistroHidratacion reg : AppRepository.getInstance(this).getListaHidratacion()) {
-            agregarRegistroVisual(reg.getCantidadMl(), reg.getHora().toString());
+        // Si no hay registros, podrías volver a poner el texto de "Sin registros"
+        if (containerRegistros.getChildCount() == 0) {
+            TextView tvSin = new TextView(this);
+            tvSin.setId(R.id.tvSinRegistros);
+            tvSin.setText("No hay registros para este día");
+            tvSin.setGravity(android.view.Gravity.CENTER);
+            containerRegistros.addView(tvSin);
         }
     }
 
@@ -97,12 +113,13 @@ public class HidratacionActivity extends AppCompatActivity {
             String fechaSeleccionada = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year);
             tvFechaActual.setText(fechaSeleccionada);
 
-            // AGREGADO: Guardar fecha en el repositorio
             AppRepository.getInstance(this).setFechaSeleccionadaRepo(fechaSeleccionada);
+
+            // ACTUALIZACIÓN CLAVE: Recargar los datos al cambiar la fecha
+            cargarDatosDesdeRepositorio();
 
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
-
     private void abrirDialogoActualizarMeta() {
         android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_actualizar_meta, null);
         android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).setView(dialogView).create();
