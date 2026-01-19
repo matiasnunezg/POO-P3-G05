@@ -57,8 +57,9 @@ public class AppRepository {
             cargarDatosPruebaSuenio(); // Carga datos del 18 de Enero
         }
 
-        // 3. HIDRATACIÓN (Tu lógica original INTACTA)
+// 3. HIDRATACIÓN (Con datos por defecto para el 19 de Enero)
         listaHidratacion = new ArrayList<>();
+        cargarDatosPruebaHidratacion();
 
         // 4. SOSTENIBILIDAD (Tu lógica original INTACTA)
         listaSostenibilidad = new ArrayList<>();
@@ -194,12 +195,23 @@ public class AppRepository {
         listaActividades.add(new ActividadPersonal("Viaje a Montañita", Actividad.TipoPrioridad.Alta, "2026-02-15", 0, 4, 4800, LocalDate.now().toString(), "Montañita", ActividadPersonal.TipoActividadPersonal.Hobbies, "Conocer sitios turísticos y ir de fiesta con amigos"));
     }
 
-    // ==========================================
-    // MÓDULO DE HIDRATACIÓN (TU ORIGINAL INTACTO)
+// ==========================================
+    // MÓDULO DE HIDRATACIÓN (CON DATOS DE PRUEBA)
     // ==========================================
 
     public List<RegistroHidratacion> getListaHidratacion() { return listaHidratacion; }
-    public void agregarRegistroHidratacion(RegistroHidratacion registro) { listaHidratacion.add(registro); }
+
+    public void agregarRegistroHidratacion(RegistroHidratacion registro) {
+        listaHidratacion.add(registro);
+    }
+
+    // Datos por defecto para la revisión (19 de Enero 2026)
+    private void cargarDatosPruebaHidratacion() {
+        // Formato: cantidadMl, fecha (String), hora (String)
+        listaHidratacion.add(new RegistroHidratacion(500.0, "2026-01-19", "13:00"));
+        listaHidratacion.add(new RegistroHidratacion(300.0, "2026-01-19", "17:00"));
+    }
+
     public double getMetaDiaria() { return metaDiaria; }
     public void setMetaDiaria(double meta) { this.metaDiaria = meta; }
 
@@ -208,6 +220,7 @@ public class AppRepository {
         for (RegistroHidratacion r : listaHidratacion) { total += r.getCantidadMl(); }
         return total;
     }
+
     public String getFechaSeleccionadaRepo() { return fechaSeleccionadaRepo; }
     public void setFechaSeleccionadaRepo(String fecha) { this.fechaSeleccionadaRepo = fecha; }
 
