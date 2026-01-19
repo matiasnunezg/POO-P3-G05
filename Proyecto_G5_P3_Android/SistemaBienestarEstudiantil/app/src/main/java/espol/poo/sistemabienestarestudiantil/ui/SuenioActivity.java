@@ -3,10 +3,10 @@ package espol.poo.sistemabienestarestudiantil.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
-import java.util.Locale;
 
 import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
@@ -14,10 +14,23 @@ import espol.poo.sistemabienestarestudiantil.modelo.suenio.RegistrarHorasDeSueni
 
 public class SuenioActivity extends AppCompatActivity {
 
+    private SuenioAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suenio);
+
+        // 1. Configurar la lista (RecyclerView)
+        RecyclerView recyclerView = findViewById(R.id.recyclerSuenio);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // 2. Obtener datos (Con contexto para cargar archivo)
+        List<RegistrarHorasDeSuenio> lista = AppRepository.getInstance(this).getListaSuenio();
+
+        // 3. Poner el adaptador
+        adapter = new SuenioAdapter(lista);
+        recyclerView.setAdapter(adapter);
 
         // Botón Registrar
         Button btnNuevo = findViewById(R.id.btnNuevoRegistroSueño);
@@ -26,35 +39,15 @@ public class SuenioActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Botón Volver (Rúbrica)
+        // Botón Volver
         Button btnVolver = findViewById(R.id.btnVolverSueño);
         btnVolver.setOnClickListener(v -> finish());
-
-        actualizarLista();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        actualizarLista();
-    }
-
-    private void actualizarLista() {
-        TextView tvLista = findViewById(R.id.tvListaRegistrosSueño);
-        // Usamos getInstance(this) para asegurar que cargue archivos
-        List<RegistrarHorasDeSuenio> lista = AppRepository.getInstance(this).getListaSuenio();
-
-        if (lista == null || lista.isEmpty()) {
-            tvLista.setText("No hay registros de sueño.");
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (RegistrarHorasDeSuenio r : lista) {
-                String item = String.format(Locale.getDefault(),
-                        "📅 %s\n⏰ %s - %s\n⏳ %.1f horas\n────────────────\n",
-                        r.getFechaRegistro(), r.getHoraInicio(), r.getHoraFin(), r.getDuracionHoras());
-                sb.append(item);
-            }
-            tvLista.setText(sb.toString());
-        }
+        // Actualizar lista al volver de registrar
+        if (adapter != null) adapter.notifyDataSetChanged();
     }
 }

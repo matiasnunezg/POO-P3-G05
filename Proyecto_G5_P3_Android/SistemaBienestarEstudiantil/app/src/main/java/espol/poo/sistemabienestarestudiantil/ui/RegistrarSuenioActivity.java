@@ -7,11 +7,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.time.LocalTime;
 import java.util.Locale;
+
 import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 import espol.poo.sistemabienestarestudiantil.modelo.suenio.RegistrarHorasDeSuenio;
 
 public class RegistrarSuenioActivity extends AppCompatActivity {
+
     private EditText etInicio, etFin;
     private LocalTime horaInicio, horaFin;
 
@@ -20,6 +22,7 @@ public class RegistrarSuenioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar_suenio);
 
+        // Conectamos con tus IDs
         etInicio = findViewById(R.id.etHoraInicioSueño);
         etFin = findViewById(R.id.etHoraFinSueño);
 
@@ -34,20 +37,27 @@ public class RegistrarSuenioActivity extends AppCompatActivity {
         TimePickerDialog dialog = new TimePickerDialog(this, (view, hour, minute) -> {
             LocalTime time = LocalTime.of(hour, minute);
             String texto = String.format(Locale.US, "%02d:%02d", hour, minute);
-            if (esInicio) { horaInicio = time; etInicio.setText(texto); }
-            else { horaFin = time; etFin.setText(texto); }
+            if (esInicio) {
+                horaInicio = time;
+                etInicio.setText(texto);
+            } else {
+                horaFin = time;
+                etFin.setText(texto);
+            }
         }, 22, 0, true);
         dialog.show();
     }
 
     private void guardar() {
         if (horaInicio == null || horaFin == null) {
-            Toast.makeText(this, "Seleccione ambas horas", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Por favor seleccione ambas horas", Toast.LENGTH_SHORT).show();
             return;
         }
         RegistrarHorasDeSuenio nuevo = new RegistrarHorasDeSuenio(horaInicio, horaFin);
-        AppRepository.getInstance(this).agregarSuenio(nuevo); // Guardado
-        Toast.makeText(this, "Guardado", Toast.LENGTH_SHORT).show();
+        // Guardamos usando el Repositorio Seguro
+        AppRepository.getInstance(this).agregarSuenio(nuevo);
+
+        Toast.makeText(this, "Registro guardado", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

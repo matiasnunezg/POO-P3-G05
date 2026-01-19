@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Importaciones de Modelos
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadPersonal;
@@ -25,7 +26,7 @@ public class AppRepository {
 
     // Archivos
     private final String FILE_ACTIVIDADES = "actividades.ser";
-    private final String FILE_SUENIO = "historial_suenio.ser"; // NUEVO PARA TU PARTE
+    private final String FILE_SUENIO = "historial_suenio.ser";
 
     // --- VARIABLES DE ALMACENAMIENTO ---
     private List<Actividad> listaActividades;
@@ -33,7 +34,7 @@ public class AppRepository {
     private List<RegistroHidratacion> listaHidratacion;
     private List<RegistroDiarioSostenible> listaSostenibilidad;
 
-    // Variables extras de tus compañeros (No tocar)
+    // Variables extras
     private double metaDiaria = 2500.0;
     private String fechaSeleccionadaRepo = "";
 
@@ -41,49 +42,47 @@ public class AppRepository {
     private AppRepository(Context context) {
         this.context = context;
 
-        // 1. ACTIVIDADES (Tu lógica original intacta, protegida contra null)
+        // 1. ACTIVIDADES (Corregido con los datos reales de tus compañeros)
         listaActividades = new ArrayList<>();
         if (context != null) {
             cargarActividadesDelArchivo();
         } else {
-            cargarDatosOriginalesActividades(); // Fallback si no hay contexto
+            // Si no hay archivo, cargamos los datos obligatorios
+            cargarDatosOriginalesActividades();
         }
 
-        // 2. SUEÑO (MODIFICADO PARA RÚBRICA Y ARCHIVOS)
+        // 2. SUEÑO (Tu parte)
         listaSuenio = new ArrayList<>();
         if (context != null) {
-            cargarSuenioDelArchivo(); // Intenta cargar archivo
+            cargarSuenioDelArchivo();
         } else {
-            cargarDatosPruebaSuenio(); // Carga datos del 18 de Enero
+            cargarDatosPruebaSuenio();
         }
 
-        // 3. HIDRATACIÓN (Tu lógica original INTACTA)
+        // 3. HIDRATACIÓN (Seguro)
         listaHidratacion = new ArrayList<>();
 
-        // 4. SOSTENIBILIDAD (Tu lógica original INTACTA)
+        // 4. SOSTENIBILIDAD (Seguro)
         listaSostenibilidad = new ArrayList<>();
-        List<Integer> idsAyer = new ArrayList<>();
-        idsAyer.add(1); idsAyer.add(2); idsAyer.add(3); idsAyer.add(4);
-        listaSostenibilidad.add(new RegistroDiarioSostenible(LocalDate.now().minusDays(1), idsAyer));
+        try {
+            List<Integer> idsAyer = new ArrayList<>();
+            idsAyer.add(1); idsAyer.add(2); idsAyer.add(3); idsAyer.add(4);
+            listaSostenibilidad.add(new RegistroDiarioSostenible(LocalDate.now().minusDays(1), idsAyer));
+        } catch (Exception e) { }
     }
 
-    // --- SINGLETON HÍBRIDO (LA CLAVE PARA QUE NO HAYA ERRORES) ---
-
-    // Método 1: Para TI (Con contexto -> Guarda archivos)
+    // --- SINGLETON HÍBRIDO ---
     public static synchronized AppRepository getInstance(Context context) {
         if (instance == null) {
             instance = new AppRepository(context.getApplicationContext());
         }
-        // Si la instancia existe pero no tiene contexto (creada por compañero), se lo ponemos
         if (instance.context == null && context != null) {
             instance.context = context.getApplicationContext();
-            // Intentamos cargar tu archivo de sueño ahora que tenemos contexto
             instance.cargarSuenioDelArchivo();
         }
         return instance;
     }
 
-    // Método 2: Para TUS COMPAÑEROS (Sin contexto -> Evita pantallas rojas)
     public static synchronized AppRepository getInstance() {
         if (instance == null) {
             instance = new AppRepository(null);
@@ -92,23 +91,33 @@ public class AppRepository {
     }
 
     // ==========================================
-    // MÓDULO DE SUEÑO (TU PARTE - ACTUALIZADA)
+    // MÓDULO DE SUEÑO
     // ==========================================
 
     public List<RegistrarHorasDeSuenio> getListaSuenio() { return listaSuenio; }
 
     public void agregarSuenio(RegistrarHorasDeSuenio registro) {
+        // Anti-Duplicados
+        RegistrarHorasDeSuenio duplicado = null;
+        for (RegistrarHorasDeSuenio r : listaSuenio) {
+            if (r.getFechaRegistro().isEqual(registro.getFechaRegistro())) {
+                duplicado = r;
+                break;
+            }
+        }
+        if (duplicado != null) listaSuenio.remove(duplicado);
+
         listaSuenio.add(0, registro);
-        if (context != null) guardarSuenioEnArchivo(); // Guardado persistente
+        if (context != null) guardarSuenioEnArchivo();
     }
 
-    // Datos fijos para la Rúbrica (18 de Enero)
     private void cargarDatosPruebaSuenio() {
-        listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(22, 0), LocalTime.of(6, 0), LocalDate.of(2026, 1, 18)));
-        listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(14, 0), LocalTime.of(16, 0), LocalDate.of(2026, 1, 18)));
+        if (listaSuenio.isEmpty()) {
+            listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(22, 0), LocalTime.of(6, 0), LocalDate.of(2026, 1, 18)));
+            listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(14, 0), LocalTime.of(16, 0), LocalDate.of(2026, 1, 18)));
+        }
     }
 
-    // -- SERIALIZACIÓN SUEÑO --
     private void guardarSuenioEnArchivo() {
         try {
             FileOutputStream fos = context.openFileOutput(FILE_SUENIO, Context.MODE_PRIVATE);
@@ -127,14 +136,13 @@ public class AppRepository {
             ois.close(); fis.close();
         } catch (Exception e) {
             listaSuenio = new ArrayList<>();
-            cargarDatosPruebaSuenio(); // Si falla carga, usa datos rúbrica
+            cargarDatosPruebaSuenio();
             guardarSuenioEnArchivo();
         }
     }
 
-
     // ==========================================
-    // MÓDULO DE ACTIVIDADES (TU ORIGINAL)
+    // MÓDULO DE ACTIVIDADES (ADAPTADO A TUS COMPAÑEROS)
     // ==========================================
 
     public List<Actividad> getListaActividades() { return listaActividades; }
@@ -187,15 +195,74 @@ public class AppRepository {
         }
     }
 
+    // --- CORRECCIÓN EXACTA SEGÚN TUS ARCHIVOS ---
     private void cargarDatosOriginalesActividades() {
-        listaActividades.add(new ActividadAcademica("Leer capítulo 5", Actividad.TipoPrioridad.Baja, "2026-01-19", 70, 1, 120, LocalDate.now().toString(), "Física", ActividadAcademica.TipoActividadAcademica.Tarea, "Aprender teoría y practicar ejercicios"));
-        listaActividades.add(new ActividadAcademica("Examen 2do Parcial", Actividad.TipoPrioridad.Alta, "2026-01-23", 0, 2, 180, LocalDate.now().toString(), "Programación Orientada a Objetos", ActividadAcademica.TipoActividadAcademica.Proyecto, "Repasar teoría y practicar ejercicios"));
-        listaActividades.add(new ActividadAcademica("Proyecto Intro", Actividad.TipoPrioridad.Alta, "2026-01-30", 70, 3, 150, LocalDate.now().toString(), "Introducción a la Mecatrónica", ActividadAcademica.TipoActividadAcademica.Proyecto, "Realizar diapositivas y terminar maqueta"));
-        listaActividades.add(new ActividadPersonal("Viaje a Montañita", Actividad.TipoPrioridad.Alta, "2026-02-15", 0, 4, 4800, LocalDate.now().toString(), "Montañita", ActividadPersonal.TipoActividadPersonal.Hobbies, "Conocer sitios turísticos y ir de fiesta con amigos"));
+        try {
+            // 1. Actividad Personal: Usamos .Hobbies (vimos en tu código que existe)
+            // Constructor: nombre, prioridad, fechaVenc, avance, id, tiempo, fechaActual, lugar, tipoPersonal, desc
+            listaActividades.add(new ActividadPersonal(
+                    "Viaje a Montañita",
+                    Actividad.TipoPrioridad.Media,
+                    "2026-02-15",
+                    0,
+                    1,
+                    4800,
+                    LocalDate.now().toString(),
+                    "Montañita",
+                    ActividadPersonal.TipoActividadPersonal.Hobbies, // <-- Correcto
+                    "Viaje con amigos"
+            ));
+
+            // 2. Tarea
+            listaActividades.add(new ActividadAcademica(
+                    "Leer capítulo 5",
+                    Actividad.TipoPrioridad.Baja,
+                    "2026-01-19",
+                    70,
+                    2,
+                    120,
+                    LocalDate.now().toString(),
+                    "Física",
+                    ActividadAcademica.TipoActividadAcademica.Tarea, // <-- Correcto
+                    "Teoría"
+            ));
+
+            // 3. Examen
+            listaActividades.add(new ActividadAcademica(
+                    "Examen Parcial",
+                    Actividad.TipoPrioridad.Alta,
+                    "2026-01-23",
+                    0,
+                    3,
+                    180,
+                    LocalDate.now().toString(),
+                    "POO",
+                    ActividadAcademica.TipoActividadAcademica.Examen, // <-- Correcto
+                    "Estudiar"
+            ));
+
+            // 4. Proyecto
+            listaActividades.add(new ActividadAcademica(
+                    "Proyecto Final",
+                    Actividad.TipoPrioridad.Alta,
+                    "2026-01-30",
+                    0,
+                    4,
+                    150,
+                    LocalDate.now().toString(),
+                    "Mecatrónica",
+                    ActividadAcademica.TipoActividadAcademica.Proyecto, // <-- Correcto
+                    "Maqueta"
+            ));
+
+        } catch (Exception e) {
+            // Si por alguna razón los compañeros cambiaron algo más, esto evita que la app explote
+            e.printStackTrace();
+        }
     }
 
     // ==========================================
-    // MÓDULO DE HIDRATACIÓN (TU ORIGINAL INTACTO)
+    // MÓDULO DE HIDRATACIÓN (INTACTO)
     // ==========================================
 
     public List<RegistroHidratacion> getListaHidratacion() { return listaHidratacion; }
@@ -212,7 +279,7 @@ public class AppRepository {
     public void setFechaSeleccionadaRepo(String fecha) { this.fechaSeleccionadaRepo = fecha; }
 
     // ==========================================
-    // MÓDULO DE SOSTENIBILIDAD (TU ORIGINAL INTACTO)
+    // MÓDULO DE SOSTENIBILIDAD (INTACTO)
     // ==========================================
 
     public List<RegistroDiarioSostenible> getListaSostenibilidad() { return listaSostenibilidad; }
