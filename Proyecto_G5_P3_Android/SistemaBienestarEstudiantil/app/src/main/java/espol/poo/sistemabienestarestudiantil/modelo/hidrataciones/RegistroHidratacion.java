@@ -15,6 +15,7 @@ public class RegistroHidratacion implements Serializable { // 👈 Implementamos
     private double cantidadMl;       // Ej: 250.0
     private String fecha;            // Cambiado a String para compatibilidad API 24
     private String hora;             // Cambiado a String para compatibilidad API 24
+
     // ---------- CONSTRUCTOR ----------
     public RegistroHidratacion(double cantidadMl, String fecha, String hora) {
         this.cantidadMl = cantidadMl;
