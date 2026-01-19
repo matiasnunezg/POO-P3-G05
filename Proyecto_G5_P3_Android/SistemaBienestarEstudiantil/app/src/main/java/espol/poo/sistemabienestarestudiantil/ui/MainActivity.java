@@ -9,6 +9,18 @@ import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 
 public class MainActivity extends AppCompatActivity {
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // 1. Inicializar la "Base de Datos"
+        AppRepository.getInstance();
+
+        // 2. Configurar los botones
+        configurarBotones();
+    }
+
     private void configurarBotones() {
         // Gestión de Actividades
         findViewById(R.id.btnActividades).setOnClickListener(v -> {
@@ -22,11 +34,13 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Sueño
+        // --- AQUÍ ESTÁ EL CAMBIO ---
+        // Ahora el botón 3 abre TU pantalla de Sueño
         findViewById(R.id.btnSuenio).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SuenioActivity.class);
             startActivity(intent);
         });
+        // ---------------------------
 
         // Sostenibilidad (Sigue en construcción por ahora)
         findViewById(R.id.btnSostenibilidad).setOnClickListener(v ->
@@ -35,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Juego de Memoria
         findViewById(R.id.btnJuego).setOnClickListener(v -> {
+            // CAMBIO: Ahora dirigimos a la Intro, no al juego directo
             Intent intent = new Intent(MainActivity.this, IntroJuegoActivity.class);
             startActivity(intent);
         });

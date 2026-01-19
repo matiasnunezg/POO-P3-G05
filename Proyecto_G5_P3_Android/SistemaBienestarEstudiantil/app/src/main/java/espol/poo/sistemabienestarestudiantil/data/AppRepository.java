@@ -1,7 +1,5 @@
 package espol.poo.sistemabienestarestudiantil.data;
 
-import android.content.Context;
-import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -16,19 +14,23 @@ import espol.poo.sistemabienestarestudiantil.modelo.hidrataciones.RegistroHidrat
 public class AppRepository {
 
     private static AppRepository instance;
-    private static Context appContext; // Necesario para acceder al almacenamiento de Android
-    private static final String FILE_NAME = "hidratacion_data.dat"; // Archivo binario
 
     // --- VARIABLES DE ALMACENAMIENTO ---
+    
+    // Actividades 
     private List<Actividad> listaActividades;
+    
+    // Sueño 
     private List<RegistrarHorasDeSuenio> listaSuenio;
+    
+    // Hidratación
     private List<RegistroHidratacion> listaHidratacion;
     private double metaDiaria = 2500.0;
-    private String fechaSeleccionadaRepo = "";
+    private String fechaSeleccionadaRepo = ""; 
 
     // --- CONSTRUCTOR PRIVADO (SINGLETON) ---
     private AppRepository() {
-        // 1. Inicializar Actividades con tus datos originales
+        // 1. Inicializar Actividades
         listaActividades = new ArrayList<>();
         listaActividades.add(new ActividadAcademica(
                 "Leer capítulo 5",
@@ -40,7 +42,7 @@ public class AppRepository {
                 LocalDate.now().toString(),
                 "Física",
                 ActividadAcademica.TipoActividadAcademica.Tarea,
-                "Aprender teoría y practicar ejercicios"
+                "Aprender teoría y practicar ejercicios"// Materia (dato extra)
         ));
         listaActividades.add(new ActividadAcademica(
                 "Examen 2do Parcial",
@@ -52,7 +54,7 @@ public class AppRepository {
                 LocalDate.now().toString(),
                 "Programación Orientada a Objetos",
                 ActividadAcademica.TipoActividadAcademica.Proyecto,
-                "Repasar teoría y practicar ejercicios"
+                "Repasar teoría y practicar ejercicios"// Materia (dato extra)
         ));
         listaActividades.add(new ActividadAcademica(
                 "Proyecto Intro",
@@ -64,7 +66,7 @@ public class AppRepository {
                 LocalDate.now().toString(),
                 "Introducción a la Mecatrónica",
                 ActividadAcademica.TipoActividadAcademica.Proyecto,
-                "Realizar diapositivas y terminar maqueta"
+                "Realizar diapositivas y terminar maqueta"// Materia (dato extra)
         ));
         listaActividades.add(new ActividadPersonal(
                 "Viaje a Montañita",
@@ -76,15 +78,15 @@ public class AppRepository {
                 LocalDate.now().toString(),
                 "Montañita",
                 ActividadPersonal.TipoActividadPersonal.Hobbies,
-                "Conocer sitios turísticos y ir de fiesta con amigos"
+                "Conocer sitios turísticos y ir de fiesta con amigos"// Materia (dato extra)
         ));
 
-        // 2. Inicializar Sueño
+        // 2. Inicializar Sueño y cargar datos prueba
         listaSuenio = new ArrayList<>();
         cargarDatosPruebaSuenio();
 
-        // 3. Inicializar Hidratación cargando desde disco si existe
-        listaHidratacion = cargarHidratacionDeDisco();
+        // 3. Inicializar Hidratación
+        listaHidratacion = new ArrayList<>();
     }
 
     public static synchronized AppRepository getInstance() {
@@ -94,81 +96,57 @@ public class AppRepository {
         return instance;
     }
 
-    // Método para inicializar el contexto desde MainActivity
-    public static void initContext(Context context) {
-        appContext = context.getApplicationContext();
+    // ==========================================
+    //           MÓDULO DE ACTIVIDADES
+    // ==========================================
+
+    public List<Actividad> getListaActividades() {
+        return listaActividades;
     }
 
-    // ==========================================
-    //       LÓGICA DE SERIALIZACIÓN (IO)
-    // ==========================================
-
-    private void guardarHidratacionEnDisco() {
-        if (appContext == null) return;
-        try (FileOutputStream fos = appContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
-            oos.writeObject(listaHidratacion);
-            oos.writeDouble(metaDiaria);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void agregarActividad(Actividad actividad) {
+        listaActividades.add(actividad);
     }
 
-    @SuppressWarnings("unchecked")
-    private List<RegistroHidratacion> cargarHidratacionDeDisco() {
-        if (appContext == null) return new ArrayList<>();
-
-        File file = new File(appContext.getFilesDir(), FILE_NAME);
-        if (!file.exists()) return new ArrayList<>();
-
-        try (FileInputStream fis = appContext.openFileInput(FILE_NAME);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
-
-            List<RegistroHidratacion> datos = (ArrayList<RegistroHidratacion>) ois.readObject();
-            this.metaDiaria = ois.readDouble();
-            return datos;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    // ==========================================
-    // MÓDULO DE ACTIVIDADES
-    // ==========================================
-
-    public List<Actividad> getListaActividades() { return listaActividades; }
-    public void agregarActividad(Actividad actividad) { listaActividades.add(actividad); }
     public Actividad buscarActividadPorId(int idBuscado) {
         for (Actividad a : listaActividades) {
-            if (a.getId() == idBuscado) return a;
+            if (a.getId() == idBuscado) {
+                return a;
+            }
         }
         return null;
     }
+
     public int getProximoId() {
         int maxId = 0;
         for (Actividad a : listaActividades) {
-            if (a.getId() > maxId) maxId = a.getId();
+            if (a.getId() > maxId) {
+                maxId = a.getId();
+            }
         }
         return maxId + 1;
     }
 
     // ==========================================
-    // MÓDULO DE SUEÑO
+    //            MÓDULO DE SUEÑO 
     // ==========================================
 
-    public List<RegistrarHorasDeSuenio> getListaSuenio() { return listaSuenio; }
-    public void agregarSuenio(RegistrarHorasDeSuenio registro) { listaSuenio.add(0, registro); }
+    public List<RegistrarHorasDeSuenio> getListaSuenio() {
+        return listaSuenio;
+    }
+
+    public void agregarSuenio(RegistrarHorasDeSuenio registro) {
+        // Agregamos al inicio para que aparezca primero en la lista
+        listaSuenio.add(0, registro);
+    }
+
     private void cargarDatosPruebaSuenio() {
         listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(23, 0), LocalTime.of(7, 0), LocalDate.now().minusDays(1)));
         listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(1, 30), LocalTime.of(6, 0), LocalDate.now().minusDays(2)));
     }
 
     // ==========================================
-    // MÓDULO DE HIDRATACIÓN
+    //         MÓDULO DE HIDRATACIÓN (AMIGO)
     // ==========================================
 
     public List<RegistroHidratacion> getListaHidratacion() {
@@ -177,14 +155,14 @@ public class AppRepository {
 
     public void agregarRegistroHidratacion(RegistroHidratacion registro) {
         listaHidratacion.add(registro);
-        guardarHidratacionEnDisco(); // Auto-guardado
     }
 
-    public double getMetaDiaria() { return metaDiaria; }
+    public double getMetaDiaria() {
+        return metaDiaria;
+    }
 
     public void setMetaDiaria(double meta) {
         this.metaDiaria = meta;
-        guardarHidratacionEnDisco(); // Auto-guardado
     }
 
     public double getTotalConsumido() {
@@ -195,6 +173,11 @@ public class AppRepository {
         return total;
     }
 
-    public String getFechaSeleccionadaRepo() { return fechaSeleccionadaRepo; }
-    public void setFechaSeleccionadaRepo(String fecha) { this.fechaSeleccionadaRepo = fecha; }
+    public String getFechaSeleccionadaRepo() {
+        return fechaSeleccionadaRepo;
+    }
+
+    public void setFechaSeleccionadaRepo(String fecha) {
+        this.fechaSeleccionadaRepo = fecha;
+    }
 }

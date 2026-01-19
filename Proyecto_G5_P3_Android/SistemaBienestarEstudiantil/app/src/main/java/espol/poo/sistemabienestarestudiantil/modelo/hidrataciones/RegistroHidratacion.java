@@ -1,15 +1,10 @@
 package espol.poo.sistemabienestarestudiantil.modelo.hidrataciones;
 
-import java.io.Serializable; // 👈 Única importación necesaria para guardar datos
-
 /**
  * Modelo compatible con API 24 que representa una toma de agua.
  * Se utilizan Strings para fecha y hora para evitar errores de compatibilidad.
  */
-public class RegistroHidratacion implements Serializable { // 👈 Implementamos Serializable
-
-    // ID de versión para asegurar la compatibilidad del archivo guardado
-    private static final long serialVersionUID = 1L;
+public class RegistroHidratacion {
 
     // ---------- ATRIBUTOS ----------
     private double cantidadMl;       // Ej: 250.0
