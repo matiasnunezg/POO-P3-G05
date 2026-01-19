@@ -10,7 +10,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.HashMap; // <--- NUEVO
+import java.util.Map;     // <--- NUEVO
 // Importaciones
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
@@ -37,7 +38,7 @@ public class AppRepository {
     private List<RegistroDiarioSostenible> listaSostenibilidad;
 
     // --- VARIABLES ---
-    private double metaDiaria = 2500.0;
+    private Map<String, Double> historialMetas; // <--- CAMBIO CLAVE
     private String fechaSeleccionadaRepo = "";
 
     // --- CONSTRUCTOR PRIVADO ---
@@ -60,13 +61,15 @@ public class AppRepository {
             cargarDatosPruebaSuenio();
         }
 
-        // 3. HIDRATACIÓN (Parte de tu compañero: Datos del 19 Enero + Meta)
+        // 3. HIDRATACIÓN (MODIFICADO: Historial y Metas por Fecha)
         listaHidratacion = new ArrayList<>();
+        historialMetas = new HashMap<>(); // <--- INICIALIZAR SIEMPRE
+
         if (context != null) {
-            cargarHidratacionDelArchivo(); // Carga historial
-            cargarMetaDelArchivo();        // Carga la meta personalizada
+            cargarHidratacionDelArchivo();
+            cargarMetasDelArchivo();      // <--- PLURAL (Carga el mapa)
         } else {
-            cargarDatosPruebaHidratacion(); // Datos por defecto
+            cargarDatosPruebaHidratacion();
         }
 
         // 4. SOSTENIBILIDAD (Seguro)
@@ -88,7 +91,7 @@ public class AppRepository {
             instance.context = context.getApplicationContext();
             instance.cargarSuenioDelArchivo();
             instance.cargarHidratacionDelArchivo();
-            instance.cargarMetaDelArchivo();
+            instance.cargarMetasDelArchivo(); // <--- PLURAL
             instance.cargarActividadesDelArchivo();
         }
         return instance;
@@ -167,13 +170,25 @@ public class AppRepository {
         listaHidratacion.add(new RegistroHidratacion(300.0, "19/01/2026", "17:00 PM"));
     }
 
-    public double getMetaDiaria() { return metaDiaria; }
-
-    // Al cambiar la meta, guardamos en archivo (Lógica del compañero)
-    public void setMetaDiaria(double meta) {
-        this.metaDiaria = meta;
-        if (context != null) guardarMetaEnArchivo();
+    // Obtener meta de una fecha específica (o 2500 por defecto)
+    public double getMetaDiaria(String fecha) {
+        if (historialMetas != null && historialMetas.containsKey(fecha)) {
+            return historialMetas.get(fecha);
+        }
+        return 2500.0;
     }
+
+    // Guardar meta para una fecha específica
+    public void setMetaDiaria(double meta, String fecha) {
+        if (historialMetas == null) historialMetas = new HashMap<>();
+
+        historialMetas.put(fecha, meta);
+
+        if (context != null) guardarMetasEnArchivo();
+    }
+
+    // Método de compatibilidad (por si tu compañero lo usa en otro lado)
+    public double getMetaDiaria() { return 2500.0; }
 
     public double getTotalConsumido() {
         double total = 0;
@@ -208,25 +223,26 @@ public class AppRepository {
         }
     }
 
-    // --- Persistencia Meta (Lógica del compañero) ---
-    private void guardarMetaEnArchivo() {
+    // --- Persistencia Metas (MAPA POR FECHAS) ---
+    private void guardarMetasEnArchivo() {
         try {
             FileOutputStream fos = context.openFileOutput(FILE_META_HIDRATACION, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(Double.valueOf(metaDiaria));
+            oos.writeObject(historialMetas); // Guardamos el Mapa entero
             oos.close(); fos.close();
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private void cargarMetaDelArchivo() {
+    @SuppressWarnings("unchecked")
+    private void cargarMetasDelArchivo() {
         try {
             FileInputStream fis = context.openFileInput(FILE_META_HIDRATACION);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            Double metaGuardada = (Double) ois.readObject();
-            if (metaGuardada != null) metaDiaria = metaGuardada;
+            historialMetas = (Map<String, Double>) ois.readObject(); // Leemos el Mapa
             ois.close(); fis.close();
         } catch (Exception e) {
-            if (context != null) guardarMetaEnArchivo();
+            historialMetas = new HashMap<>();
+            if (context != null) guardarMetasEnArchivo();
         }
     }
 

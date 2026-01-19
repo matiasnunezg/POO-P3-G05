@@ -62,19 +62,22 @@ public class HidratacionActivity extends AppCompatActivity {
     }
 
     private void cargarDatosDesdeRepositorio() {
-        // 1. Cargar Meta
-        metaActual = AppRepository.getInstance(this).getMetaDiaria();
+        // 1. OBTENER LA FECHA VISIBLE PRIMERO
+        // (La necesitamos para pedir la meta específica de este día al Repositorio)
+        String fechaVisible = tvFechaActual.getText().toString();
+
+        // 2. CARGAR META ESPECÍFICA DE LA FECHA
+        // Le pasamos la fecha al repositorio. Si no existe meta para ese día, devolverá 2500.
+        metaActual = AppRepository.getInstance(this).getMetaDiaria(fechaVisible);
         tvMetaValor.setText((int)metaActual + " ml");
 
-        // 2. Limpiar el contenedor visual antes de cargar nuevos datos
+        // 3. Limpiar el contenedor visual antes de cargar nuevos datos
         containerRegistros.removeAllViews();
         totalConsumido = 0.0; // Reiniciamos para calcular solo lo del día seleccionado
 
-        // 3. Obtener la fecha que muestra el TextView actualmente
-        String fechaVisible = tvFechaActual.getText().toString();
-
         // 4. Filtrar y cargar solo los registros que coincidan con la fecha seleccionada
         for (RegistroHidratacion reg : AppRepository.getInstance(this).getListaHidratacion()) {
+            // Comparamos String con equals()
             if (reg.getFecha().equals(fechaVisible)) {
                 totalConsumido += reg.getCantidadMl();
                 agregarRegistroVisual(reg.getCantidadMl(), reg.getHora());
@@ -83,12 +86,14 @@ public class HidratacionActivity extends AppCompatActivity {
 
         // 5. Actualizar UI de progreso y totales del día
         tvTotalConsumido.setText((int)totalConsumido + " ml");
+
         int porcentaje = (int) ((totalConsumido / metaActual) * 100);
         if (porcentaje > 100) porcentaje = 100;
+
         tvPorcentaje.setText(porcentaje + "%");
         progressCircular.setProgress(porcentaje);
 
-        // Si no hay registros, podrías volver a poner el texto de "Sin registros"
+        // Si no hay registros, poner texto de aviso
         if (containerRegistros.getChildCount() == 0) {
             TextView tvSin = new TextView(this);
             tvSin.setId(R.id.tvSinRegistros);
@@ -115,11 +120,12 @@ public class HidratacionActivity extends AppCompatActivity {
 
             AppRepository.getInstance(this).setFechaSeleccionadaRepo(fechaSeleccionada);
 
-            // ACTUALIZACIÓN CLAVE: Recargar los datos al cambiar la fecha
+            // ACTUALIZACIÓN CLAVE: Recargar los datos (y la meta) al cambiar la fecha
             cargarDatosDesdeRepositorio();
 
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
+
     private void abrirDialogoActualizarMeta() {
         android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_actualizar_meta, null);
         android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this).setView(dialogView).create();
@@ -135,8 +141,13 @@ public class HidratacionActivity extends AppCompatActivity {
                 metaActual = Double.parseDouble(valor);
                 tvMetaValor.setText((int)metaActual + " ml");
 
-                AppRepository.getInstance(this).setMetaDiaria(metaActual);
+                // --- CAMBIO IMPORTANTE: GUARDAR META ASOCIADA A LA FECHA ---
+                String fechaActual = tvFechaActual.getText().toString();
 
+                // Llamamos al nuevo método del repositorio que acepta (double, String)
+                AppRepository.getInstance(this).setMetaDiaria(metaActual, fechaActual);
+
+                // Recalcular porcentajes visuales inmediatamente
                 int porcentaje = (int) ((totalConsumido / metaActual) * 100);
                 tvPorcentaje.setText((porcentaje > 100 ? 100 : porcentaje) + "%");
                 progressCircular.setProgress(porcentaje > 100 ? 100 : porcentaje);
@@ -159,6 +170,7 @@ public class HidratacionActivity extends AppCompatActivity {
         dialogView.findViewById(R.id.btnGuardarToma).setOnClickListener(v -> {
             String cantStr = etCantidad.getText().toString().trim();
             String horaStr = etHora.getText().toString().trim();
+            // Regex simple para validar formato de hora
             String regexHora = "^(1[0-2]|0?[1-9]):[0-5][0-9]\\s?(AM|PM|am|pm)$";
 
             if (!cantStr.isEmpty() && !horaStr.isEmpty()) {
