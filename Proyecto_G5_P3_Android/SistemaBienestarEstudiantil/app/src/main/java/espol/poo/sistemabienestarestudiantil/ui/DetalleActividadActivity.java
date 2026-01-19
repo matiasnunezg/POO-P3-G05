@@ -53,7 +53,7 @@ public class DetalleActividadActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 
-        Actividad a = AppRepository.getInstance().buscarActividadPorId(idActividadActual);
+        Actividad a = AppRepository.getInstance(this).buscarActividadPorId(idActividadActual);
         if (a != null) {
             mostrarDatos(a);
         }
@@ -61,7 +61,13 @@ public class DetalleActividadActivity extends AppCompatActivity {
 
     private void cargarDatosActividad() {
         int idActividad = getIntent().getIntExtra("ID_EXTRA", -1);
-        Actividad actividad = AppRepository.getInstance().buscarActividadPorId(idActividad);
+
+        // --- AGREGA ESTA LÍNEA OBLIGATORIAMENTE ---
+        this.idActividadActual = idActividad;
+        // ------------------------------------------
+
+        // Aquí también debes agregar el (this)
+        Actividad actividad = AppRepository.getInstance(this).buscarActividadPorId(idActividad);
 
         if (actividad == null) {
             Toast.makeText(this, "Error: Actividad no encontrada", Toast.LENGTH_SHORT).show();

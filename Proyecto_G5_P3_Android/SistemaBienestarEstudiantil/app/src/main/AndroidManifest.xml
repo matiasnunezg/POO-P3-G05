@@ -21,32 +21,18 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.HidratacionActivity"
-            android:exported="false" />
+        <activity android:name=".ui.HidratacionActivity" />
 
-        <activity
-            android:name=".ui.ListaActividadesActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <activity
-            android:name=".ui.DetalleActividadActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.ListaActividadesActivity" />
-
-        <activity
-            android:name=".ui.FormularioActividadActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.ListaActividadesActivity" />
-
-        <activity
-            android:name=".ui.RegistrarAvanceActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.ListaActividadesActivity" />
+        <activity android:name=".ui.ListaActividadesActivity" android:parentActivityName=".ui.MainActivity" />
+        <activity android:name=".ui.DetalleActividadActivity" android:parentActivityName=".ui.ListaActividadesActivity" />
+        <activity android:name=".ui.FormularioActividadActivity" android:parentActivityName=".ui.ListaActividadesActivity" />
+        <activity android:name=".ui.RegistrarAvanceActivity" android:parentActivityName=".ui.ListaActividadesActivity" />
 
         <activity android:name=".ui.SuenioActivity" />
         <activity android:name=".ui.RegistrarSuenioActivity" />
+
+        <activity android:name=".ui.SostenibilidadActivity" />
+        <activity android:name=".ui.RegistroSostenibilidadActivity" />
 
         <activity android:name=".ui.DeepWorkActivity" />
         <activity android:name=".ui.PomodoroActivity" />
