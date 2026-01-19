@@ -1,52 +1,39 @@
-package espol.poo.sistemabienestarestudiantil.modelo.enfoques; // <--- 1. Paquete arreglado
+package espol.poo.sistemabienestarestudiantil.modelo.enfoques;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.io.Serializable;
 
-public class SesionEnfoque {
-
-    // 2. CAMBIO: Usamos String en vez de LocalDate para que coincida con Actividad
-    // y para evitar errores en celulares antiguos.
+public class SesionEnfoque implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String fecha;
     private String tecnica;
-    private int minutos;
+    private int tiempoSegundos;
 
-    public SesionEnfoque(String tecnica, int minutos) {
-        // Obtenemos la fecha actual y la convertimos a texto
+    public SesionEnfoque(String tecnica, int segundos) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         this.fecha = sdf.format(new Date());
-
         this.tecnica = tecnica;
-        this.minutos = minutos;
+        this.tiempoSegundos = segundos;
     }
 
-    // Getters
-    public String getFecha() {
-        return fecha;
-    }
-
-    public String getTecnica() {
-        return tecnica;
-    }
-
-    public int getMinutos() {
-        return minutos;
-    }
+    public String getFecha() { return fecha; }
+    public String getTecnica() { return tecnica; }
 
     public String getDuracionFormateada() {
-        if (minutos < 60){
-            return minutos + " min";
-        }
-
-        int h = minutos / 60;
-        int m = minutos % 60;
-
-        if (m == 0) {
-            return h + " h";
-        }
-        else{
-            return h + " h " + m + " min";
+        // Lógica: Si es menos de 60 segundos, muestra segundos. Si no, muestra minutos.
+        if (tiempoSegundos < 60) {
+            return tiempoSegundos + " seg";
+        } else {
+            int totalMinutos = tiempoSegundos / 60;
+            if (totalMinutos < 60) {
+                return totalMinutos + " min";
+            } else {
+                int h = totalMinutos / 60;
+                int m = totalMinutos % 60;
+                return (m == 0) ? h + " h" : h + " h " + m + " min";
+            }
         }
     }
 }

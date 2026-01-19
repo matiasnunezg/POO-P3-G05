@@ -87,7 +87,7 @@
                     android:layout_marginStart="12dp"
                     android:background="@drawable/bg_pill_unselected"
                     android:gravity="center"
-                    android:text="90 min"
+                    android:text="5 seg"
                     android:textColor="#1A237E"
                     android:textSize="11sp" />
             </LinearLayout>

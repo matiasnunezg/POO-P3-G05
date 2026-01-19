@@ -1,24 +1,19 @@
 package espol.poo.sistemabienestarestudiantil.ui;
 
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+
+import java.util.Locale;
 
 import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
-import java.util.Locale;
-import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
-
-import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
-
-import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 
 public class DeepWorkActivity extends AppCompatActivity {
 
@@ -27,13 +22,15 @@ public class DeepWorkActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private long tiempoRestanteMilis;
     private boolean timerCorriendo = false;
-    private int minutosSeleccionados; // Para guardar en el historial
+    private int minutosSeleccionados = 45;
+    private boolean esModoPrueba = false; // Control de precisión para el registro de 5 seg
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deep_work);
 
+        // 1. Vincular componentes
         txtCronometro = findViewById(R.id.txtCronometro);
         txtNombreTarea = findViewById(R.id.txtNombreTarea);
         btn45 = findViewById(R.id.btnTime45);
@@ -43,85 +40,102 @@ public class DeepWorkActivity extends AppCompatActivity {
         btnPausar = findViewById(R.id.btnPausar);
         btnAccionFinal = findViewById(R.id.btnAccionFinal);
 
+        // 2. Configuración inicial
         String nombre = getIntent().getStringExtra("nombre_tarea");
         if (nombre != null) txtNombreTarea.setText("Actividad: " + nombre);
 
-        setTiempoSeleccionado(45, btn45); // Por defecto
+        // Iniciamos con 45 min por defecto
+        setTiempoSeleccionado(45, btn45, false);
 
-        btn45.setOnClickListener(v -> setTiempoSeleccionado(45, btn45));
-        btn60.setOnClickListener(v -> setTiempoSeleccionado(60, btn60));
-        btn90.setOnClickListener(v -> setTiempoSeleccionado(90, btn90));
+        // 3. Listeners de selección de tiempo
+        btn45.setOnClickListener(v -> setTiempoSeleccionado(45, btn45, false));
+        btn60.setOnClickListener(v -> setTiempoSeleccionado(60, btn60, false));
 
+        // BOTÓN MODO PRUEBA (5 SEGUNDOS)
+        btn90.setOnClickListener(v -> {
+            if (timerCorriendo) return;
+            resetearEstiloPastillas();
+            btn90.setBackgroundResource(R.drawable.bg_pill_selected);
+            btn90.setTextColor(Color.WHITE);
+            this.esModoPrueba = true;
+            this.tiempoRestanteMilis = 5 * 1000; // 5 segundos exactos
+            actualizarTextoCronometro();
+        });
+
+        // 4. Controles del cronómetro
         btnIniciar.setOnClickListener(v -> iniciarTimer());
-        btnPausar.setOnClickListener(v -> pausarTimer());
-        btnAccionFinal.setOnClickListener(v -> registrarYSalir()); // Registro manual
-    }
 
-    private void setTiempoSeleccionado(int minutos, TextView vistaSeleccionada) {
-        if (timerCorriendo) return;
-        this.minutosSeleccionados = minutos;
-        resetearEstiloPastillas();
-        vistaSeleccionada.setBackgroundResource(R.drawable.bg_pill_selected);
-        vistaSeleccionada.setTextColor(ContextCompat.getColor(this, android.R.color.white));
-        tiempoRestanteMilis = minutos * 60000;
-        actualizarTextoCronometro();
+        btnPausar.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            timerCorriendo = false;
+        });
+
+        // REINICIAR: Detiene el tiempo y avisa que no se guarda
+        btnAccionFinal.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            Toast.makeText(this, "Sesión cancelada (No guardada)", Toast.LENGTH_SHORT).show();
+            finish();
+        });
     }
 
     private void iniciarTimer() {
         if (timerCorriendo) return;
         countDownTimer = new CountDownTimer(tiempoRestanteMilis, 1000) {
-            @Override public void onTick(long millis) {
-                tiempoRestanteMilis = millis;
+            @Override
+            public void onTick(long l) {
+                tiempoRestanteMilis = l;
                 actualizarTextoCronometro();
             }
-            @Override public void onFinish() {
+
+            @Override
+            public void onFinish() {
                 timerCorriendo = false;
-                registrarYSalir(); // Registro automático al terminar
+                tiempoRestanteMilis = 0;
+                actualizarTextoCronometro();
+                guardarYSalirAutomatico();
             }
         }.start();
         timerCorriendo = true;
     }
 
-    private void registrarYSalir() {
-        // 1. Detener el contador si aún está activo para evitar fugas de memoria
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-
-        // 2. Obtener el ID de la actividad que recibimos por el Intent
+    private void guardarYSalirAutomatico() {
         int idActividad = getIntent().getIntExtra("ID_EXTRA", -1);
+        AppRepository repo = AppRepository.getInstance(this);
+        Actividad actividad = repo.buscarActividadPorId(idActividad);
 
-        // 3. Buscar la actividad real en el Repositorio (Singleton)
-        Actividad actividad = AppRepository.getInstance(this).buscarActividadPorId(idActividad);
-
-        // 4. Verificar que sea una Actividad Académica (las únicas que tienen historial)
         if (actividad instanceof ActividadAcademica) {
-            // Casteamos para acceder al método registrarSesion
-            ActividadAcademica acad = (ActividadAcademica) actividad;
+            // Si es modo prueba enviamos 5, sino convertimos minutos a segundos
+            int segundosARegistrar = esModoPrueba ? 5 : (minutosSeleccionados * 60);
 
-            // Usamos la variable 'minutosSeleccionados' que se actualiza al tocar las pastillas (45, 60, 90)
-            acad.registrarSesion("Deep Work", minutosSeleccionados);
+            ((ActividadAcademica) actividad).registrarSesion("Deep Work", segundosARegistrar);
 
-            Toast.makeText(this, "Sesión de Deep Work guardada: " + minutosSeleccionados + " min", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Error: No se pudo registrar la sesión", Toast.LENGTH_SHORT).show();
+            // Persistencia: Guardado físico en archivo .ser
+            repo.guardarActividadesEnArchivo();
+
+            Toast.makeText(this, "Felicidades, Sesión guardada automáticamente", Toast.LENGTH_LONG).show();
         }
 
-        // 5. Finalizar la actividad para regresar a la pantalla anterior (Detalles o Lista)
-        finish();
+        // Delay de 1 segundo para ver el 00:00 antes de cerrar
+        txtCronometro.postDelayed(this::finish, 1000);
+    }
+
+    private void setTiempoSeleccionado(int min, TextView vista, boolean prueba) {
+        if (timerCorriendo) return;
+        this.minutosSeleccionados = min;
+        this.esModoPrueba = prueba;
+        resetearEstiloPastillas();
+        vista.setBackgroundResource(R.drawable.bg_pill_selected);
+        vista.setTextColor(Color.WHITE);
+        this.tiempoRestanteMilis = (long) min * 60000;
+        actualizarTextoCronometro();
     }
 
     private void resetearEstiloPastillas() {
-        TextView[] pastillas = {btn45, btn60, btn90};
-        for (TextView p : pastillas) {
+        TextView[] ps = {btn45, btn60, btn90};
+        for (TextView p : ps) {
             p.setBackgroundResource(R.drawable.bg_pill_unselected);
-            p.setTextColor(ContextCompat.getColor(this, R.color.colorAzulDeep));
+            p.setTextColor(Color.BLACK);
         }
-    }
-
-    private void pausarTimer() {
-        if (countDownTimer != null) countDownTimer.cancel();
-        timerCorriendo = false;
     }
 
     private void actualizarTextoCronometro() {

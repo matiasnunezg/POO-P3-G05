@@ -1,161 +1,135 @@
 package espol.poo.sistemabienestarestudiantil.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import java.util.Locale;
 
 import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
-import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
-
-import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
-
-import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 
 public class PomodoroActivity extends AppCompatActivity {
 
-    private TextView txtCronometro, txtNombreTarea, btn25, btn5, btn15;
+    private TextView txtCronometro, txtNombreTarea, btn25, btn5seg, btn15;
     private Button btnIniciar, btnPausar, btnAccionFinal;
-
     private CountDownTimer countDownTimer;
     private long tiempoRestanteMilis;
     private boolean timerCorriendo = false;
-    private int minutosSeleccionados; // Para guardar exactamente lo que el usuario eligió
+    private int minutosSeleccionados = 25;
+    private boolean esModoPrueba = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pomodoro);
 
-        // 1. Vincular componentes del XML
         txtCronometro = findViewById(R.id.txtCronometro);
         txtNombreTarea = findViewById(R.id.txtNombreTarea);
         btn25 = findViewById(R.id.btnTime25);
-        btn5 = findViewById(R.id.btnTime5);
+        btn5seg = findViewById(R.id.btnTime5);
         btn15 = findViewById(R.id.btnTime15);
         btnIniciar = findViewById(R.id.btnIniciar);
         btnPausar = findViewById(R.id.btnPausar);
-        btnAccionFinal = findViewById(R.id.btnAccionFinal); // Botón Reiniciar/Finalizar
+        btnAccionFinal = findViewById(R.id.btnAccionFinal);
 
-        // 2. Recibir nombre de la actividad
         String nombre = getIntent().getStringExtra("nombre_tarea");
-        if (nombre != null) {
-            txtNombreTarea.setText("Actividad: " + nombre);
-        }
+        if (nombre != null) txtNombreTarea.setText("Actividad: " + nombre);
 
-        // 3. Configuración inicial (25 min por defecto)
-        setTiempoSeleccionado(25, btn25);
+        // Configuración inicial por defecto
+        setTiempoSeleccionado(25, btn25, false);
 
-        // 4. Listeners para las pastillas de tiempo
-        btn25.setOnClickListener(v -> setTiempoSeleccionado(25, btn25));
-        btn5.setOnClickListener(v -> setTiempoSeleccionado(5, btn5));
-        btn15.setOnClickListener(v -> setTiempoSeleccionado(15, btn15));
+        btn25.setOnClickListener(v -> setTiempoSeleccionado(25, btn25, false));
+        btn15.setOnClickListener(v -> setTiempoSeleccionado(15, btn15, false));
 
-        // 5. Listeners de control
-        btnIniciar.setOnClickListener(v -> iniciarTimer());
-        btnPausar.setOnClickListener(v -> pausarTimer());
-
-        // En tu XML el botón rojo dice "Reiniciar", pero podemos usarlo para salir
-        // o puedes cambiarle el texto a "Finalizar" en el XML.
-        btnAccionFinal.setOnClickListener(v -> {
-            pausarTimer();
-            registrarYSalir();
+        btn5seg.setOnClickListener(v -> {
+            if (timerCorriendo) return;
+            resetearEstiloPastillas();
+            btn5seg.setBackgroundResource(R.drawable.bg_pill_selected);
+            btn5seg.setTextColor(Color.WHITE);
+            this.esModoPrueba = true;
+            this.tiempoRestanteMilis = 5 * 1000;
+            actualizarTextoCronometro();
         });
-    }
 
-    private void setTiempoSeleccionado(int minutos, TextView vistaSeleccionada) {
-        if (timerCorriendo) {
-            Toast.makeText(this, "Detén el cronómetro para cambiar el tiempo", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        btnIniciar.setOnClickListener(v -> iniciarTimer());
 
-        this.minutosSeleccionados = minutos;
-        resetearEstiloPastillas();
+        btnPausar.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            timerCorriendo = false;
+        });
 
-        // Aplicar estilo de seleccionado
-        vistaSeleccionada.setBackgroundResource(R.drawable.bg_pill_selected);
-        vistaSeleccionada.setTextColor(ContextCompat.getColor(this, android.R.color.white));
-
-        tiempoRestanteMilis = minutos * 60000;
-        actualizarTextoCronometro();
-    }
-
-    private void resetearEstiloPastillas() {
-        TextView[] pastillas = {btn25, btn5, btn15};
-        for (TextView p : pastillas) {
-            p.setBackgroundResource(R.drawable.bg_pill_unselected);
-            // Usa el color azul de tu técnica
-            p.setTextColor(ContextCompat.getColor(this, android.R.color.black));
-        }
+        // REINICIAR: Cancela la sesión y avisa al usuario
+        btnAccionFinal.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            Toast.makeText(this, "Sesión cancelada (No guardada)", Toast.LENGTH_SHORT).show();
+            finish();
+        });
     }
 
     private void iniciarTimer() {
         if (timerCorriendo) return;
-
         countDownTimer = new CountDownTimer(tiempoRestanteMilis, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                tiempoRestanteMilis = millisUntilFinished;
+            @Override public void onTick(long l) {
+                tiempoRestanteMilis = l;
                 actualizarTextoCronometro();
             }
-
-            @Override
-            public void onFinish() {
+            @Override public void onFinish() {
                 timerCorriendo = false;
-                txtCronometro.setText("00:00");
-                registrarYSalir(); // Se guarda solo al llegar a cero
+                tiempoRestanteMilis = 0;
+                actualizarTextoCronometro();
+                guardarSesionFinal();
             }
         }.start();
-
         timerCorriendo = true;
     }
 
-    private void registrarYSalir() {
-        // 1. Detenemos el timer para evitar que siga corriendo en segundo plano
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-
-        // 2. Obtenemos el ID de la actividad enviado desde la pantalla anterior
+    private void guardarSesionFinal() {
         int idActividad = getIntent().getIntExtra("ID_EXTRA", -1);
+        AppRepository repo = AppRepository.getInstance(this);
+        Actividad actividad = repo.buscarActividadPorId(idActividad);
 
-        // 3. Buscamos la actividad en el Repositorio global
-        Actividad actividad = AppRepository.getInstance(this).buscarActividadPorId(idActividad);
-
-        // 4. Verificamos si es una actividad académica para registrar la sesión
         if (actividad instanceof ActividadAcademica) {
-            ActividadAcademica acad = (ActividadAcademica) actividad;
+            int segundosARegistrar = esModoPrueba ? 5 : (minutosSeleccionados * 60);
+            ((ActividadAcademica) actividad).registrarSesion("Pomodoro", segundosARegistrar);
 
-            // Registramos la sesión con la técnica "Pomodoro"
-            // y los minutos que el usuario seleccionó (25, 5 o 15)
-            acad.registrarSesion("Pomodoro", minutosSeleccionados);
+            // Guardado físico en archivo .ser
+            repo.guardarActividadesEnArchivo();
 
-            Toast.makeText(this, "Sesión de Pomodoro registrada: " + minutosSeleccionados + " min", Toast.LENGTH_SHORT).show();
-        } else {
-            // Esto sucede si el ID es -1 o si es una Actividad Personal
-            Toast.makeText(this, "No se pudo registrar: La actividad no permite historial de enfoque", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Felicidades, Sesión guardada automáticamente", Toast.LENGTH_LONG).show();
         }
 
-        // 5. Cerramos la actividad actual para regresar a Detalles
-        finish();
+        // Cierre con retraso para permitir ver el 00:00
+        txtCronometro.postDelayed(this::finish, 1000);
     }
 
-    private void pausarTimer() {
-        if (countDownTimer != null) countDownTimer.cancel();
-        timerCorriendo = false;
+    private void setTiempoSeleccionado(int min, TextView vista, boolean prueba) {
+        if (timerCorriendo) return;
+        this.minutosSeleccionados = min;
+        this.esModoPrueba = prueba;
+        resetearEstiloPastillas();
+        vista.setBackgroundResource(R.drawable.bg_pill_selected);
+        vista.setTextColor(Color.WHITE);
+        this.tiempoRestanteMilis = (long) min * 60000;
+        actualizarTextoCronometro();
+    }
+
+    private void resetearEstiloPastillas() {
+        TextView[] ps = {btn25, btn5seg, btn15};
+        for (TextView p : ps) {
+            p.setBackgroundResource(R.drawable.bg_pill_unselected);
+            p.setTextColor(Color.parseColor("#2E4091"));
+        }
     }
 
     private void actualizarTextoCronometro() {
-        int minutos = (int) (tiempoRestanteMilis / 1000) / 60;
-        int segundos = (int) (tiempoRestanteMilis / 1000) % 60;
-        txtCronometro.setText(String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos));
+        int m = (int) (tiempoRestanteMilis / 1000) / 60;
+        int s = (int) (tiempoRestanteMilis / 1000) % 60;
+        txtCronometro.setText(String.format(Locale.getDefault(), "%02d:%02d", m, s));
     }
 }
