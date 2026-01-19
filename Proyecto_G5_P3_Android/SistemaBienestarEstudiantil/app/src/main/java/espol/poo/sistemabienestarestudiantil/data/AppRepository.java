@@ -24,8 +24,11 @@ public class AppRepository {
     private Context context;
 
     // Archivos
+// ...
     private final String FILE_ACTIVIDADES = "actividades.ser";
-    private final String FILE_SUENIO = "historial_suenio.ser"; // NUEVO PARA TU PARTE
+    private final String FILE_SUENIO = "historial_suenio.ser";
+    private final String FILE_HIDRATACION = "historial_agua.ser"; // <--- AGREGAR ESTA LÍNEA
+
 
     // --- VARIABLES DE ALMACENAMIENTO ---
     private List<Actividad> listaActividades;
@@ -57,9 +60,13 @@ public class AppRepository {
             cargarDatosPruebaSuenio(); // Carga datos del 18 de Enero
         }
 
-// 3. HIDRATACIÓN (Con datos por defecto para el 19 de Enero)
+// 3. HIDRATACIÓN (MODIFICADO PARA SERIALIZACIÓN)
         listaHidratacion = new ArrayList<>();
-        cargarDatosPruebaHidratacion();
+        if (context != null) {
+            cargarHidratacionDelArchivo(); // Intentar cargar historial real
+        } else {
+            cargarDatosPruebaHidratacion(); // Fallback a datos de prueba
+        }
 
         // 4. SOSTENIBILIDAD (Tu lógica original INTACTA)
         listaSostenibilidad = new ArrayList<>();
@@ -78,8 +85,9 @@ public class AppRepository {
         // Si la instancia existe pero no tiene contexto (creada por compañero), se lo ponemos
         if (instance.context == null && context != null) {
             instance.context = context.getApplicationContext();
-            // Intentamos cargar tu archivo de sueño ahora que tenemos contexto
+            // Recargamos archivos ahora que tenemos contexto
             instance.cargarSuenioDelArchivo();
+            instance.cargarHidratacionDelArchivo(); // <--- AGREGAR ESTO
         }
         return instance;
     }
@@ -203,13 +211,14 @@ public class AppRepository {
 
     public void agregarRegistroHidratacion(RegistroHidratacion registro) {
         listaHidratacion.add(registro);
+        if (context != null) guardarHidratacionEnArchivo(); // <--- GUARDADO AUTOMÁTICO
     }
 
     // Datos por defecto para la revisión (19 de Enero 2026)
     private void cargarDatosPruebaHidratacion() {
-        // Formato: cantidadMl, fecha (String), hora (String)
-        listaHidratacion.add(new RegistroHidratacion(500.0, "2026-01-19", "13:00"));
-        listaHidratacion.add(new RegistroHidratacion(300.0, "2026-01-19", "17:00"));
+        // Cambiamos guiones por barras para que coincida con el DatePickerDialog
+        listaHidratacion.add(new RegistroHidratacion(500.0, "19/01/2026", "13:00 PM"));
+        listaHidratacion.add(new RegistroHidratacion(300.0, "19/01/2026", "17:00 PM"));
     }
 
     public double getMetaDiaria() { return metaDiaria; }
@@ -240,5 +249,31 @@ public class AppRepository {
         }
         if (existente != null) listaSostenibilidad.remove(existente);
         listaSostenibilidad.add(0, nuevoRegistro);
+    }
+
+    // --- MÉTODOS PRIVADOS SERIALIZACIÓN HIDRATACIÓN ---
+
+    private void guardarHidratacionEnArchivo() {
+        try {
+            FileOutputStream fos = context.openFileOutput(FILE_HIDRATACION, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(listaHidratacion);
+            oos.close(); fos.close();
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void cargarHidratacionDelArchivo() {
+        try {
+            FileInputStream fis = context.openFileInput(FILE_HIDRATACION);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            listaHidratacion = (List<RegistroHidratacion>) ois.readObject();
+            ois.close(); fis.close();
+        } catch (Exception e) {
+            // Si falla (ej. primera vez), cargamos datos prueba y creamos archivo
+            listaHidratacion = new ArrayList<>();
+            cargarDatosPruebaHidratacion();
+            if (context != null) guardarHidratacionEnArchivo();
+        }
     }
 }
