@@ -27,7 +27,8 @@ public class AppRepository {
 // ...
     private final String FILE_ACTIVIDADES = "actividades.ser";
     private final String FILE_SUENIO = "historial_suenio.ser";
-    private final String FILE_HIDRATACION = "historial_agua.ser"; // <--- AGREGAR ESTA LÍNEA
+    private final String FILE_HIDRATACION = "historial_agua.ser";
+    private final String FILE_META_HIDRATACION = "meta_agua.ser"; // <--- AGREGAR ESTA LÍNEA
 
 
     // --- VARIABLES DE ALMACENAMIENTO ---
@@ -44,12 +45,13 @@ public class AppRepository {
     private AppRepository(Context context) {
         this.context = context;
 
-        // 1. ACTIVIDADES (Tu lógica original intacta, protegida contra null)
-        listaActividades = new ArrayList<>();
+// 3. HIDRATACIÓN (MODIFICADO PARA SERIALIZACIÓN)
+        listaHidratacion = new ArrayList<>();
         if (context != null) {
-            cargarActividadesDelArchivo();
+            cargarHidratacionDelArchivo(); // Intentar cargar historial real
+            cargarMetaDelArchivo();        // <--- NUEVO: Cargar la meta guardada
         } else {
-            cargarDatosOriginalesActividades(); // Fallback si no hay contexto
+            cargarDatosPruebaHidratacion(); // Fallback a datos de prueba
         }
 
         // 2. SUEÑO (MODIFICADO PARA RÚBRICA Y ARCHIVOS)
@@ -83,11 +85,13 @@ public class AppRepository {
             instance = new AppRepository(context.getApplicationContext());
         }
         // Si la instancia existe pero no tiene contexto (creada por compañero), se lo ponemos
+// Si la instancia existe pero no tiene contexto (creada por compañero), se lo ponemos
         if (instance.context == null && context != null) {
             instance.context = context.getApplicationContext();
             // Recargamos archivos ahora que tenemos contexto
             instance.cargarSuenioDelArchivo();
-            instance.cargarHidratacionDelArchivo(); // <--- AGREGAR ESTO
+            instance.cargarHidratacionDelArchivo();
+            instance.cargarMetaDelArchivo(); // <--- NUEVO: Recargar meta
         }
         return instance;
     }
@@ -222,8 +226,10 @@ public class AppRepository {
     }
 
     public double getMetaDiaria() { return metaDiaria; }
-    public void setMetaDiaria(double meta) { this.metaDiaria = meta; }
-
+    public void setMetaDiaria(double meta) {
+        this.metaDiaria = meta;
+        if (context != null) guardarMetaEnArchivo(); // <--- NUEVO: Guardar automáticamente
+    }
     public double getTotalConsumido() {
         double total = 0;
         for (RegistroHidratacion r : listaHidratacion) { total += r.getCantidadMl(); }
@@ -274,6 +280,41 @@ public class AppRepository {
             listaHidratacion = new ArrayList<>();
             cargarDatosPruebaHidratacion();
             if (context != null) guardarHidratacionEnArchivo();
+        }
+    }
+
+    // ==========================================
+    //   MÉTODOS PRIVADOS SERIALIZACIÓN META
+    // ==========================================
+
+    private void guardarMetaEnArchivo() {
+        try {
+            FileOutputStream fos = context.openFileOutput(FILE_META_HIDRATACION, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            // Guardamos el número como un Objeto Double
+            oos.writeObject(Double.valueOf(metaDiaria));
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void cargarMetaDelArchivo() {
+        try {
+            FileInputStream fis = context.openFileInput(FILE_META_HIDRATACION);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            // Leemos el objeto y lo convertimos a double
+            Double metaGuardada = (Double) ois.readObject();
+            if (metaGuardada != null) {
+                metaDiaria = metaGuardada;
+            }
+            ois.close();
+            fis.close();
+        } catch (Exception e) {
+            // Si falla (ej. primera vez que se instala la app),
+            // se mantiene el valor por defecto (2500.0) y creamos el archivo
+            if (context != null) guardarMetaEnArchivo();
         }
     }
 }
