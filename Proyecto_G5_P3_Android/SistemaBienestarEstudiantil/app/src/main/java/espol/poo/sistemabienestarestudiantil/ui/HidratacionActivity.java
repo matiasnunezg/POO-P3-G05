@@ -41,7 +41,7 @@ public class HidratacionActivity extends AppCompatActivity {
         containerRegistros = findViewById(R.id.containerRegistros);
 
         // 2. LOGICA DE FECHA: Cargar del repo o mostrar la de hoy
-        String fechaGuardada = AppRepository.getInstance(this).getFechaSeleccionadaRepo();
+        String fechaGuardada = AppRepository.getInstance().getFechaSeleccionadaRepo();
         if (fechaGuardada != null && !fechaGuardada.isEmpty()) {
             tvFechaActual.setText(fechaGuardada);
         } else {
@@ -63,11 +63,11 @@ public class HidratacionActivity extends AppCompatActivity {
 
     private void cargarDatosDesdeRepositorio() {
         // Cargar Meta
-        metaActual = AppRepository.getInstance(this).getMetaDiaria();
+        metaActual = AppRepository.getInstance().getMetaDiaria();
         tvMetaValor.setText((int)metaActual + " ml");
 
         // Cargar Consumo Total
-        totalConsumido = AppRepository.getInstance(this).getTotalConsumido();
+        totalConsumido = AppRepository.getInstance().getTotalConsumido();
         tvTotalConsumido.setText((int)totalConsumido + " ml");
 
         // Actualizar UI del círculo
@@ -77,7 +77,7 @@ public class HidratacionActivity extends AppCompatActivity {
         progressCircular.setProgress(porcentaje);
 
         // Cargar la lista visual
-        for (RegistroHidratacion reg : AppRepository.getInstance(this).getListaHidratacion()) {
+        for (RegistroHidratacion reg : AppRepository.getInstance().getListaHidratacion()) {
             agregarRegistroVisual(reg.getCantidadMl(), reg.getHora().toString());
         }
     }
@@ -98,7 +98,7 @@ public class HidratacionActivity extends AppCompatActivity {
             tvFechaActual.setText(fechaSeleccionada);
 
             // AGREGADO: Guardar fecha en el repositorio
-            AppRepository.getInstance(this).setFechaSeleccionadaRepo(fechaSeleccionada);
+            AppRepository.getInstance().setFechaSeleccionadaRepo(fechaSeleccionada);
 
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
@@ -118,7 +118,7 @@ public class HidratacionActivity extends AppCompatActivity {
                 metaActual = Double.parseDouble(valor);
                 tvMetaValor.setText((int)metaActual + " ml");
 
-                AppRepository.getInstance(this).setMetaDiaria(metaActual);
+                AppRepository.getInstance().setMetaDiaria(metaActual);
 
                 int porcentaje = (int) ((totalConsumido / metaActual) * 100);
                 tvPorcentaje.setText((porcentaje > 100 ? 100 : porcentaje) + "%");
@@ -166,7 +166,7 @@ public class HidratacionActivity extends AppCompatActivity {
 
                     String fechaActual = tvFechaActual.getText().toString();
                     RegistroHidratacion nuevoReg = new RegistroHidratacion(ml, fechaActual, horaStr);
-                    AppRepository.getInstance(this).agregarRegistroHidratacion(nuevoReg);
+                    AppRepository.getInstance().agregarRegistroHidratacion(nuevoReg);
 
                     dialog.dismiss();
 

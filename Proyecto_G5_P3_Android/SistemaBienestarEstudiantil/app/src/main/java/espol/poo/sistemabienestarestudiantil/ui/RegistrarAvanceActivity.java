@@ -76,7 +76,7 @@ public class RegistrarAvanceActivity extends AppCompatActivity {
 
     private void guardarAvance(int nuevoAvance) {
         // 1. Buscamos la actividad real en la "base de datos" (Repositorio)
-        Actividad actividad = AppRepository.getInstance(this).buscarActividadPorId(idActividad);
+        Actividad actividad = AppRepository.getInstance().buscarActividadPorId(idActividad);
 
         if (actividad != null) {
             // 2. Actualizamos el avance

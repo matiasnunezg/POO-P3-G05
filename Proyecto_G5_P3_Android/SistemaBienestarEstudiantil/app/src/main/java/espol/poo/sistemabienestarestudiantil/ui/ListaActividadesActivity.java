@@ -42,7 +42,7 @@ public class ListaActividadesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista_actividades);
 
         // Carga inicial de datos
-        listaCompleta = AppRepository.getInstance(this).getListaActividades();
+        listaCompleta = AppRepository.getInstance().getListaActividades();
         listaFiltrada = new ArrayList<>(listaCompleta);
 
         // Configurar RecyclerView
@@ -106,7 +106,7 @@ public class ListaActividadesActivity extends AppCompatActivity {
         super.onResume();
 
         // A) Volvemos a traer la lista del Repositorio (por si agregaste algo nuevo)
-        listaCompleta = AppRepository.getInstance(this).getListaActividades();
+        listaCompleta = AppRepository.getInstance().getListaActividades();
 
         // B) Volvemos a aplicar el filtro actual automáticamente
         if (spinnerFiltro != null && spinnerOrden != null) {

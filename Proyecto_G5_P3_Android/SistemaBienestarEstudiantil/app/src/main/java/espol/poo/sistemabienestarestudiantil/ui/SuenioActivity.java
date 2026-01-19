@@ -42,7 +42,7 @@ public class SuenioActivity extends AppCompatActivity {
     private void actualizarLista() {
         TextView tvLista = findViewById(R.id.tvListaRegistrosSueño);
         // Usamos getInstance(this) para asegurar que cargue archivos
-        List<RegistrarHorasDeSuenio> lista = AppRepository.getInstance(this).getListaSuenio();
+        List<RegistrarHorasDeSuenio> lista = AppRepository.getInstance().getListaSuenio();
 
         if (lista == null || lista.isEmpty()) {
             tvLista.setText("No hay registros de sueño.");

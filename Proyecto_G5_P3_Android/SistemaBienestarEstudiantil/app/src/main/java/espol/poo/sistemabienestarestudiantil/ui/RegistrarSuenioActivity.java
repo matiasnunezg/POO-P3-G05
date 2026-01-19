@@ -46,7 +46,7 @@ public class RegistrarSuenioActivity extends AppCompatActivity {
             return;
         }
         RegistrarHorasDeSuenio nuevo = new RegistrarHorasDeSuenio(horaInicio, horaFin);
-        AppRepository.getInstance(this).agregarSuenio(nuevo); // Guardado
+        AppRepository.getInstance().agregarSuenio(nuevo); // Guardado
         Toast.makeText(this, "Guardado", Toast.LENGTH_SHORT).show();
         finish();
     }

@@ -128,7 +128,7 @@ public class PomodoroActivity extends AppCompatActivity {
         int idActividad = getIntent().getIntExtra("ID_EXTRA", -1);
 
         // 3. Buscamos la actividad en el Repositorio global
-        Actividad actividad = AppRepository.getInstance(this).buscarActividadPorId(idActividad);
+        Actividad actividad = AppRepository.getInstance().buscarActividadPorId(idActividad);
 
         // 4. Verificamos si es una actividad académica para registrar la sesión
         if (actividad instanceof ActividadAcademica) {
