@@ -2,44 +2,59 @@ package espol.poo.sistemabienestarestudiantil.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import java.util.List;
+import java.util.Locale;
 
+import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
-import espol.poo.sistemabienestarestudiantil.databinding.ActivitySuenioBinding;
+import espol.poo.sistemabienestarestudiantil.modelo.suenio.RegistrarHorasDeSuenio;
 
 public class SuenioActivity extends AppCompatActivity {
-
-    private ActivitySuenioBinding binding;
-    private SuenioAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivitySuenioBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_suenio);
 
-        configurarLista();
-
-        // Botón para ir al formulario
-        binding.btnNuevoRegistro.setOnClickListener(v -> {
-            startActivity(new Intent(this, RegistrarSuenioActivity.class));
+        // Botón Registrar
+        Button btnNuevo = findViewById(R.id.btnNuevoRegistroSueño);
+        btnNuevo.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RegistrarSuenioActivity.class);
+            startActivity(intent);
         });
+
+        // Botón Volver (Rúbrica)
+        Button btnVolver = findViewById(R.id.btnVolverSueño);
+        btnVolver.setOnClickListener(v -> finish());
+
+        actualizarLista();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refrescar la lista al volver del formulario
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
+        actualizarLista();
     }
 
-    private void configurarLista() {
-        // Conectar Adapter con Repositorio
-        adapter = new SuenioAdapter(AppRepository.getInstance().getListaSuenio());
-        binding.recyclerSuenio.setLayoutManager(new LinearLayoutManager(this));
-        binding.recyclerSuenio.setAdapter(adapter);
+    private void actualizarLista() {
+        TextView tvLista = findViewById(R.id.tvListaRegistrosSueño);
+        // Usamos getInstance(this) para asegurar que cargue archivos
+        List<RegistrarHorasDeSuenio> lista = AppRepository.getInstance(this).getListaSuenio();
+
+        if (lista == null || lista.isEmpty()) {
+            tvLista.setText("No hay registros de sueño.");
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (RegistrarHorasDeSuenio r : lista) {
+                String item = String.format(Locale.getDefault(),
+                        "📅 %s\n⏰ %s - %s\n⏳ %.1f horas\n────────────────\n",
+                        r.getFechaRegistro(), r.getHoraInicio(), r.getHoraFin(), r.getDuracionHoras());
+                sb.append(item);
+            }
+            tvLista.setText(sb.toString());
+        }
     }
 }

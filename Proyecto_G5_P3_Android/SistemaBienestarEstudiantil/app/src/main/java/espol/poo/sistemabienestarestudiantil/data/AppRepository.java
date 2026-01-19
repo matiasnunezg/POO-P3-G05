@@ -173,6 +173,7 @@ public class AppRepository {
         return total;
     }
 
+<<<<<<< HEAD
     public String getFechaSeleccionadaRepo() {
         return fechaSeleccionadaRepo;
     }
@@ -180,4 +181,8 @@ public class AppRepository {
     public void setFechaSeleccionadaRepo(String fecha) {
         this.fechaSeleccionadaRepo = fecha;
     }
+=======
+    public String getFechaSeleccionadaRepo() { return fechaSeleccionadaRepo; }
+    public void setFechaSeleccionadaRepo(String fecha) { this.fechaSeleccionadaRepo = fecha; }
+>>>>>>> parent of df56378 (Revert "Merge branch 'main' of https://github.com/matiasnunezg/POO-P3-G05")
 }
