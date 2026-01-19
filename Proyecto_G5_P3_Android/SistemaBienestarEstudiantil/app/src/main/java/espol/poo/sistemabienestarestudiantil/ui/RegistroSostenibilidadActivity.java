@@ -52,7 +52,7 @@ public class RegistroSostenibilidadActivity extends AppCompatActivity {
             RegistroDiarioSostenible nuevoRegistro = new RegistroDiarioSostenible(hoy, idsSeleccionados);
 
             // Guardarlo en la "Caja" (Repositorio)
-            AppRepository.getInstance().agregarRegistroSostenible(nuevoRegistro);
+            AppRepository.getInstance(this).agregarRegistroSostenible(nuevoRegistro);
 
             Toast.makeText(this, "¡Registro guardado!", Toast.LENGTH_SHORT).show();
             finish(); // Cierra esta pantalla y vuelve a la anterior
