@@ -1,6 +1,6 @@
 package espol.poo.sistemabienestarestudiantil.data;
 
-import android.content.Context; // NECESARIO
+import android.content.Context;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,71 +21,132 @@ import espol.poo.sistemabienestarestudiantil.modelo.sostenibilidad.RegistroDiari
 public class AppRepository {
 
     private static AppRepository instance;
-    private Context context; // Necesario para guardar archivos
-    private final String FILE_ACTIVIDADES = "actividades.ser"; // Archivo SOLO para actividades
+    private Context context;
+
+    // Archivos
+    private final String FILE_ACTIVIDADES = "actividades.ser";
+    private final String FILE_SUENIO = "historial_suenio.ser"; // NUEVO PARA TU PARTE
 
     // --- VARIABLES DE ALMACENAMIENTO ---
-
-    // Actividades (PERSISTENTE)
     private List<Actividad> listaActividades;
-
-    // Sueño (VOLÁTIL - Como pediste)
     private List<RegistrarHorasDeSuenio> listaSuenio;
-
-    // Hidratación (VOLÁTIL - Como pediste)
     private List<RegistroHidratacion> listaHidratacion;
+    private List<RegistroDiarioSostenible> listaSostenibilidad;
+
+    // Variables extras de tus compañeros (No tocar)
     private double metaDiaria = 2500.0;
     private String fechaSeleccionadaRepo = "";
 
-    // Sostenibilidad (VOLÁTIL - Como pediste)
-    private List<RegistroDiarioSostenible> listaSostenibilidad;
-
-    // --- CONSTRUCTOR PRIVADO (Modificado) ---
+    // --- CONSTRUCTOR PRIVADO ---
     private AppRepository(Context context) {
         this.context = context;
 
-        // 1. INICIALIZAR ACTIVIDADES (CON LOGICA DE ARCHIVOS)
-        cargarActividadesDelArchivo();
+        // 1. ACTIVIDADES (Tu lógica original intacta, protegida contra null)
+        listaActividades = new ArrayList<>();
+        if (context != null) {
+            cargarActividadesDelArchivo();
+        } else {
+            cargarDatosOriginalesActividades(); // Fallback si no hay contexto
+        }
 
-        // 2. Inicializar Sueño (Tu código original)
+        // 2. SUEÑO (MODIFICADO PARA RÚBRICA Y ARCHIVOS)
         listaSuenio = new ArrayList<>();
-        cargarDatosPruebaSuenio();
+        if (context != null) {
+            cargarSuenioDelArchivo(); // Intenta cargar archivo
+        } else {
+            cargarDatosPruebaSuenio(); // Carga datos del 18 de Enero
+        }
 
-        // 3. Inicializar Hidratación (Tu código original)
+        // 3. HIDRATACIÓN (Tu lógica original INTACTA)
         listaHidratacion = new ArrayList<>();
 
-        // 4. Inicializar Sostenibilidad (Tu código original)
+        // 4. SOSTENIBILIDAD (Tu lógica original INTACTA)
         listaSostenibilidad = new ArrayList<>();
         List<Integer> idsAyer = new ArrayList<>();
         idsAyer.add(1); idsAyer.add(2); idsAyer.add(3); idsAyer.add(4);
         listaSostenibilidad.add(new RegistroDiarioSostenible(LocalDate.now().minusDays(1), idsAyer));
     }
 
-    // --- SINGLETON (Ahora pide Context) ---
+    // --- SINGLETON HÍBRIDO (LA CLAVE PARA QUE NO HAYA ERRORES) ---
+
+    // Método 1: Para TI (Con contexto -> Guarda archivos)
     public static synchronized AppRepository getInstance(Context context) {
         if (instance == null) {
             instance = new AppRepository(context.getApplicationContext());
+        }
+        // Si la instancia existe pero no tiene contexto (creada por compañero), se lo ponemos
+        if (instance.context == null && context != null) {
+            instance.context = context.getApplicationContext();
+            // Intentamos cargar tu archivo de sueño ahora que tenemos contexto
+            instance.cargarSuenioDelArchivo();
+        }
+        return instance;
+    }
+
+    // Método 2: Para TUS COMPAÑEROS (Sin contexto -> Evita pantallas rojas)
+    public static synchronized AppRepository getInstance() {
+        if (instance == null) {
+            instance = new AppRepository(null);
         }
         return instance;
     }
 
     // ==========================================
-    //           MÓDULO DE ACTIVIDADES (MODIFICADO)
+    // MÓDULO DE SUEÑO (TU PARTE - ACTUALIZADA)
     // ==========================================
 
-    public List<Actividad> getListaActividades() {
-        return listaActividades;
+    public List<RegistrarHorasDeSuenio> getListaSuenio() { return listaSuenio; }
+
+    public void agregarSuenio(RegistrarHorasDeSuenio registro) {
+        listaSuenio.add(0, registro);
+        if (context != null) guardarSuenioEnArchivo(); // Guardado persistente
     }
+
+    // Datos fijos para la Rúbrica (18 de Enero)
+    private void cargarDatosPruebaSuenio() {
+        listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(22, 0), LocalTime.of(6, 0), LocalDate.of(2026, 1, 18)));
+        listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(14, 0), LocalTime.of(16, 0), LocalDate.of(2026, 1, 18)));
+    }
+
+    // -- SERIALIZACIÓN SUEÑO --
+    private void guardarSuenioEnArchivo() {
+        try {
+            FileOutputStream fos = context.openFileOutput(FILE_SUENIO, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(listaSuenio);
+            oos.close(); fos.close();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void cargarSuenioDelArchivo() {
+        try {
+            FileInputStream fis = context.openFileInput(FILE_SUENIO);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            listaSuenio = (List<RegistrarHorasDeSuenio>) ois.readObject();
+            ois.close(); fis.close();
+        } catch (Exception e) {
+            listaSuenio = new ArrayList<>();
+            cargarDatosPruebaSuenio(); // Si falla carga, usa datos rúbrica
+            guardarSuenioEnArchivo();
+        }
+    }
+
+
+    // ==========================================
+    // MÓDULO DE ACTIVIDADES (TU ORIGINAL)
+    // ==========================================
+
+    public List<Actividad> getListaActividades() { return listaActividades; }
 
     public void agregarActividad(Actividad actividad) {
         listaActividades.add(actividad);
-        guardarActividadesEnArchivo(); // <-- GUARDAR CAMBIO
+        if (context != null) guardarActividadesEnArchivo();
     }
 
-    // Método útil para eliminar y guardar el cambio
     public void eliminarActividad(int id) {
         listaActividades.removeIf(a -> a.getId() == id);
-        guardarActividadesEnArchivo(); // <-- GUARDAR CAMBIO
+        if (context != null) guardarActividadesEnArchivo();
     }
 
     public Actividad buscarActividadPorId(int idBuscado) {
@@ -103,18 +164,13 @@ public class AppRepository {
         return maxId + 1;
     }
 
-    // --- MÉTODOS PRIVADOS PARA SERIALIZACIÓN (SOLO ACTIVIDADES) ---
-
     private void guardarActividadesEnArchivo() {
         try {
             FileOutputStream fos = context.openFileOutput(FILE_ACTIVIDADES, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(listaActividades);
-            oos.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            oos.close(); fos.close();
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     @SuppressWarnings("unchecked")
@@ -123,14 +179,11 @@ public class AppRepository {
             FileInputStream fis = context.openFileInput(FILE_ACTIVIDADES);
             ObjectInputStream ois = new ObjectInputStream(fis);
             listaActividades = (List<Actividad>) ois.readObject();
-            ois.close();
-            fis.close();
-        } catch (IOException | ClassNotFoundException e) {
-            // Si el archivo no existe (primera vez), cargamos TUS DATOS ORIGINALES
+            ois.close(); fis.close();
+        } catch (Exception e) {
             listaActividades = new ArrayList<>();
             cargarDatosOriginalesActividades();
-            // Y creamos el archivo de una vez
-            guardarActividadesEnArchivo();
+            if (context != null) guardarActividadesEnArchivo();
         }
     }
 
@@ -142,49 +195,27 @@ public class AppRepository {
     }
 
     // ==========================================
-    //            MÓDULO DE SUEÑO (INTACTO)
-    // ==========================================
-
-    public List<RegistrarHorasDeSuenio> getListaSuenio() { return listaSuenio; }
-
-    public void agregarSuenio(RegistrarHorasDeSuenio registro) { listaSuenio.add(0, registro); }
-
-    private void cargarDatosPruebaSuenio() {
-        listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(23, 0), LocalTime.of(7, 0), LocalDate.now().minusDays(1)));
-        listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(1, 30), LocalTime.of(6, 0), LocalDate.now().minusDays(2)));
-    }
-
-    // ==========================================
-    //         MÓDULO DE HIDRATACIÓN (INTACTO)
+    // MÓDULO DE HIDRATACIÓN (TU ORIGINAL INTACTO)
     // ==========================================
 
     public List<RegistroHidratacion> getListaHidratacion() { return listaHidratacion; }
-
     public void agregarRegistroHidratacion(RegistroHidratacion registro) { listaHidratacion.add(registro); }
-
     public double getMetaDiaria() { return metaDiaria; }
-
     public void setMetaDiaria(double meta) { this.metaDiaria = meta; }
 
     public double getTotalConsumido() {
         double total = 0;
-        for (RegistroHidratacion r : listaHidratacion) {
-            total += r.getCantidadMl();
-        }
+        for (RegistroHidratacion r : listaHidratacion) { total += r.getCantidadMl(); }
         return total;
     }
-
     public String getFechaSeleccionadaRepo() { return fechaSeleccionadaRepo; }
-
     public void setFechaSeleccionadaRepo(String fecha) { this.fechaSeleccionadaRepo = fecha; }
 
     // ==========================================
-    //      MÓDULO DE SOSTENIBILIDAD (INTACTO)
+    // MÓDULO DE SOSTENIBILIDAD (TU ORIGINAL INTACTO)
     // ==========================================
 
-    public List<RegistroDiarioSostenible> getListaSostenibilidad() {
-        return listaSostenibilidad;
-    }
+    public List<RegistroDiarioSostenible> getListaSostenibilidad() { return listaSostenibilidad; }
 
     public void agregarRegistroSostenible(RegistroDiarioSostenible nuevoRegistro) {
         RegistroDiarioSostenible existente = null;
