@@ -10,42 +10,62 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nuevo Registro"
+        android:text="Registrar Sueño"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#3F51B5"
         android:layout_marginBottom="32dp"/>
 
-    <EditText
-        android:id="@+id/etHoraInicioSueño"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:hint="Hora de acostarse"
-        android:focusable="false"
-        android:inputType="none"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp">
 
-    <EditText
-        android:id="@+id/etHoraFinSueño"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etHoraInicio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:hint="Hora de despertar"
-        android:focusable="false"
-        android:inputType="none"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="24dp">
 
-    <Button
-        android:id="@+id/btnGuardarSueño"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etHoraFin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guardar"
-        android:backgroundTint="#3F51B5"
-        android:layout_marginBottom="10dp"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
 
-    <Button
-        android:id="@+id/btnCancelarSueño"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cancelar"
-        android:backgroundTint="#E57373"/>
+        <Button
+            android:id="@+id/btnCancelar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancelar"
+            android:backgroundTint="#E57373"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Guardar"
+            android:backgroundTint="#3F51B5"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
 </LinearLayout>

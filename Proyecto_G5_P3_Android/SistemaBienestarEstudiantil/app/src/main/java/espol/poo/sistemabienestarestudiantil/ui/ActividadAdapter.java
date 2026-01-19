@@ -118,7 +118,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
                         // --- LÓGICA DE ELIMINACIÓN (Solo si dice SÍ) ---
 
                         // A. Borrar del Repositorio (Base de Datos)
-                        AppRepository.getInstance(context).eliminarActividad(actividad.getId());
+                        AppRepository.getInstance().getListaActividades().remove(actividad);
 
                         // B. Borrar de la lista visual (RecyclerView)
                         int currentPos = holder.getAdapterPosition();

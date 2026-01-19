@@ -1,19 +1,16 @@
 package espol.poo.sistemabienestarestudiantil.modelo.suenio;
 
-import java.io.Serializable; // OBLIGATORIO PARA RÚBRICA
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class RegistrarHorasDeSuenio implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class RegistrarHorasDeSuenio {
     private LocalTime horaInicio;
     private LocalTime horaFin;
     private LocalDate fechaRegistro;
-    private double duracionHoras;
+    private double duracionHoras; // OJO: El adaptador busca este nombre
 
+    // Constructor vacío (requerido a veces por Firebase/Room, buena práctica tenerlo)
     public RegistrarHorasDeSuenio() {}
 
     public RegistrarHorasDeSuenio(LocalTime inicio, LocalTime fin) {
@@ -23,7 +20,6 @@ public class RegistrarHorasDeSuenio implements Serializable {
         calcularDuracion();
     }
 
-    // Constructor para fechas pasadas (Rúbrica 18 Enero)
     public RegistrarHorasDeSuenio(LocalTime inicio, LocalTime fin, LocalDate fecha) {
         this.horaInicio = inicio;
         this.horaFin = fin;
@@ -33,19 +29,29 @@ public class RegistrarHorasDeSuenio implements Serializable {
 
     private void calcularDuracion() {
         if (horaInicio == null || horaFin == null) return;
+
         long minutos;
         if (horaFin.isBefore(horaInicio)) {
+            // Caso: cruzó la medianoche
             Duration hastaMedianoche = Duration.between(horaInicio, LocalTime.MAX);
             Duration desdeMedianoche = Duration.between(LocalTime.MIN, horaFin);
             minutos = hastaMedianoche.toMinutes() + desdeMedianoche.toMinutes() + 1;
         } else {
+            // Mismo día
             minutos = Duration.between(horaInicio, horaFin).toMinutes();
         }
         this.duracionHoras = minutos / 60.0;
     }
 
-    public double getDuracionHoras() { return duracionHoras; }
-    public LocalDate getFechaRegistro() { return fechaRegistro; }
+    // --- GETTERS EXACTOS QUE USA TU ADAPTADOR ---
+    public double getDuracionHoras() {
+        return duracionHoras;
+    }
+
+    public LocalDate getFechaRegistro() {
+        return fechaRegistro;
+    }
+
     public LocalTime getHoraInicio() { return horaInicio; }
     public LocalTime getHoraFin() { return horaFin; }
 }

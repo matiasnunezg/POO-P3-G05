@@ -92,7 +92,7 @@ public class DeepWorkActivity extends AppCompatActivity {
         int idActividad = getIntent().getIntExtra("ID_EXTRA", -1);
 
         // 3. Buscar la actividad real en el Repositorio (Singleton)
-        Actividad actividad = AppRepository.getInstance(this).buscarActividadPorId(idActividad);
+        Actividad actividad = AppRepository.getInstance().buscarActividadPorId(idActividad);
 
         // 4. Verificar que sea una Actividad Académica (las únicas que tienen historial)
         if (actividad instanceof ActividadAcademica) {

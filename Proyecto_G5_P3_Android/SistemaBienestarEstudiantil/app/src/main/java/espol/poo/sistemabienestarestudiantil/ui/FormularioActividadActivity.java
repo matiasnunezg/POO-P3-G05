@@ -129,7 +129,7 @@ public class FormularioActividadActivity extends AppCompatActivity {
         }
 
         // --- CORRECCIÓN DE ID: PEDIMOS EL SIGUIENTE (1, 2, 3...) ---
-        int idNuevo = AppRepository.getInstance(this).getProximoId();
+        int idNuevo = AppRepository.getInstance().getProximoId();
 
         // Fecha de hoy para registro
         String fechaHoy = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
@@ -167,7 +167,7 @@ public class FormularioActividadActivity extends AppCompatActivity {
         }
 
         // 3. Guardar en la lista global
-        AppRepository.getInstance(this).agregarActividad(nuevaActividad);
+        AppRepository.getInstance().agregarActividad(nuevaActividad);
 
         Toast.makeText(this, "Guardado Correctamente", Toast.LENGTH_SHORT).show();
         finish(); // Cierra la pantalla y vuelve a la lista

@@ -1,10 +1,6 @@
 package espol.poo.sistemabienestarestudiantil.modelo.actividades; // <--- 1. CAMBIO IMPORTANTE: Tu nuevo paquete
-import java.io.Serializable; // <--- 1. IMPORT NECESARIO
 
-public class Actividad implements Serializable { // <--- 2. IMPLEMENTAR INTERFAZ
-
-    // 3. IDENTIFICADOR DE VERSIÓN (Recomendado para evitar errores al guardar/cargar)
-    private static final long serialVersionUID = 1L;
+public class Actividad {
 
     private String nombre;
     private TipoPrioridad prioridad;
