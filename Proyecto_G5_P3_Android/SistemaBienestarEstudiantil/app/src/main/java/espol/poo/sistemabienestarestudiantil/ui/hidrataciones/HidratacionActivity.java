@@ -1,11 +1,10 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.hidrataciones;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 

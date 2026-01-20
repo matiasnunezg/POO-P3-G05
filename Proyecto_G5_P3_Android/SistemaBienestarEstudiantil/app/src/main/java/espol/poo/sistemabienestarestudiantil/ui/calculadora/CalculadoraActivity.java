@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui; // Ajusta a tu carpeta de UI
+package espol.poo.sistemabienestarestudiantil.ui.calculadora; // Ajusta a tu carpeta de UI
 
 import android.os.Bundle;
 import android.view.View;

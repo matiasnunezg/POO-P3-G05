@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.suenio;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;

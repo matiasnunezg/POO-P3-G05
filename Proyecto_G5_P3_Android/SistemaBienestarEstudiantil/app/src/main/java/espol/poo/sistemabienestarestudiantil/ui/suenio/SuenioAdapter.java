@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.suenio;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;

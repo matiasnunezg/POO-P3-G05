@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.juegomemoria;
 
 import android.os.Bundle;
 import android.os.Handler;

@@ -1,9 +1,8 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.sostenibilidad;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;

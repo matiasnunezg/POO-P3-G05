@@ -21,24 +21,24 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.HidratacionActivity" />
+        <activity android:name=".ui.hidrataciones.HidratacionActivity" />
 
-        <activity android:name=".ui.ListaActividadesActivity" android:parentActivityName=".ui.MainActivity" />
-        <activity android:name=".ui.DetalleActividadActivity" android:parentActivityName=".ui.ListaActividadesActivity" />
-        <activity android:name=".ui.FormularioActividadActivity" android:parentActivityName=".ui.ListaActividadesActivity" />
-        <activity android:name=".ui.RegistrarAvanceActivity" android:parentActivityName=".ui.ListaActividadesActivity" />
+        <activity android:name=".ui.actividades.ListaActividadesActivity" android:parentActivityName=".ui.MainActivity" />
+        <activity android:name=".ui.actividades.DetalleActividadActivity" android:parentActivityName=".ui.actividades.ListaActividadesActivity" />
+        <activity android:name=".ui.actividades.FormularioActividadActivity" android:parentActivityName=".ui.actividades.ListaActividadesActivity" />
+        <activity android:name=".ui.actividades.RegistrarAvanceActivity" android:parentActivityName=".ui.actividades.ListaActividadesActivity" />
 
-        <activity android:name=".ui.SuenioActivity" />
-        <activity android:name=".ui.RegistrarSuenioActivity" />
+        <activity android:name=".ui.suenio.SuenioActivity" />
+        <activity android:name=".ui.suenio.RegistrarSuenioActivity" />
 
-        <activity android:name=".ui.SostenibilidadActivity" />
-        <activity android:name=".ui.RegistroSostenibilidadActivity" />
+        <activity android:name=".ui.sostenibilidad.SostenibilidadActivity" />
+        <activity android:name=".ui.sostenibilidad.RegistroSostenibilidadActivity" />
 
-        <activity android:name=".ui.DeepWorkActivity" />
-        <activity android:name=".ui.PomodoroActivity" />
-        <activity android:name=".ui.IntroJuegoActivity" />
-        <activity android:name=".ui.JuegoMemoriaActivity" />
-        <activity android:name=".ui.CalculadoraActivity" />
+        <activity android:name=".ui.enfoques.DeepWorkActivity" />
+        <activity android:name=".ui.enfoques.PomodoroActivity" />
+        <activity android:name=".ui.juegomemoria.IntroJuegoActivity" />
+        <activity android:name=".ui.juegomemoria.JuegoMemoriaActivity" />
+        <activity android:name=".ui.calculadora.CalculadoraActivity" />
 
     </application>
 

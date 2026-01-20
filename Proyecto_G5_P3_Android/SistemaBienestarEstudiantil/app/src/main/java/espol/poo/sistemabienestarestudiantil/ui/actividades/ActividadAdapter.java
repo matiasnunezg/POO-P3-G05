@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.actividades;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,8 @@ import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica; // ¡IMPORTANTE PARA DETECTAR EL TIPO!
+import espol.poo.sistemabienestarestudiantil.ui.enfoques.DeepWorkActivity;
+import espol.poo.sistemabienestarestudiantil.ui.enfoques.PomodoroActivity;
 
 public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.ActividadViewHolder> {
 

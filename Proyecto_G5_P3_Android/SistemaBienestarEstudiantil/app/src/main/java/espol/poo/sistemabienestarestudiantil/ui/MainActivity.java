@@ -8,6 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import espol.poo.sistemabienestarestudiantil.R;
 import espol.poo.sistemabienestarestudiantil.data.AppRepository;
+import espol.poo.sistemabienestarestudiantil.ui.actividades.ListaActividadesActivity;
+import espol.poo.sistemabienestarestudiantil.ui.calculadora.CalculadoraActivity;
+import espol.poo.sistemabienestarestudiantil.ui.hidrataciones.HidratacionActivity;
+import espol.poo.sistemabienestarestudiantil.ui.juegomemoria.IntroJuegoActivity;
+import espol.poo.sistemabienestarestudiantil.ui.sostenibilidad.SostenibilidadActivity;
+import espol.poo.sistemabienestarestudiantil.ui.suenio.SuenioActivity;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.enfoques;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Locale;
 
 import espol.poo.sistemabienestarestudiantil.R;
@@ -15,54 +14,49 @@ import espol.poo.sistemabienestarestudiantil.data.AppRepository;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
 
-public class DeepWorkActivity extends AppCompatActivity {
+public class PomodoroActivity extends AppCompatActivity {
 
-    private TextView txtCronometro, txtNombreTarea, btn45, btn60, btn90;
+    private TextView txtCronometro, txtNombreTarea, btn25, btn5seg, btn15;
     private Button btnIniciar, btnPausar, btnAccionFinal;
     private CountDownTimer countDownTimer;
     private long tiempoRestanteMilis;
     private boolean timerCorriendo = false;
-    private int minutosSeleccionados = 45;
-    private boolean esModoPrueba = false; // Control de precisión para el registro de 5 seg
+    private int minutosSeleccionados = 25;
+    private boolean esModoPrueba = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_deep_work);
+        setContentView(R.layout.activity_pomodoro);
 
-        // 1. Vincular componentes
         txtCronometro = findViewById(R.id.txtCronometro);
         txtNombreTarea = findViewById(R.id.txtNombreTarea);
-        btn45 = findViewById(R.id.btnTime45);
-        btn60 = findViewById(R.id.btnTime60);
-        btn90 = findViewById(R.id.btnTime90);
+        btn25 = findViewById(R.id.btnTime25);
+        btn5seg = findViewById(R.id.btnTime5);
+        btn15 = findViewById(R.id.btnTime15);
         btnIniciar = findViewById(R.id.btnIniciar);
         btnPausar = findViewById(R.id.btnPausar);
         btnAccionFinal = findViewById(R.id.btnAccionFinal);
 
-        // 2. Configuración inicial
         String nombre = getIntent().getStringExtra("nombre_tarea");
         if (nombre != null) txtNombreTarea.setText("Actividad: " + nombre);
 
-        // Iniciamos con 45 min por defecto
-        setTiempoSeleccionado(45, btn45, false);
+        // Configuración inicial por defecto
+        setTiempoSeleccionado(25, btn25, false);
 
-        // 3. Listeners de selección de tiempo
-        btn45.setOnClickListener(v -> setTiempoSeleccionado(45, btn45, false));
-        btn60.setOnClickListener(v -> setTiempoSeleccionado(60, btn60, false));
+        btn25.setOnClickListener(v -> setTiempoSeleccionado(25, btn25, false));
+        btn15.setOnClickListener(v -> setTiempoSeleccionado(15, btn15, false));
 
-        // BOTÓN MODO PRUEBA (5 SEGUNDOS)
-        btn90.setOnClickListener(v -> {
+        btn5seg.setOnClickListener(v -> {
             if (timerCorriendo) return;
             resetearEstiloPastillas();
-            btn90.setBackgroundResource(R.drawable.bg_pill_selected);
-            btn90.setTextColor(Color.WHITE);
+            btn5seg.setBackgroundResource(R.drawable.bg_pill_selected);
+            btn5seg.setTextColor(Color.WHITE);
             this.esModoPrueba = true;
-            this.tiempoRestanteMilis = 5 * 1000; // 5 segundos exactos
+            this.tiempoRestanteMilis = 5 * 1000;
             actualizarTextoCronometro();
         });
 
-        // 4. Controles del cronómetro
         btnIniciar.setOnClickListener(v -> iniciarTimer());
 
         btnPausar.setOnClickListener(v -> {
@@ -70,7 +64,7 @@ public class DeepWorkActivity extends AppCompatActivity {
             timerCorriendo = false;
         });
 
-        // REINICIAR: Detiene el tiempo y avisa que no se guarda
+        // REINICIAR: Cancela la sesión y avisa al usuario
         btnAccionFinal.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
             Toast.makeText(this, "Sesión cancelada (No guardada)", Toast.LENGTH_SHORT).show();
@@ -81,41 +75,36 @@ public class DeepWorkActivity extends AppCompatActivity {
     private void iniciarTimer() {
         if (timerCorriendo) return;
         countDownTimer = new CountDownTimer(tiempoRestanteMilis, 1000) {
-            @Override
-            public void onTick(long l) {
+            @Override public void onTick(long l) {
                 tiempoRestanteMilis = l;
                 actualizarTextoCronometro();
             }
-
-            @Override
-            public void onFinish() {
+            @Override public void onFinish() {
                 timerCorriendo = false;
                 tiempoRestanteMilis = 0;
                 actualizarTextoCronometro();
-                guardarYSalirAutomatico();
+                guardarSesionFinal();
             }
         }.start();
         timerCorriendo = true;
     }
 
-    private void guardarYSalirAutomatico() {
+    private void guardarSesionFinal() {
         int idActividad = getIntent().getIntExtra("ID_EXTRA", -1);
         AppRepository repo = AppRepository.getInstance(this);
         Actividad actividad = repo.buscarActividadPorId(idActividad);
 
         if (actividad instanceof ActividadAcademica) {
-            // Si es modo prueba enviamos 5, sino convertimos minutos a segundos
             int segundosARegistrar = esModoPrueba ? 5 : (minutosSeleccionados * 60);
+            ((ActividadAcademica) actividad).registrarSesion("Pomodoro", segundosARegistrar);
 
-            ((ActividadAcademica) actividad).registrarSesion("Deep Work", segundosARegistrar);
-
-            // Persistencia: Guardado físico en archivo .ser
+            // Guardado físico en archivo .ser
             repo.guardarActividadesEnArchivo();
 
             Toast.makeText(this, "Felicidades, Sesión guardada automáticamente", Toast.LENGTH_LONG).show();
         }
 
-        // Delay de 1 segundo para ver el 00:00 antes de cerrar
+        // Cierre con retraso para permitir ver el 00:00
         txtCronometro.postDelayed(this::finish, 1000);
     }
 
@@ -131,10 +120,10 @@ public class DeepWorkActivity extends AppCompatActivity {
     }
 
     private void resetearEstiloPastillas() {
-        TextView[] ps = {btn45, btn60, btn90};
+        TextView[] ps = {btn25, btn5seg, btn15};
         for (TextView p : ps) {
             p.setBackgroundResource(R.drawable.bg_pill_unselected);
-            p.setTextColor(Color.BLACK);
+            p.setTextColor(Color.parseColor("#2E4091"));
         }
     }
 

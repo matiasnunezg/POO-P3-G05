@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.sostenibilidad;
 
 import android.view.LayoutInflater;
 import android.view.View;

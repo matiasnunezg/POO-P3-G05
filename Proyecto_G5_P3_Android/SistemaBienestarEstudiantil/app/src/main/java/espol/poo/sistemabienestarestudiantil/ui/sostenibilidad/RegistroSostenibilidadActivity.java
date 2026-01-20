@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.sostenibilidad;
 
 import android.os.Bundle;
 import android.widget.Button;

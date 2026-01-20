@@ -1,4 +1,4 @@
-package espol.poo.sistemabienestarestudiantil.ui;
+package espol.poo.sistemabienestarestudiantil.ui.actividades;
 
 import android.content.Intent; // IMPORTANTE: Añadido para la navegación
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadPersonal;
 import espol.poo.sistemabienestarestudiantil.modelo.enfoques.SesionEnfoque;
+import espol.poo.sistemabienestarestudiantil.ui.enfoques.DeepWorkActivity;
+import espol.poo.sistemabienestarestudiantil.ui.enfoques.PomodoroActivity;
 
 public class DetalleActividadActivity extends AppCompatActivity {
 
