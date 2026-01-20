@@ -1,5 +1,5 @@
 package espol.poo.sistemabienestarestudiantil.ui;
-
+//Menu Principal
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
