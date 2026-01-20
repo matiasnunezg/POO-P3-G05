@@ -316,11 +316,11 @@ public class AppRepository {
         if (existente != null) listaSostenibilidad.remove(existente);
         listaSostenibilidad.add(0, nuevoRegistro);
 
-        // PERSISTENCIA: Guardar al agregar
+
         if (context != null) guardarSostenibilidadEnArchivo();
     }
 
-    // Métodos de Persistencia para Sostenibilidad (Unidad 5)
+
     private void guardarSostenibilidadEnArchivo() {
         try {
             FileOutputStream fos = context.openFileOutput(FILE_SOSTENIBILIDAD, Context.MODE_PRIVATE);
@@ -330,7 +330,7 @@ public class AppRepository {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    @SuppressWarnings("unchecked")
+    
     private void cargarSostenibilidadDelArchivo() {
         try {
             FileInputStream fis = context.openFileInput(FILE_SOSTENIBILIDAD);
