@@ -2,6 +2,8 @@ package espol.poo.sistemabienestarestudiantil.ui;
 //Menu Principal
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import espol.poo.sistemabienestarestudiantil.R;
@@ -52,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnJuego).setOnClickListener(v -> {
             // CAMBIO: Ahora dirigimos a la Intro, no al juego directo
             Intent intent = new Intent(MainActivity.this, IntroJuegoActivity.class);
+            startActivity(intent);
+        });
+
+        // Dentro del onCreate de tu MainActivity
+        Button btnOpcion6 = findViewById(R.id.btnCalculadora); // Asegúrate que el ID coincida con tu menú
+        btnOpcion6.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CalculadoraActivity.class);
             startActivity(intent);
         });
 
