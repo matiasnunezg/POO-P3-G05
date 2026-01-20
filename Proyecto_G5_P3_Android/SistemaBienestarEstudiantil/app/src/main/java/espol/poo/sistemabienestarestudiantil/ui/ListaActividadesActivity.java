@@ -7,7 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.Button; // Agregado para el botón
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,8 +31,6 @@ public class ListaActividadesActivity extends AppCompatActivity {
     private List<Actividad> listaCompleta; // Referencia a la BD
     private List<Actividad> listaFiltrada; // Lista visual
 
-    // 1. CAMBIO IMPORTANTE:
-    // Declaramos los Spinners aquí arriba para usarlos en onResume
     private Spinner spinnerFiltro;
     private Spinner spinnerOrden;
 
@@ -41,7 +39,7 @@ public class ListaActividadesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_actividades);
 
-        // Carga inicial de datos
+        // Carga inicial de datos (pasando 'this' como contexto)
         listaCompleta = AppRepository.getInstance(this).getListaActividades();
         listaFiltrada = new ArrayList<>(listaCompleta);
 
@@ -51,12 +49,17 @@ public class ListaActividadesActivity extends AppCompatActivity {
         adapter = new ActividadAdapter(listaFiltrada, this);
         recyclerView.setAdapter(adapter);
 
-        // Configurar Botón Agregar
+        // --- BOTÓN AGREGAR (ARRIBA) ---
         Button btnAgregar = findViewById(R.id.btnAgregarActividad);
         btnAgregar.setOnClickListener(v -> {
-            // Abre el formulario (que ya unificamos en uno solo)
             Intent intent = new Intent(ListaActividadesActivity.this, FormularioActividadActivity.class);
             startActivity(intent);
+        });
+
+        // --- NUEVO: BOTÓN VOLVER AL MENÚ (ABAJO) ---
+        Button btnVolverMenu = findViewById(R.id.btnVolverMenu);
+        btnVolverMenu.setOnClickListener(v -> {
+            finish(); // Cierra esta actividad y regresa a la anterior (Menú)
         });
 
         // Configurar Filtros
@@ -64,17 +67,16 @@ public class ListaActividadesActivity extends AppCompatActivity {
     }
 
     private void setupFiltrosYOrden() {
-        // Asignamos las vistas a las variables globales
         spinnerFiltro = findViewById(R.id.spinnerFiltro);
         spinnerOrden = findViewById(R.id.spinnerOrden);
 
-        // --- Configurar opciones del Filtro ---
+        // --- Filtros ---
         String[] opcionesFiltro = {"Todos", "Académico", "Personal"};
         ArrayAdapter<String> adapterFiltro = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, opcionesFiltro);
         adapterFiltro.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerFiltro.setAdapter(adapterFiltro);
 
-        // --- Configurar opciones del Orden ---
+        // --- Orden ---
         String[] opcionesOrden = {"Sin orden", "Nombre (A-Z)", "Vencimiento (Desc)", "Avance"};
         ArrayAdapter<String> adapterOrden = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, opcionesOrden);
         adapterOrden.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -100,19 +102,15 @@ public class ListaActividadesActivity extends AppCompatActivity {
         });
     }
 
-    // 2. CAMBIO IMPORTANTE: onResume RECARGADO
     @Override
     protected void onResume() {
         super.onResume();
-
-        // A) Volvemos a traer la lista del Repositorio (por si agregaste algo nuevo)
+        // Recargar datos al volver (por si se eliminó o editó algo)
         listaCompleta = AppRepository.getInstance(this).getListaActividades();
 
-        // B) Volvemos a aplicar el filtro actual automáticamente
         if (spinnerFiltro != null && spinnerOrden != null) {
             aplicarFiltros(spinnerFiltro.getSelectedItemPosition(), spinnerOrden.getSelectedItemPosition());
         } else {
-            // Si por alguna razón los spinners no están listos, refrescamos a lo bruto
             adapter.notifyDataSetChanged();
         }
     }
@@ -138,7 +136,7 @@ public class ListaActividadesActivity extends AppCompatActivity {
             case 1: // Nombre (A-Z)
                 Collections.sort(listaFiltrada, (a1, a2) -> a1.getNombre().compareToIgnoreCase(a2.getNombre()));
                 break;
-            case 2: // Vencimiento (Comparación de Strings de fecha puede fallar si no es YYYY-MM-DD, pero servirá por ahora)
+            case 2: // Vencimiento
                 Collections.sort(listaFiltrada, (a1, a2) -> a2.getFechaVencimiento().compareTo(a1.getFechaVencimiento()));
                 break;
             case 3: // Avance
@@ -146,7 +144,6 @@ public class ListaActividadesActivity extends AppCompatActivity {
                 break;
         }
 
-        // 3. ACTUALIZAR VISTA
         adapter.notifyDataSetChanged();
     }
 }
