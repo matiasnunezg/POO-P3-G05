@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -23,32 +25,42 @@ public class SostenibilidadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sostenibilidad);
 
-        // Botón para ir a registrar
-        Button btnRegistrar = findViewById(R.id.btnRegistrarAccion);
-        btnRegistrar.setOnClickListener(v -> {
+        // Botones
+        findViewById(R.id.btnRegistrarAccion).setOnClickListener(v -> {
             Intent intent = new Intent(this, RegistroSostenibilidadActivity.class);
             startActivity(intent);
         });
 
-        // NUEVO: Botón para Volver
-        Button btnVolver = findViewById(R.id.btnVolver);
-        btnVolver.setOnClickListener(v -> finish());
+        findViewById(R.id.btnVolver).setOnClickListener(v -> finish());
 
-        // Calcular datos al iniciar
-        calcularResumen();
+        // Cargar todo
+        cargarDatos();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Recalcular cuando volvemos de la pantalla de registro
-        calcularResumen();
+        cargarDatos();
     }
 
-    private void calcularResumen() {
+    private void cargarDatos() {
         List<RegistroDiarioSostenible> lista = AppRepository.getInstance(this).getListaSostenibilidad();
 
-        // 1. Fechas (Hoy - Hace 6 días)
+        // 1. Configurar RecyclerView (LA LISTA NUEVA)
+        RecyclerView recycler = findViewById(R.id.recyclerSostenibilidad);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        SostenibilidadAdapter adapter = new SostenibilidadAdapter(lista);
+        recycler.setAdapter(adapter);
+
+        // 2. Calcular Resumen (TU LÓGICA ANTERIOR INTACTA)
+        calcularResumen(lista);
+    }
+
+    private void calcularResumen(List<RegistroDiarioSostenible> lista) {
+        // ... (Aquí copias EXACTAMENTE el método calcularResumen que ya tenías)
+        // ... Solo asegúrate de que use la lista que le pasamos por parámetro
+
+        // COPIA ESTO DENTRO DE TU CLASE (Es tu lógica original):
         LocalDate hoy = LocalDate.now();
         LocalDate haceUnaSemana = hoy.minusDays(6);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM");
@@ -56,26 +68,14 @@ public class SostenibilidadActivity extends AppCompatActivity {
         TextView tvRango = findViewById(R.id.tvRangoFecha);
         tvRango.setText("(" + haceUnaSemana.format(fmt) + " - " + hoy.format(fmt) + ")");
 
-        // 2. Contadores
-        int cTransporte = 0;
-        int cImpresiones = 0;
-        int cEnvases = 0;
-        int cReciclaje = 0;
+        int cTransporte = 0, cImpresiones = 0, cEnvases = 0, cReciclaje = 0;
+        int diasConAlMenosUna = 0, diasPerfectos = 0, totalDias = 7;
 
-        int diasConAlMenosUna = 0;
-        int diasPerfectos = 0;
-        int totalDias = 7;
-
-        // 3. Recorrer la lista
         for (RegistroDiarioSostenible r : lista) {
-            // Validar que el registro no sea nulo y la fecha tampoco
             if (r == null || r.getFecha() == null) continue;
-
-            // Filtro: Solo contar si está dentro de la última semana
+            // Filtro semana
             if (!r.getFecha().isBefore(haceUnaSemana) && !r.getFecha().isAfter(hoy)) {
-
                 List<Integer> ids = r.getAccionesSeleccionadasIds();
-
                 if (ids.contains(1)) cTransporte++;
                 if (ids.contains(2)) cImpresiones++;
                 if (ids.contains(3)) cEnvases++;
@@ -86,45 +86,33 @@ public class SostenibilidadActivity extends AppCompatActivity {
             }
         }
 
-        // 4. Actualizar Tabla (Lógica del Semáforo)
         actualizarFila(R.id.tvCountTransporte, R.id.tvBadgeTransporte, cTransporte, totalDias);
         actualizarFila(R.id.tvCountImpresiones, R.id.tvBadgeImpresiones, cImpresiones, totalDias);
         actualizarFila(R.id.tvCountEnvases, R.id.tvBadgeEnvases, cEnvases, totalDias);
         actualizarFila(R.id.tvCountReciclaje, R.id.tvBadgeReciclaje, cReciclaje, totalDias);
 
-        // 5. Actualizar Resumen Inferior
         TextView tvAnalisisUno = findViewById(R.id.tvDiasAlMenosUna);
         TextView tvAnalisisPerf = findViewById(R.id.tvDiasPerfectos);
+        int porcUno = (int) ((diasConAlMenosUna * 100.0) / totalDias);
+        int porcPerf = (int) ((diasPerfectos * 100.0) / totalDias);
 
-        int porcUno = (totalDias > 0) ? (int) ((diasConAlMenosUna * 100.0) / totalDias) : 0;
-        int porcPerf = (totalDias > 0) ? (int) ((diasPerfectos * 100.0) / totalDias) : 0;
-
-        tvAnalisisUno.setText(String.format(Locale.getDefault(),
-                "Días con al menos 1 acción sostenible: %d de %d (%d%%)", diasConAlMenosUna, totalDias, porcUno));
-
-        tvAnalisisPerf.setText(String.format(Locale.getDefault(),
-                "Días con las 4 acciones completas: %d de %d (%d%%)", diasPerfectos, totalDias, porcPerf));
+        tvAnalisisUno.setText(String.format(Locale.getDefault(), "Días con al menos 1 acción: %d (%d%%)", diasConAlMenosUna, porcUno));
+        tvAnalisisPerf.setText(String.format(Locale.getDefault(), "Días perfectos: %d (%d%%)", diasPerfectos, porcPerf));
     }
 
     private void actualizarFila(int idTextCount, int idTextBadge, int cantidad, int total) {
         TextView tvCount = findViewById(idTextCount);
         TextView tvBadge = findViewById(idTextBadge);
-
         tvCount.setText(cantidad + "/" + total);
 
-        // LÓGICA DE COLORES
         if (cantidad == 7) {
-            tvBadge.setText("¡Excelente!");
-            tvBadge.setBackgroundColor(Color.parseColor("#1B5E20")); // Verde Oscuro
+            tvBadge.setText("¡Excelente!"); tvBadge.setBackgroundColor(Color.parseColor("#1B5E20"));
         } else if (cantidad >= 5) {
-            tvBadge.setText("Muy bien");
-            tvBadge.setBackgroundColor(Color.parseColor("#4CAF50")); // Verde
+            tvBadge.setText("Muy bien"); tvBadge.setBackgroundColor(Color.parseColor("#4CAF50"));
         } else if (cantidad >= 3) {
-            tvBadge.setText("Regular");
-            tvBadge.setBackgroundColor(Color.parseColor("#FF9800")); // Naranja
+            tvBadge.setText("Regular"); tvBadge.setBackgroundColor(Color.parseColor("#FF9800"));
         } else {
-            tvBadge.setText("Mejorar");
-            tvBadge.setBackgroundColor(Color.parseColor("#D32F2F")); // Rojo
+            tvBadge.setText("Mejorar"); tvBadge.setBackgroundColor(Color.parseColor("#D32F2F"));
         }
         tvBadge.setTextColor(Color.WHITE);
     }

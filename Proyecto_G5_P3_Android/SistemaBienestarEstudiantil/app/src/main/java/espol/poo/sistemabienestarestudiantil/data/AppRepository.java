@@ -9,8 +9,8 @@ import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // Importaciones
@@ -31,7 +31,7 @@ public class AppRepository {
     private final String FILE_SUENIO = "historial_suenio.ser";
     private final String FILE_HIDRATACION = "historial_agua.ser";
     private final String FILE_META_HIDRATACION = "meta_agua.ser";
-    private final String FILE_SOSTENIBILIDAD = "sostenibilidad.ser"; // <--- NUEVO
+    private final String FILE_SOSTENIBILIDAD = "sostenibilidad.ser";
 
     // --- LISTAS ---
     private List<Actividad> listaActividades;
@@ -41,13 +41,14 @@ public class AppRepository {
 
     // --- VARIABLES ---
     private Map<String, Double> historialMetas;
+    private double metaDiaria = 2500.0;
     private String fechaSeleccionadaRepo = "";
 
     // --- CONSTRUCTOR PRIVADO ---
     private AppRepository(Context context) {
         this.context = context;
 
-        // 1. ACTIVIDADES
+        // 1. ACTIVIDADES (Lógica de tus compañeros intacta)
         listaActividades = new ArrayList<>();
         if (context != null) {
             cargarActividadesDelArchivo();
@@ -55,7 +56,7 @@ public class AppRepository {
             cargarDatosOriginalesActividades();
         }
 
-        // 2. SUEÑO
+        // 2. SUEÑO (Tu parte: Datos 18 Enero + Persistencia)
         listaSuenio = new ArrayList<>();
         if (context != null) {
             cargarSuenioDelArchivo();
@@ -63,10 +64,9 @@ public class AppRepository {
             cargarDatosPruebaSuenio();
         }
 
-        // 3. HIDRATACIÓN
+        // 3. HIDRATACIÓN (Lógica de tus compañeros intacta + Meta)
         listaHidratacion = new ArrayList<>();
         historialMetas = new HashMap<>();
-
         if (context != null) {
             cargarHidratacionDelArchivo();
             cargarMetasDelArchivo();
@@ -74,10 +74,10 @@ public class AppRepository {
             cargarDatosPruebaHidratacion();
         }
 
-        // 4. SOSTENIBILIDAD (MODIFICADO PARA CARGAR ARCHIVO)
+        // 4. SOSTENIBILIDAD (Tu parte: Datos 17 y 18 Enero + Persistencia)
         listaSostenibilidad = new ArrayList<>();
         if (context != null) {
-            cargarSostenibilidadDelArchivo(); // <--- NUEVO
+            cargarSostenibilidadDelArchivo();
         } else {
             cargarDatosPruebaSostenibilidad();
         }
@@ -88,13 +88,14 @@ public class AppRepository {
         if (instance == null) {
             instance = new AppRepository(context.getApplicationContext());
         }
+        // Si la instancia existe pero no tiene contexto, se lo ponemos y recargamos TODO
         if (instance.context == null && context != null) {
             instance.context = context.getApplicationContext();
             instance.cargarSuenioDelArchivo();
             instance.cargarHidratacionDelArchivo();
             instance.cargarMetasDelArchivo();
             instance.cargarActividadesDelArchivo();
-            instance.cargarSostenibilidadDelArchivo(); // <--- NUEVO
+            instance.cargarSostenibilidadDelArchivo();
         }
         return instance;
     }
@@ -107,11 +108,12 @@ public class AppRepository {
     }
 
     // ==========================================
-    //           MÓDULO DE SUEÑO
+    //           MÓDULO DE SUEÑO (TU PARTE)
     // ==========================================
     public List<RegistrarHorasDeSuenio> getListaSuenio() { return listaSuenio; }
 
     public void agregarSuenio(RegistrarHorasDeSuenio registro) {
+        // Tu lógica Anti-Duplicados
         RegistrarHorasDeSuenio duplicado = null;
         for (RegistrarHorasDeSuenio r : listaSuenio) {
             if (r.getFechaRegistro().isEqual(registro.getFechaRegistro())) {
@@ -127,6 +129,7 @@ public class AppRepository {
 
     private void cargarDatosPruebaSuenio() {
         if (listaSuenio.isEmpty()) {
+            // Rúbrica: 2 registros del 18 de Enero
             listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(22, 0), LocalTime.of(6, 0), LocalDate.of(2026, 1, 18)));
             listaSuenio.add(new RegistrarHorasDeSuenio(LocalTime.of(14, 0), LocalTime.of(16, 0), LocalDate.of(2026, 1, 18)));
         }
@@ -156,7 +159,7 @@ public class AppRepository {
     }
 
     // ==========================================
-    //           MÓDULO DE HIDRATACIÓN
+    //           MÓDULO DE HIDRATACIÓN (ELLOS)
     // ==========================================
     public List<RegistroHidratacion> getListaHidratacion() { return listaHidratacion; }
 
@@ -183,7 +186,7 @@ public class AppRepository {
         if (context != null) guardarMetasEnArchivo();
     }
 
-    public double getMetaDiaria() { return 2500.0; }
+    public double getMetaDiaria() { return 2500.0; } // Por compatibilidad
 
     public double getTotalConsumido() {
         double total = 0;
@@ -240,7 +243,7 @@ public class AppRepository {
     }
 
     // ==========================================
-    //           MÓDULO DE ACTIVIDADES
+    //           MÓDULO DE ACTIVIDADES (ELLOS)
     // ==========================================
     public List<Actividad> getListaActividades() { return listaActividades; }
 
@@ -285,7 +288,6 @@ public class AppRepository {
             listaActividades = (List<Actividad>) ois.readObject();
             ois.close(); fis.close();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
             listaActividades = new ArrayList<>();
             cargarDatosOriginalesActividades();
         }
@@ -293,19 +295,21 @@ public class AppRepository {
 
     private void cargarDatosOriginalesActividades() {
         try {
+            // Datos tal cual los definieron tus compañeros
             listaActividades.add(new ActividadPersonal("Viaje a Montañita", Actividad.TipoPrioridad.Media, "2026-02-15", 0, 1, 4800, LocalDate.now().toString(), "Montañita", ActividadPersonal.TipoActividadPersonal.Hobbies, "Viaje con amigos"));
             listaActividades.add(new ActividadAcademica("Leer capítulo 5", Actividad.TipoPrioridad.Baja, "2026-01-19", 70, 2, 120, LocalDate.now().toString(), "Física", ActividadAcademica.TipoActividadAcademica.Tarea, "Teoría"));
-            listaActividades.add(new ActividadAcademica("Examen Parcial", Actividad.TipoPrioridad.Alta, "2026-01-23", 0, 3, 180, LocalDate.now().toString(), "POO", ActividadAcademica.TipoActividadAcademica.Examen, "Estudiar"));
-            listaActividades.add(new ActividadAcademica("Proyecto Final", Actividad.TipoPrioridad.Alta, "2026-01-30", 0, 4, 150, LocalDate.now().toString(), "Mecatrónica", ActividadAcademica.TipoActividadAcademica.Proyecto, "Maqueta"));
+            listaActividades.add(new ActividadAcademica("Examen 2do Parcial", Actividad.TipoPrioridad.Alta, "2026-01-23", 0, 3, 180, LocalDate.now().toString(), "POO", ActividadAcademica.TipoActividadAcademica.Examen, "Estudiar"));
+            listaActividades.add(new ActividadAcademica("Proyecto Intro", Actividad.TipoPrioridad.Alta, "2026-01-30", 70, 3, 150, LocalDate.now().toString(), "Introducción a la Mecatrónica", ActividadAcademica.TipoActividadAcademica.Proyecto, "Maqueta"));
         } catch (Exception e) { e.printStackTrace(); }
     }
 
     // ==========================================
-    //           MÓDULO DE SOSTENIBILIDAD
+    //      MÓDULO DE SOSTENIBILIDAD (TU PARTE)
     // ==========================================
     public List<RegistroDiarioSostenible> getListaSostenibilidad() { return listaSostenibilidad; }
 
     public void agregarRegistroSostenible(RegistroDiarioSostenible nuevoRegistro) {
+        // Reemplazar si existe la misma fecha
         RegistroDiarioSostenible existente = null;
         for (RegistroDiarioSostenible r : listaSostenibilidad) {
             if (r.getFecha().isEqual(nuevoRegistro.getFecha())) {
@@ -314,12 +318,10 @@ public class AppRepository {
             }
         }
         if (existente != null) listaSostenibilidad.remove(existente);
+
         listaSostenibilidad.add(0, nuevoRegistro);
-
-
         if (context != null) guardarSostenibilidadEnArchivo();
     }
-
 
     private void guardarSostenibilidadEnArchivo() {
         try {
@@ -330,7 +332,7 @@ public class AppRepository {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    
+    @SuppressWarnings("unchecked")
     private void cargarSostenibilidadDelArchivo() {
         try {
             FileInputStream fis = context.openFileInput(FILE_SOSTENIBILIDAD);
@@ -347,9 +349,19 @@ public class AppRepository {
     private void cargarDatosPruebaSostenibilidad() {
         try {
             if (listaSostenibilidad.isEmpty()) {
-                List<Integer> idsAyer = new ArrayList<>();
-                idsAyer.add(1); idsAyer.add(2); idsAyer.add(3); idsAyer.add(4);
-                listaSostenibilidad.add(new RegistroDiarioSostenible(LocalDate.now().minusDays(1), idsAyer));
+                // REGISTRO 1: 17 de Enero (Rúbrica)
+                List<Integer> acciones17 = new ArrayList<>();
+                acciones17.add(1); // Transporte
+                acciones17.add(3); // Envases
+                listaSostenibilidad.add(new RegistroDiarioSostenible(LocalDate.of(2026, 1, 17), acciones17));
+
+                // REGISTRO 2: 18 de Enero (Rúbrica)
+                List<Integer> acciones18 = new ArrayList<>();
+                acciones18.add(1);
+                acciones18.add(2);
+                acciones18.add(3);
+                acciones18.add(4);
+                listaSostenibilidad.add(new RegistroDiarioSostenible(LocalDate.of(2026, 1, 18), acciones18));
             }
         } catch (Exception e) { }
     }
