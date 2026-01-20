@@ -1,11 +1,14 @@
 package espol.poo.sistemabienestarestudiantil.modelo.sostenibilidad;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RegistroSostenible {
+public class RegistroSostenible implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private List<RegistroDiarioSostenible> registros;
 
     public RegistroSostenible() {
@@ -18,6 +21,7 @@ public class RegistroSostenible {
 
     public List<RegistroDiarioSostenible> getRegistros() { return registros; }
 
+    // Lógica para contar cuántas veces se ha realizado cada acción
     public Map<Integer, Integer> calcularFrecuencias() {
         Map<Integer, Integer> freq = new HashMap<>();
         for (RegistroDiarioSostenible r : registros) {

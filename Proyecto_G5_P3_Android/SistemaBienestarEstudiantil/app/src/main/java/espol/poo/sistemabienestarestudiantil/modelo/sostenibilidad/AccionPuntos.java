@@ -1,6 +1,10 @@
 package espol.poo.sistemabienestarestudiantil.modelo.sostenibilidad;
 
-public class AccionPuntos {
+import java.io.Serializable;
+
+public class AccionPuntos implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private int puntos;
 

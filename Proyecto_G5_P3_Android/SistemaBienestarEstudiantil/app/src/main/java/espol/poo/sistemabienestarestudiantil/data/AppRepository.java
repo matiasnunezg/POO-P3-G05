@@ -10,8 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap; // <--- NUEVO
-import java.util.Map;     // <--- NUEVO
+import java.util.HashMap;
+import java.util.Map;
+
 // Importaciones
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.Actividad;
 import espol.poo.sistemabienestarestudiantil.modelo.actividades.ActividadAcademica;
@@ -29,7 +30,8 @@ public class AppRepository {
     private final String FILE_ACTIVIDADES = "actividades.ser";
     private final String FILE_SUENIO = "historial_suenio.ser";
     private final String FILE_HIDRATACION = "historial_agua.ser";
-    private final String FILE_META_HIDRATACION = "meta_agua.ser"; // Agregado por tu compañero
+    private final String FILE_META_HIDRATACION = "meta_agua.ser";
+    private final String FILE_SOSTENIBILIDAD = "sostenibilidad.ser"; // <--- NUEVO
 
     // --- LISTAS ---
     private List<Actividad> listaActividades;
@@ -38,14 +40,14 @@ public class AppRepository {
     private List<RegistroDiarioSostenible> listaSostenibilidad;
 
     // --- VARIABLES ---
-    private Map<String, Double> historialMetas; // <--- CAMBIO CLAVE
+    private Map<String, Double> historialMetas;
     private String fechaSeleccionadaRepo = "";
 
     // --- CONSTRUCTOR PRIVADO ---
     private AppRepository(Context context) {
         this.context = context;
 
-        // 1. ACTIVIDADES (Tu corrección con .Hobbies)
+        // 1. ACTIVIDADES
         listaActividades = new ArrayList<>();
         if (context != null) {
             cargarActividadesDelArchivo();
@@ -53,7 +55,7 @@ public class AppRepository {
             cargarDatosOriginalesActividades();
         }
 
-        // 2. SUEÑO (Tu parte: Datos del 18 de Enero)
+        // 2. SUEÑO
         listaSuenio = new ArrayList<>();
         if (context != null) {
             cargarSuenioDelArchivo();
@@ -61,24 +63,24 @@ public class AppRepository {
             cargarDatosPruebaSuenio();
         }
 
-        // 3. HIDRATACIÓN (MODIFICADO: Historial y Metas por Fecha)
+        // 3. HIDRATACIÓN
         listaHidratacion = new ArrayList<>();
-        historialMetas = new HashMap<>(); // <--- INICIALIZAR SIEMPRE
+        historialMetas = new HashMap<>();
 
         if (context != null) {
             cargarHidratacionDelArchivo();
-            cargarMetasDelArchivo();      // <--- PLURAL (Carga el mapa)
+            cargarMetasDelArchivo();
         } else {
             cargarDatosPruebaHidratacion();
         }
 
-        // 4. SOSTENIBILIDAD (Seguro)
+        // 4. SOSTENIBILIDAD (MODIFICADO PARA CARGAR ARCHIVO)
         listaSostenibilidad = new ArrayList<>();
-        try {
-            List<Integer> idsAyer = new ArrayList<>();
-            idsAyer.add(1); idsAyer.add(2); idsAyer.add(3); idsAyer.add(4);
-            listaSostenibilidad.add(new RegistroDiarioSostenible(LocalDate.now().minusDays(1), idsAyer));
-        } catch (Exception e) { }
+        if (context != null) {
+            cargarSostenibilidadDelArchivo(); // <--- NUEVO
+        } else {
+            cargarDatosPruebaSostenibilidad();
+        }
     }
 
     // --- SINGLETON HÍBRIDO ---
@@ -86,13 +88,13 @@ public class AppRepository {
         if (instance == null) {
             instance = new AppRepository(context.getApplicationContext());
         }
-        // Si ya existe pero no tenía contexto, se lo ponemos y recargamos TODO
         if (instance.context == null && context != null) {
             instance.context = context.getApplicationContext();
             instance.cargarSuenioDelArchivo();
             instance.cargarHidratacionDelArchivo();
-            instance.cargarMetasDelArchivo(); // <--- PLURAL
+            instance.cargarMetasDelArchivo();
             instance.cargarActividadesDelArchivo();
+            instance.cargarSostenibilidadDelArchivo(); // <--- NUEVO
         }
         return instance;
     }
@@ -105,12 +107,11 @@ public class AppRepository {
     }
 
     // ==========================================
-    //           MÓDULO DE SUEÑO (TU PARTE)
+    //           MÓDULO DE SUEÑO
     // ==========================================
     public List<RegistrarHorasDeSuenio> getListaSuenio() { return listaSuenio; }
 
     public void agregarSuenio(RegistrarHorasDeSuenio registro) {
-        // Anti-Duplicados
         RegistrarHorasDeSuenio duplicado = null;
         for (RegistrarHorasDeSuenio r : listaSuenio) {
             if (r.getFechaRegistro().isEqual(registro.getFechaRegistro())) {
@@ -155,7 +156,7 @@ public class AppRepository {
     }
 
     // ==========================================
-    //           MÓDULO DE HIDRATACIÓN (FUSIONADO)
+    //           MÓDULO DE HIDRATACIÓN
     // ==========================================
     public List<RegistroHidratacion> getListaHidratacion() { return listaHidratacion; }
 
@@ -164,13 +165,11 @@ public class AppRepository {
         if (context != null) guardarHidratacionEnArchivo();
     }
 
-    // Datos del compañero (usa Strings, así que lo respetamos)
     private void cargarDatosPruebaHidratacion() {
         listaHidratacion.add(new RegistroHidratacion(500.0, "19/01/2026", "13:00 PM"));
         listaHidratacion.add(new RegistroHidratacion(300.0, "19/01/2026", "17:00 PM"));
     }
 
-    // Obtener meta de una fecha específica (o 2500 por defecto)
     public double getMetaDiaria(String fecha) {
         if (historialMetas != null && historialMetas.containsKey(fecha)) {
             return historialMetas.get(fecha);
@@ -178,16 +177,12 @@ public class AppRepository {
         return 2500.0;
     }
 
-    // Guardar meta para una fecha específica
     public void setMetaDiaria(double meta, String fecha) {
         if (historialMetas == null) historialMetas = new HashMap<>();
-
         historialMetas.put(fecha, meta);
-
         if (context != null) guardarMetasEnArchivo();
     }
 
-    // Método de compatibilidad (por si tu compañero lo usa en otro lado)
     public double getMetaDiaria() { return 2500.0; }
 
     public double getTotalConsumido() {
@@ -199,7 +194,6 @@ public class AppRepository {
     public String getFechaSeleccionadaRepo() { return fechaSeleccionadaRepo; }
     public void setFechaSeleccionadaRepo(String fecha) { this.fechaSeleccionadaRepo = fecha; }
 
-    // --- Persistencia Hidratación ---
     private void guardarHidratacionEnArchivo() {
         try {
             FileOutputStream fos = context.openFileOutput(FILE_HIDRATACION, Context.MODE_PRIVATE);
@@ -223,12 +217,11 @@ public class AppRepository {
         }
     }
 
-    // --- Persistencia Metas (MAPA POR FECHAS) ---
     private void guardarMetasEnArchivo() {
         try {
             FileOutputStream fos = context.openFileOutput(FILE_META_HIDRATACION, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(historialMetas); // Guardamos el Mapa entero
+            oos.writeObject(historialMetas);
             oos.close(); fos.close();
         } catch (IOException e) { e.printStackTrace(); }
     }
@@ -238,7 +231,7 @@ public class AppRepository {
         try {
             FileInputStream fis = context.openFileInput(FILE_META_HIDRATACION);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            historialMetas = (Map<String, Double>) ois.readObject(); // Leemos el Mapa
+            historialMetas = (Map<String, Double>) ois.readObject();
             ois.close(); fis.close();
         } catch (Exception e) {
             historialMetas = new HashMap<>();
@@ -277,36 +270,21 @@ public class AppRepository {
     }
 
     public void guardarActividadesEnArchivo() {
-
         try {
             FileOutputStream fos = context.openFileOutput(FILE_ACTIVIDADES, Context.MODE_PRIVATE);
-
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-
             oos.writeObject(listaActividades);
-            oos.close();
-            fos.close();
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
+            oos.close(); fos.close();
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     public void cargarActividadesDelArchivo() {
         try {
-
             FileInputStream fis = context.openFileInput(FILE_ACTIVIDADES);
             ObjectInputStream ois = new ObjectInputStream(fis);
-
-
             listaActividades = (List<Actividad>) ois.readObject();
-
-            ois.close();
-            fis.close();
-
+            ois.close(); fis.close();
         } catch (IOException | ClassNotFoundException e) {
-
             e.printStackTrace();
             listaActividades = new ArrayList<>();
             cargarDatosOriginalesActividades();
@@ -337,5 +315,42 @@ public class AppRepository {
         }
         if (existente != null) listaSostenibilidad.remove(existente);
         listaSostenibilidad.add(0, nuevoRegistro);
+
+        // PERSISTENCIA: Guardar al agregar
+        if (context != null) guardarSostenibilidadEnArchivo();
+    }
+
+    // Métodos de Persistencia para Sostenibilidad (Unidad 5)
+    private void guardarSostenibilidadEnArchivo() {
+        try {
+            FileOutputStream fos = context.openFileOutput(FILE_SOSTENIBILIDAD, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(listaSostenibilidad);
+            oos.close(); fos.close();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void cargarSostenibilidadDelArchivo() {
+        try {
+            FileInputStream fis = context.openFileInput(FILE_SOSTENIBILIDAD);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            listaSostenibilidad = (List<RegistroDiarioSostenible>) ois.readObject();
+            ois.close(); fis.close();
+        } catch (Exception e) {
+            listaSostenibilidad = new ArrayList<>();
+            cargarDatosPruebaSostenibilidad();
+            if (context != null) guardarSostenibilidadEnArchivo();
+        }
+    }
+
+    private void cargarDatosPruebaSostenibilidad() {
+        try {
+            if (listaSostenibilidad.isEmpty()) {
+                List<Integer> idsAyer = new ArrayList<>();
+                idsAyer.add(1); idsAyer.add(2); idsAyer.add(3); idsAyer.add(4);
+                listaSostenibilidad.add(new RegistroDiarioSostenible(LocalDate.now().minusDays(1), idsAyer));
+            }
+        } catch (Exception e) { }
     }
 }

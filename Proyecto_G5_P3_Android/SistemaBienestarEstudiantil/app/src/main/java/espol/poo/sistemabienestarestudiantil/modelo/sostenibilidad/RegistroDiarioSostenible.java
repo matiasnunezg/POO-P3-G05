@@ -1,23 +1,22 @@
 package espol.poo.sistemabienestarestudiantil.modelo.sostenibilidad;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class RegistroDiarioSostenible {
-    // CAMBIO CLAVE: Usamos LocalDate para poder filtrar por semana
+public class RegistroDiarioSostenible implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private LocalDate fecha;
     private List<Integer> accionesSeleccionadasIds;
-
     public RegistroDiarioSostenible(LocalDate fecha, List<Integer> accionesSeleccionadasIds) {
         this.fecha = fecha;
         this.accionesSeleccionadasIds = accionesSeleccionadasIds;
     }
-
     public LocalDate getFecha() { return fecha; }
-
     public List<Integer> getAccionesSeleccionadasIds() { return accionesSeleccionadasIds; }
 
-    // Mantenemos tu método de puntos adaptado
+    // Método para calcular puntos basado en una lista de referencia
     public int calcularPuntos(List<AccionPuntos> accionesPuntos) {
         int total = 0;
         if (accionesSeleccionadasIds == null) return 0;
@@ -32,7 +31,7 @@ public class RegistroDiarioSostenible {
         return total;
     }
 
-    // Métodos de ayuda para la Activity (Booleanos rápidos)
+    // Métodos de ayuda rápida para la interfaz de usuario
     public boolean isUsoTransporteSostenible() { return accionesSeleccionadasIds.contains(1); }
     public boolean isSinImpresiones() { return accionesSeleccionadasIds.contains(2); }
     public boolean isSinEnvasesDescartables() { return accionesSeleccionadasIds.contains(3); }
