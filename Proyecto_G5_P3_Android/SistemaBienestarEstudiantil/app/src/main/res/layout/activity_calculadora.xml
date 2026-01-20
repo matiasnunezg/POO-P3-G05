@@ -67,7 +67,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nota Teórica P1 sobre 100"
+                android:hint="Nota Teórica P1 (sobre 100)"
                 app:boxStrokeColor="#2E7D32"
                 app:hintTextColor="#2E7D32"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -75,13 +75,13 @@
                     android:id="@+id/etP1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"/>
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nota Teórica P2 sobre 100"
+                android:hint="Nota Teórica P2 (sobre 100)"
                 android:layout_marginTop="12dp"
                 app:boxStrokeColor="#2E7D32"
                 app:hintTextColor="#2E7D32"
@@ -90,7 +90,7 @@
                     android:id="@+id/etP2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"/>
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -105,7 +105,7 @@
                     android:id="@+id/etPractico"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"/>
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -120,7 +120,7 @@
                     android:id="@+id/etMejoramiento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"/>
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
